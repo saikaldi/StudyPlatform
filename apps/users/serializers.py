@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.core.validators import EmailValidator
 from django.contrib.auth import get_user_model
-from .models import EmailConfirmation, Profile
+from .models import EmailConfirmation, Profile, MockAssessmentTest
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -86,3 +86,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['email', 'first_name', 'last_name', 'profile_picture', 'address', 'date_of_birth', 'gender', 'user_status', 'paid']
         read_only_fields = ['email', 'first_name', 'last_name', 'user_status', 'paid']
+
+class MockAssessmentTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MockAssessmentTest
+        fields = ['id', 'first_name', 'last_name', 'phone_number']
+        read_only_fields = ['id']

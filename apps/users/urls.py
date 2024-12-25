@@ -5,14 +5,16 @@ from django_ratelimit.decorators import ratelimit
 from rest_framework.routers import DefaultRouter
 
 
+
 router = DefaultRouter()
 router.register(r'profile', ProfileViewSet, basename='Profile')
+router.register(r'mock-assessment-tests', MockAssessmentTestViewSet)
 urlpatterns = [
     path('sign-up/', RegisterView.as_view(), name='register'),
     path('sign-up-confirmation/', ConfirmRegistrationView.as_view(), name='sign-up-confirmation'),
     path('sign-in/', LoginView.as_view(), name='sign-in'),
     
-    path('confirm-user-status-priveligion/', AdminConfirmUserView.as_view(), name='confirm-user'),
+    path('confirm-user-status-priveligion/', AdminConfirmUserView.as_view(), name='confirm-user-status-priveligion'),
 
     path('request-password-reset/', ratelimit(key='ip', rate='1/10m', method='POST', block=False)(RequestPasswordResetView.as_view()), name='request-password-reset'),
     path('reset-password/<str:uidb64>/<str:token>/', ResetPasswordView.as_view(), name='reset_password'),

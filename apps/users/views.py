@@ -9,9 +9,9 @@ from django.contrib.auth import authenticate, get_user_model
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from .models import EmailConfirmation, Profile
-from .serializers import ProfileSerializer, RegisterSerializer, ConfirmRegistrationSerializer, LoginSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample
+from .models import EmailConfirmation, Profile, MockAssessmentTest
+from .serializers import ProfileSerializer, RegisterSerializer, ConfirmRegistrationSerializer, LoginSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer, MockAssessmentTestSerializer
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample, OpenApiParameter
 from django.db import transaction
 
 User = get_user_model()
@@ -321,6 +321,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         )
     }
 )
+@extend_schema(tags=['admin-confirm-user'])
 class AdminConfirmUserView(APIView):
     permission_classes = [IsAdminUser]
 
@@ -361,3 +362,12 @@ class AdminConfirmUserView(APIView):
             settings.DEFAULT_FROM_EMAIL,
             [user.email],
         )
+
+@extend_schema(
+    description="Модель для пробной записи на оценочный тест",
+    responses={200: MockAssessmentTestSerializer},
+)
+@extend_schema(tags=['mock-assessment-tests'])
+class MockAssessmentTestViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentTest.objects.all()
+    serializer_class = MockAssessmentTestSerializer

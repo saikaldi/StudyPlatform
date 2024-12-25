@@ -1,0 +1,566 @@
+openapi: 3.0.3
+info:
+  title: API для ОРТ
+  version: 1.0.0
+  description: API для ОРТ
+paths:
+  /api/v1/account/profile/:
+    get:
+      operationId: api_v1_account_profile_list
+      description: Возвращает профиль текущего пользователя
+      summary: Получить профиль
+      tags:
+      - Profile
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+          description: ''
+    post:
+      operationId: api_v1_account_profile_create
+      description: Создает профиль для текущего пользователя
+      summary: Создать профиль
+      tags:
+      - Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '400':
+          description: 'Ошибка валидации: Профиль уже существует'
+  /api/v1/account/profile/{id}/:
+    get:
+      operationId: api_v1_account_profile_retrieve
+      description: Возвращает детальную информацию о профиле пользователя
+      summary: Получить детали профиля
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - Profile
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    put:
+      operationId: api_v1_account_profile_update
+      description: Обновляет информацию о текущем пользователе
+      summary: Обновить профиль
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '400':
+          description: Ошибка валидации
+    patch:
+      operationId: api_v1_account_profile_partial_update
+      description: Частично обновляет профиль текущего пользователя
+      summary: Частичное обновление профиля
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '400':
+          description: Ошибка валидации
+    delete:
+      operationId: api_v1_account_profile_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - Profile
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/confirm-user/:
+    post:
+      operationId: api_v1_confirm_user_create
+      description: Администратор подтверждает аккаунт пользователя, обновляет его
+        статус и отправляет подтверждение на email
+      summary: Подтверждение пользователя администратором
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: Пользователь успешно подтвержден
+        '400':
+          description: 'Ошибка: Аккаунт уже подтвержден'
+        '404':
+          description: 'Ошибка: Пользователь не найден'
+  /api/v1/request-password-reset/:
+    post:
+      operationId: api_v1_request_password_reset_create
+      description: Отправляет ссылку для сброса пароля на указанный email
+      summary: Запрос на сброс пароля
+      tags:
+      - Reset-Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RequestPasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RequestPasswordReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: Ссылка для сброса пароля отправлена
+        '400':
+          description: Ошибка валидации
+  /api/v1/reset-password/{uidb64}/{token}/:
+    post:
+      operationId: api_v1_reset_password_create
+      description: Завершает процесс сброса пароля
+      summary: Сброс пароля
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uidb64
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reset-Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: Пароль успешно изменен
+        '400':
+          description: Ошибка валидации или недействительный токен
+  /api/v1/sign-in/:
+    post:
+      operationId: api_v1_sign_in_create
+      description: Авторизация пользователя по email и паролю с выдачей токена
+      summary: Авторизация пользователя
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: Успешный вход
+        '400':
+          description: Ошибка авторизации
+  /api/v1/sign-up/:
+    post:
+      operationId: api_v1_sign_up_create
+      description: Создание нового пользователя с отправкой кода подтверждения на
+        email
+      summary: Регистрация пользователя
+      tags:
+      - Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: Код регистрации отправлен на ваш email
+        '400':
+          description: Ошибка валидации
+  /api/v1/sign-up-confirmation/:
+    post:
+      operationId: api_v1_sign_up_confirmation_create
+      description: Подтверждение регистрации пользователя по email и коду
+      summary: Подтверждение регистрации
+      tags:
+      - Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConfirmRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConfirmRegistration'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: Регистрация успешно подтверждена
+        '400':
+          description: Ошибка валидации
+  /api/v1/token/:
+    post:
+      operationId: api_v1_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/v1/token/refresh/:
+    post:
+      operationId: api_v1_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    ConfirmRegistration:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
+          maxLength: 6
+      required:
+      - code
+      - email
+    GenderEnum:
+      enum:
+      - мужской
+      - женский
+      type: string
+      description: |-
+        * `мужской` - Мужской
+        * `женский` - Женский
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+      required:
+      - email
+      - password
+    NullEnum:
+      enum:
+      - null
+    PatchedProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          readOnly: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        last_name:
+          type: string
+        first_name:
+          type: string
+        address:
+          type: string
+          nullable: true
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+    Profile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          readOnly: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        last_name:
+          type: string
+        first_name:
+          type: string
+        address:
+          type: string
+          nullable: true
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - first_name
+      - last_name
+    Register:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        password_confirm:
+          type: string
+          minLength: 8
+        user_status:
+          type: string
+      required:
+      - email
+      - password
+      - password_confirm
+      - user_status
+    RequestPasswordReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    ResetPassword:
+      type: object
+      properties:
+        new_password:
+          type: string
+          minLength: 8
+        new_password_confirm:
+          type: string
+          minLength: 8
+      required:
+      - new_password
+      - new_password_confirm
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

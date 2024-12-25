@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'drf_spectacular',
     "apps.users",
 ]
 
@@ -132,32 +133,24 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Время жизни access токена
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Время жизни refresh токена
-    "ROTATE_REFRESH_TOKENS": False,  # Ротация refresh токенов при каждом запросе
-    "BLACKLIST_AFTER_ROTATION": True,  # Добавлять старые refresh токены в blacklist (если включена ротация)
-    "UPDATE_LAST_LOGIN": False,  # Обновлять поле last_login при получении токена
-    "ALGORITHM": "HS256",  # Алгоритм шифрования токена
-    "SIGNING_KEY": SECRET_KEY,  # Секретный ключ для подписания токенов
-    "VERIFYING_KEY": None,  # Публичный ключ (если используется асимметричное шифрование)
-    "AUDIENCE": None,  # Аудитория токена
-    "ISSUER": None,  # Издатель токена
-    "AUTH_HEADER_TYPES": (
-        "Bearer",
-    ),  # Префикс авторизации в заголовке (например, "Bearer <token>")
-    "USER_ID_FIELD": "id",  # Поле для идентификации пользователя
-    "USER_ID_CLAIM": "user_id",  # Поле внутри токена, в котором хранится user_id
-    "AUTH_TOKEN_CLASSES": (
-        "rest_framework_simplejwt.tokens.AccessToken",
-    ),  # Классы токенов
-    "TOKEN_TYPE_CLAIM": "token_type",  # Поле в токене, указывающее его тип
-    "JTI_CLAIM": "jti",  # Уникальный идентификатор токена
-    "SLIDING_TOKEN_LIFETIME": timedelta(
-        minutes=5
-    ),  # Время жизни скользящих токенов (если используется SlidingToken)
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(
-        days=1
-    ),  # Время жизни refresh для SlidingToken
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),                              # Время жизни access токена
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),                                # Время жизни refresh токена
+    "ROTATE_REFRESH_TOKENS": False,                                             # Ротация refresh токенов при каждом запросе
+    "BLACKLIST_AFTER_ROTATION": True,                                           # Добавлять старые refresh токены в blacklist (если включена ротация)
+    "UPDATE_LAST_LOGIN": False,                                                 # Обновлять поле last_login при получении токена
+    "ALGORITHM": "HS256",                                                       # Алгоритм шифрования токена
+    "SIGNING_KEY": SECRET_KEY,                                                  # Секретный ключ для подписания токенов
+    "VERIFYING_KEY": None,                                                      # Публичный ключ (если используется асимметричное шифрование)
+    "AUDIENCE": None,                                                           # Аудитория токена
+    "ISSUER": None,                                                             # Издатель токена
+    "AUTH_HEADER_TYPES": ("Bearer",),                                           # Префикс авторизации в заголовке (например, "Bearer <token>")
+    "USER_ID_FIELD": "id",                                                      # Поле для идентификации пользователя
+    "USER_ID_CLAIM": "user_id",                                                 # Поле внутри токена, в котором хранится user_id
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),     # Классы токенов
+    "TOKEN_TYPE_CLAIM": "token_type",                                           # Поле в токене, указывающее его тип
+    "JTI_CLAIM": "jti",                                                         # Уникальный идентификатор токена
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),                             # Время жизни скользящих токенов (если используется SlidingToken)
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),                        # Время жизни refresh для SlidingToken
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -166,3 +159,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "aktanarynov566@gmail.com"
 EMAIL_HOST_PASSWORD = "zelt flio uuax zgnk"
+
+ADMIN_EMAIL = "aktanarynov566@gmail.com"
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API для ОРТ',
+    'DESCRIPTION': 'API для ОРТ',
+    'VERSION': '1.0.0',
+}

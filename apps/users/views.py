@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -12,6 +12,7 @@ from django.contrib.auth.tokens import default_token_generator
 from .models import EmailConfirmation, Profile
 from .serializers import ProfileSerializer, RegisterSerializer, ConfirmRegistrationSerializer, LoginSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample
+from django.db import transaction
 
 User = get_user_model()
 
@@ -41,17 +42,39 @@ class RegisterView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data['email']
             password = serializer.validated_data['password']
-            user = User.objects.create_user(email=email, password=password, is_active=False)
-            code = EmailConfirmation.generate_code()
-            EmailConfirmation.objects.create(user=user, code=code)
+            user_status = serializer.validated_data['user_status']
 
-            send_mail(
-                'Ваш код регистрации',
-                f'Ваш код: {code}',
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-            )
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    email=email,
+                    password=password,
+                    is_active=False,
+                    user_status=user_status
+                )
+
+                if user_status != 'Студент':
+                    user.is_approved_by_admin = False
+                    user.save()
+
+                    send_mail(
+                        'Новый пользователь на подтверждение',
+                        f'Пользователь {user.email} выбрал статус {user_status} \nПожалуйста, рассмотрите его/ее запрос',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [settings.ADMIN_EMAIL],
+                    )
+
+                code = EmailConfirmation.generate_code()
+                EmailConfirmation.objects.create(user=user, code=code)
+
+                send_mail(
+                    'Ваш код регистрации',
+                    f'Ваш код: {code}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                )
+
             return Response({'message': 'Код регистрации отправлен на ваш email'}, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ================== Подтверждение регистрации ==================
@@ -75,28 +98,29 @@ class ConfirmRegistrationView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = ConfirmRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data['email']
-            code = serializer.validated_data['code']
+        email = request.data.get('email')
+        code = request.data.get('code')
 
-            try:
-                user = User.objects.get(email=email)
-                confirmation = EmailConfirmation.objects.get(user=user, code=code)
+        try:
+            user = User.objects.get(email=email)
+            confirmation = EmailConfirmation.objects.get(user=user, code=code)
+        except (User.DoesNotExist, EmailConfirmation.DoesNotExist):
+            return Response({'message': 'Неверный код или email'}, status=status.HTTP_400_BAD_REQUEST)
 
-                if confirmation.is_expired():
-                    user.delete()
-                    return Response({'error': 'Срок кода истёк'}, status=status.HTTP_400_BAD_REQUEST)
+        if confirmation.is_used:
+            return Response({'message': 'Этот код уже был использован'}, status=status.HTTP_400_BAD_REQUEST)
 
-                user.is_active = True
-                user.save()
-                confirmation.delete()
+        confirmation.is_used = True
+        confirmation.save()
 
-                refresh = RefreshToken.for_user(user)
-                return Response({'message': 'Регистрация подтверждена', 'token': str(refresh.access_token)}, status=status.HTTP_200_OK)
-            except (User.DoesNotExist, EmailConfirmation.DoesNotExist):
-                return Response({'error': 'Некорректные данные'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user.is_active = True
+        user.save()
+
+        if user.user_status != 'Студент':
+            user.is_approved_by_admin = False
+            user.save()
+
+        return Response({'message': 'Аккаунт успешно подтвержден и активирован'}, status=status.HTTP_200_OK)
 
 # ================== Авторизация пользователя ==================
 @extend_schema(
@@ -184,7 +208,7 @@ class RequestPasswordResetView(APIView):
     request=ResetPasswordSerializer,
     responses={
         200: OpenApiResponse(
-            description="Пароль успешно изменен.",
+            description="Пароль успешно изменен",
             examples=[OpenApiExample("Успешный ответ", value={"message": "Пароль успешно изменен"})]
         ),
         400: OpenApiResponse(
@@ -258,3 +282,82 @@ class ProfileViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+@extend_schema(
+    summary="Подтверждение пользователя администратором",
+    description="Администратор подтверждает аккаунт пользователя, обновляет его статус и отправляет подтверждение на email",
+    request={
+        'application/json': OpenApiResponse(
+            description="Данные запроса",
+            examples=[
+                OpenApiExample(
+                    'Пример запроса',
+                    value={'email': 'user@example.com'}
+                )
+            ]
+        )
+    },
+    responses={
+        200: OpenApiResponse(
+            description="Пользователь успешно подтвержден",
+            examples=[OpenApiExample(
+                'Успешный запрос',
+                value={'message': 'Пользователь подтвержден'}
+            )]
+        ),
+        400: OpenApiResponse(
+            description="Ошибка: Аккаунт уже подтвержден",
+            examples=[OpenApiExample(
+                'Ошибка подтверждения',
+                value={'message': 'Аккаунт пользователя уже был подтвержден'}
+            )]
+        ),
+        404: OpenApiResponse(
+            description="Ошибка: Пользователь не найден",
+            examples=[OpenApiExample(
+                'Пользователь не найден',
+                value={'message': 'Пользователь с таким email не найден'}
+            )]
+        )
+    }
+)
+class AdminConfirmUserView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'message': 'Пользователь с таким email не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+        if user.is_status_approved is True:
+            return Response({'message': 'Аккаунт пользователя уже был подтвержден'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.is_status_approved = True
+        if user.user_status == 'Админ':
+            user.is_superuser = True
+            user.is_staff = True
+        user.save()
+
+        self.send_confirmation_email(user)
+
+        return Response({'message': 'Пользователь подтвержден'}, status=status.HTTP_200_OK)
+
+    def send_confirmation_email(self, user):
+        subject = 'Ваш аккаунт подтвержден'
+        message = f'''
+            Здравствуйте, {user.email}!
+
+            Ваш аккаунт был подтвержден администратором
+            Ваш текущий статус: {user.user_status}
+
+            Поздравляем с успешным подтверждением!
+        '''
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+        )

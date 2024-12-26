@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-from .models import Graduate, AbountUs, Feedback
-from .serializers import GraduateSerializer, AbountUsSerializer, FeedbackSerializer
+from .models import Graduate, AbountTeacher, Feedback
+from .serializers import GraduateSerializer, AbountTeacherSerializer, FeedbackSerializer
 
 # Create your views here.
 
@@ -16,10 +16,10 @@ class GraduateView(viewsets.ModelViewSet):
     serializer_class = GraduateSerializer
     
         
-class AbountUsView(viewsets.ModelViewSet):
-    queryset = AbountUs.objects.all()
-    serializer_class = AbountUsSerializer
-    
+class AbountTeacherView(viewsets.ModelViewSet):
+    queryset = AbountTeacher.objects.all()
+    serializer_class = AbountTeacherSerializer
+
     
 class FeedbackView(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()   

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Graduate, AbountUs, Feedback
+from .models import Graduate, AbountTeacher, Feedback
 
 class GraduateSerializer(serializers.ModelSerializer):
     
@@ -9,10 +9,10 @@ class GraduateSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-class AbountUsSerializer(serializers.ModelSerializer):
+class AbountTeacherSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = AbountUs
+        model = AbountTeacher
         fields = '__all__'  
 
 class FeedbackSerializer(serializers.ModelSerializer):

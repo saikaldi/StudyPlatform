@@ -21,16 +21,23 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+
+#modules   
     "rest_framework",
     'drf_spectacular',
+
+
+#apps 
     "apps.users",
-    "apps.videos"
+    "apps.videos",
 ]
 
 MIDDLEWARE = [
@@ -167,4 +174,31 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'API для ОРТ',
     'DESCRIPTION': 'API для ОРТ',
     'VERSION': '1.0.0',
+}
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Админ-панель вашего сайта",
+    "site_header": "Моя Админка",
+    "welcome_sign": "Добро пожаловать в админ-панель",
+    "copyright": "Record",
+
+    # Персонализация левого меню
+    "show_sidebar": True,
+
+    # Настройки UI
+    "order_with_respect_to": ["site", "auth"],
+    "icons": {
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+
+    # Настройки для страницы изменения
+    "show_ui_builder": True,
+    
+    # Настройки для списка изменений
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
 }

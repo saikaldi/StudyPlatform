@@ -10,32 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Шаг 1. Клонируем репозиторий
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Шаг 2. Устанавливаем Docker
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
 
-    # Шаг 3. Создаем .env файл (если нужен)
     - name: Create .env file
       run: |
-        echo "DEBUG=${{ secrets.DEBUG }}" >> .env
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+        echo DEBUG=${{ secrets.DEBUG }} >> .env
+        echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+        echo DB_USER=${{ secrets.DB_USER }} >> .env
+        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+        echo DB_PORT=${{ secrets.DB_PORT }} >> .env
 
-    # Шаг 4. Строим и запускаем Docker-контейнеры
     - name: Build and run Docker containers
-      run: |
-        docker-compose up --build -d
-      env:  # Передаем переменные окружения
-        DEBUG: ${{ secrets.DEBUG }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
+      run: docker-compose up --build -d

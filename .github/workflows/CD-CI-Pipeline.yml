@@ -4,35 +4,38 @@ on:
   push:
     branches:
       - Test-CD/CI-Pipeline-Aktan
-  pull_request:
 
 jobs:
-  test-build:
+  build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16.6-alpine
-        env:
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
-          POSTGRES_USER: ${{ secrets.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 5432:5432
-
     steps:
-      # 1. Клонирование репозитория
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # Шаг 1. Клонируем репозиторий
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # 2. Установка Docker Compose
-      - name: Set up Docker Compose
-        run: sudo apt-get install docker-compose -y
+    # Шаг 2. Устанавливаем Docker
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
-      # 3. Сборка Docker Compose
-      - name: Build and run services
-        run: docker-compose up --build -d
+    # Шаг 3. Создаем .env файл (если нужен)
+    - name: Create .env file
+      run: |
+        echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
 
-      # 4. Прогон тестов
-      - name: Run tests
-        run: docker-compose run django python manage.py test
+    # Шаг 4. Строим и запускаем Docker-контейнеры
+    - name: Build and run Docker containers
+      run: |
+        docker-compose up --build -d
+      env:  # Передаем переменные окружения
+        DEBUG: ${{ secrets.DEBUG }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}

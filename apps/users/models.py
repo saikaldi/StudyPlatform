@@ -26,6 +26,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -108,7 +109,6 @@ class Profile(models.Model):
         verbose_name_plural = "Профили"
 
 
-# Функция для автоматического создания профиля пользователя
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -122,6 +122,7 @@ class EmailConfirmation(models.Model):
     )  # Пользователь к которому приадлежит код подтверждения
     code = models.CharField(max_length=6)  # Код подтверждения
     created_at = models.DateTimeField(auto_now_add=True)  # Дата выдачи кода
+
     is_used = models.BooleanField(default=False)
 
     # Функция проверки времени жизни кода
@@ -136,7 +137,11 @@ class EmailConfirmation(models.Model):
     def __str__(self):
         return f"Код для пользователя: {self.user.email}"
 
+    def __str__(self):
+        return f"Код для пользователя: {self.user.email}"
+
     class Meta:
+
         verbose_name = "Код активации Аккаунта"
         verbose_name_plural = "Коды активации Аккаунта"
 

@@ -1,18 +1,20 @@
 from rest_framework import serializers
 from django.core.validators import EmailValidator
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
-from .models import EmailConfirmation, Profile
+from .models import EmailConfirmation, Profile, MockAssessmentTest
 from django.contrib.auth import authenticate
 
 User = get_user_model()
-
 
 # Сериализатор для регистрации
 class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(validators=[EmailValidator()])
     password = serializers.CharField(min_length=8)
     password_confirm = serializers.CharField(min_length=8)
+    user_status = serializers.ChoiceField(choices=User.STATUS_CHOICES)
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
+    paid = serializers.ChoiceField(choices=User.PAID_CHOICES)
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:
@@ -33,7 +35,7 @@ class ConfirmRegistrationSerializer(serializers.Serializer):
 
             if confirmation.is_expired():
                 user.delete()
-                raise serializers.ValidationError(f"Код истёк")
+                raise serializers.ValidationError("Код истёк")
         except (User.DoesNotExist, EmailConfirmation.DoesNotExist):
             raise serializers.ValidationError("Неверный код или email")
         return data
@@ -72,10 +74,21 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError("Пароли не совпадают")
         return data
 
+# Сериализатор профиля
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    user_status = serializers.CharField(source='user.user_status', read_only=True)
+    paid = serializers.CharField(source='user.paid', read_only=True)
 
     class Meta:
         model = Profile
-        fields = ['email', 'profile_picture', 'first_name', 'last_name', 'address', 'date_of_birth', 'gender']
-        read_only_fields = ['email'] 
+        fields = ['email', 'first_name', 'last_name', 'profile_picture', 'address', 'date_of_birth', 'gender', 'user_status', 'paid']
+        read_only_fields = ['email', 'first_name', 'last_name', 'user_status', 'paid']
+
+class MockAssessmentTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MockAssessmentTest
+        fields = ['id', 'first_name', 'last_name', 'phone_number']
+        read_only_fields = ['id']

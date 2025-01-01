@@ -1,0 +1,10 @@
+POST http://127.0.0.1:8000/api/v1/feedback/
+Content-Type: application/json
+
+{
+    "name": "Ernist",
+    "lastname": "Turgunbaev",
+    "gmail": "ermist@gmail.com",
+    "phone_number": "+123456789"
+
+}

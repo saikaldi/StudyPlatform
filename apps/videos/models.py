@@ -87,6 +87,7 @@ class Test(models.Model):
         db_table = "test"
 
     
+
 class UserAnswer(models.Model):
     """Моделка для сохранения информации о ответах на вопросы урока"""
     CHOICES = (
@@ -96,25 +97,24 @@ class UserAnswer(models.Model):
         ("Г", "Г"),
     )
     
-    qiestion = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="user_answers")
-    answer = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="user_answers")
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_answers")
+    question = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="user_answers")
     answer = models.CharField(verbose_name="Ответ на вопрос", max_length=1, choices=CHOICES)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_answers")
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'Учитель {self.student.username} ответил на вопрос {self.answer.id_question} в уроке {self.answer.question_video.subject}'
+        return f'Студент {self.student} ответил на вопрос {self.answer} в уроке {self.question}'
     
     def user_answer(self):
-        user_answer = UserAnswer.objects.filter(student=self.student)
-        correst_answer = user_answer.count()
-        total_question = user_answer.count()
+        user_answers = UserAnswer.objects.filter(student=self.student)
+        correct_answer_count = 0
+        total_question_count = user_answers.count()
         
-        for user_answer in user_answer:
-            correst_answer += 1 
+        for user_answer in user_answers:
+            if user_answer.answer == user_answer.question.correct_answer:  
+                correct_answer_count += 1 
         
-        return (correst_answer, total_question)
-    
+        return (correct_answer_count, total_question_count)
     
     class Meta:
         db_table = "user_answer"
@@ -129,7 +129,7 @@ class Result(models.Model):
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'Результат теста {self.test.id_question} для студента {self.student.username}'
+        return f'Результат теста {self.test.id_question} для студента {self.student}'
     
     
     class Meta: 

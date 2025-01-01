@@ -13,7 +13,7 @@ router.register(r'answer', AnswerViewSet, basename='Answer')
 router.register(r'result', ResultViewSet, basename='Result')
 
 urlpatterns = [
-    path('videos/', include(router.urls)),
+    path('', include(router.urls)),
 ]
 
 

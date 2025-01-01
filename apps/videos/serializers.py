@@ -31,12 +31,12 @@ class TestSerializer(serializers.ModelSerializer):
 class UserAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Answer"""
     
-    question = TestSerializer(many=True, read_only=True)
     
     class Meta:
         model = UserAnswer   
-        fields = "__all__"
-
+        fields = ["student", "answer", "question"]
+        
+    
 class ResultSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Result"""
     

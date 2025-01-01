@@ -36,11 +36,10 @@ class VideoViewSet(viewsets.ModelViewSet):
             return Video.objects.filter(is_paid=False)
         
         
-    def retrieve(self, request, *args, **kwargs):          
-        """
+    def retrieve(self, request, *args, **kwargs):        
+        """ Метод для получения информации о видео """
         
-        """
-        1                                
+                                        
         instance = self.get_object()
         if instance.is_paid and not request.user.is_authenticated:
             return Response({"detail": "Доступ запрещен"}, status=status.HTTP_403_FORBIDDEN)
@@ -55,34 +54,46 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer  
     
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+    def get_queryset(self):
+        """
+        Метод для получения списка вопросов по видео 
+         платный или бесплатный
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return Test.objects.all()
+        else:
+            return Test.objects.filter(is_paid=False)
+        
+        
+    def retrieve(self, request, *args, **kwargs):
+        """Метод для получения информации о вопросе"""
+        instance = self.get_object()
+        if instance.is_paid and not request.user.is_authenticated:
+            return Response({"detail": "Доступ запрещен"}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 
     
 class AnswerViewSet(viewsets.ModelViewSet):
     """Модель для сохранения информации о ответах на вопросы урока"""
-  
+    
+   
     queryset = UserAnswer.objects.all()    
     serializer_class = UserAnswerSerializer
     
-    
-    def list(self, request):
-        """Метод для получения списка ответов на вопросы урока"""
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return UserAnswer.objects.filter(student=user)
+        else:
+            return UserAnswer.objects.filter(student__is_status_approved=False)
         
-        queryset = Test.objects.all()
-        serializer = TestSerializer(queryset, many=True)
-        return Response(serializer.data)
-     
+        
 
 
 class ResultViewSet(viewsets.ModelViewSet):

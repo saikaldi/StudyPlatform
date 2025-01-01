@@ -23,6 +23,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
         return self.create_user(email, password, **extra_fields)
 
 # Модель пользователя
@@ -43,6 +44,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Студент')        # Статусы пользователей
     paid = models.CharField(max_length=11, choices=PAID_CHOICES, default='Не оплачено')             # Статус оплаты
     is_status_approved = models.BooleanField(default=False)
+
+    is_staff = models.BooleanField(default=False)                                                   # Для доступа в админку
+    is_active = models.BooleanField(default=False)                                                   # Для управления статусом активности
+    date_joined = models.DateTimeField(auto_now_add=True)                                           # Дата регистрации пользователя
 
     objects = UserManager()                                                                         # Менеджер для управления User
     USERNAME_FIELD = 'email'                                                                        # Никальный идентификатор пользователя
@@ -100,3 +105,20 @@ class EmailConfirmation(models.Model):
     class Meta:
         verbose_name = 'Код активации Аккаунта'
         verbose_name_plural = 'Коды активации Аккаунта'
+
+class MockAssessmentTest(models.Model):
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,13}$', message="Введите корректный номер телефона")                         # Валидатор номера телефона
+    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True)                # Номер телефона пол
+    first_name = models.CharField(max_length=50)                                                                                # Имя пользователя
+    last_name = models.CharField(max_length=50)                                                                                 # Фамилия пользователя
+
+    def __str__(self):
+        return f'Данные пользователя: {self.first_name} - {self.last_name} - {self.phone_number}'
+
+    class Meta:
+        verbose_name = 'Пробная запись на оценочный тест'
+        verbose_name_plural = 'Пробные записи на оценочные тесты'
+
+
+
+

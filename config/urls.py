@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 
 # /api/v1/ деп башталсын созсуз
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("api/admin/", admin.site.urls),
     # path("api/v1/", include("apps.urls")),
 ]
 if settings.DEBUG:

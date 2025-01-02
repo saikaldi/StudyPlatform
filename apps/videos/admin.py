@@ -18,8 +18,11 @@ class VideoAdmin(admin.ModelAdmin):
     def get_video_type(self, obj):
         return obj.get_video_type()
 
+class TestAdmin(admin.ModelAdmin):
+    """Администратор для модели Test"""
+    list_display = ("text", "video", "is_paid", "id_question")
 
 admin.site.register(CategoryVideo, CategoryVideoAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(UserAnswer)
-admin.site.register(Test)
+admin.site.register(Test, TestAdmin)

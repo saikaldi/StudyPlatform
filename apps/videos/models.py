@@ -1,7 +1,7 @@
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.conf import settings
+from slugify import slugify
 
 # Create your models here.
 
@@ -16,13 +16,23 @@ class CategoryVideo(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f'{self.name}')
-        super().save(*args, **kwargs)
-        
+        if not self.slug or self.slug.strip() == "":  
+            base_slug = slugify(f"{self.name}")
+            unique_slug = base_slug
+            counter = 1
+            while CategoryVideo.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"                  
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs) 
     class Meta:
         db_table = "category_video"
         
+    class Meta:
+        verbose_name = "Категория видео"
+        verbose_name_plural = "Категории видео"
+        
+
 
 class Video(models.Model):
     """"Моделка для сохранения информации о видео"""
@@ -40,16 +50,25 @@ class Video(models.Model):
         return f'Урок {self.category.name}: {self.subject}'
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.subject}")
-        super().save(*args, **kwargs)
+        if not self.slug or self.slug.strip() == "":  
+            base_slug = slugify(f"{self.subject}")
+            unique_slug = base_slug
+            counter = 1
+            while Video.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"                  
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs) 
+        if self.is_paid:
+            self.questions.update(is_paid=True)
         
     def get_video_type(self):  # возвращает строку с типом видео
         return "Платное" if self.is_paid else "Бесплатное"
        
-    
+        
     class Meta:
-        db_table = "video"
+        verbose_name = "Видео"
+        verbose_name_plural = "Видео"
     
     
 #######################################################
@@ -74,18 +93,24 @@ class Test(models.Model):
     answer_a = models.TextField("Вариянт А",  max_length=255, blank=True, null=True)
     answer_b = models.TextField("Вариянт Б", max_length=255, blank=True, null=True)
     answer_c = models.TextField("Вариянт В", max_length=255, blank=True, null=True)   
-    answet_d = models.TextField("Вариянт Г", max_length=255, blank=True, null=True)
+    answer_d = models.TextField("Вариянт Г", max_length=255, blank=True, null=True)
     is_correct = models.CharField("Правилный ответ", max_length=1,  choices=IS_CORRECT_CHOICES)
-    is_paid = models.BooleanField("Является ли тест платным?", default=False)
+    is_paid = models.BooleanField("Является ли тест платным?")
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'Вопрос {self.id_question} в уроке {self.video.subject}'  
+        return f' {self.id_question}.  {self.text} в уроке {self.video.subject}'
 
+    def save(self, *args, **kwargs):
+        if self.video.is_paid:
+            self.is_paid = True
+        super().save(*args, **kwargs)
+        
     
     class Meta:
-        db_table = "test"
-
+        verbose_name = "Вопрос"
+        verbose_name_plural = "Вопросы"
+        ordering = ['-video']
     
 
 class UserAnswer(models.Model):
@@ -103,27 +128,22 @@ class UserAnswer(models.Model):
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'Студент {self.student} ответил на вопрос {self.answer} в уроке {self.question}'
+        return f'Студент {self.student} ответил на вопрос {self.answer} в вопросе {Test.objects.get(id=self.question.id)}'
     
-    def user_answer(self):
-        user_answers = UserAnswer.objects.filter(student=self.student)
-        correct_answer_count = 0
-        total_question_count = user_answers.count()
-        
-        for user_answer in user_answers:
-            if user_answer.answer == user_answer.question.correct_answer:  
-                correct_answer_count += 1 
-        
-        return (correct_answer_count, total_question_count)
+    def is_correct(self):
+        """"Метод для проверки правильности ответа на вопрос"""
+        return self.answer == self.question.is_correct
+    
     
     class Meta:
-        db_table = "user_answer"
+        verbose_name = "Ответ"
+        verbose_name_plural = "Ответы"
     
     
 class Result(models.Model):
     """Моделка для сохранения информации о результатах теста"""
     
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="results")
+    # test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="results")
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="results")
     result = models.CharField(verbose_name="Результат теста", max_length=255)
     created_data = models.DateTimeField(auto_now_add=True)
@@ -133,5 +153,7 @@ class Result(models.Model):
     
     
     class Meta: 
-        db_table = "result"
+        verbose_name = "Результат"  
+        verbose_name_plural = "Результаты"  
+        ordering = ['-created_data']
     

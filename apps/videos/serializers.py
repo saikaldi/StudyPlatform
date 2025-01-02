@@ -8,15 +8,14 @@ class CategoryVideoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CategoryVideo
-        fields = "__all__"
-        
+        fields = ['id', 'name']
         
 class VideoSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Video"""
     
     class Meta:
         model = Video   
-        fields = "__all__"
+        fields = ['id', 'subject', 'description', 'category', 'video_url', 'is_paid']
         
 
 class TestSerializer(serializers.ModelSerializer):
@@ -34,7 +33,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserAnswer   
-        fields = ["student", "answer", "question"]
+        fields = ["id", "student", "answer", "question"]
         
     
 class ResultSerializer(serializers.ModelSerializer):

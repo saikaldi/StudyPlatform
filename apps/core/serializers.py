@@ -6,17 +6,17 @@ class GraduateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Graduate
-        fields = '__all__'
+        fields = ['id', 'name', 'lastname', 'image', 'score', 'review', 'created_data']
         
         
 class AbountTeacherSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = AbountTeacher
-        fields = '__all__'  
+        fields = ['id', 'name', 'lastname', 'image', 'teacher_type', 'created_data']
 
 class FeedbackSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feedback        
-        fields = '__all__'
+        fields = ['id', 'name', 'lastname', 'gmail', 'phone_number', 'text', 'created_data']

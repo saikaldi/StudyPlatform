@@ -15,6 +15,7 @@ class GraduateView(viewsets.ModelViewSet):
     queryset = Graduate.objects.all()   
     serializer_class = GraduateSerializer
     
+    
         
 class AbountTeacherView(viewsets.ModelViewSet):
     queryset = AbountTeacher.objects.all()

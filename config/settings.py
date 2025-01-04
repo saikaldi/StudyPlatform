@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.core",
     "apps.videos",
+    # "apps.videos_tests",
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),                              # Время жизни access токена
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),                              # Время жизни access токена
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),                                # Время жизни refresh токена
     "ROTATE_REFRESH_TOKENS": False,                                             # Ротация refresh токенов при каждом запросе
     "BLACKLIST_AFTER_ROTATION": True,                                           # Добавлять старые refresh токены в blacklist (если включена ротация)
@@ -155,7 +156,7 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),     # Классы токенов
     "TOKEN_TYPE_CLAIM": "token_type",                                           # Поле в токене, указывающее его тип
     "JTI_CLAIM": "jti",                                                         # Уникальный идентификатор токена
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),                             # Время жизни скользящих токенов (если используется SlidingToken)
+    "SLIDING_TOKEN_LIFETIME": timedelta(days=1),                             # Время жизни скользящих токенов (если используется SlidingToken)
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),                        # Время жизни refresh для SlidingToken
 }
 

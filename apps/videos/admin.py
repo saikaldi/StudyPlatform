@@ -6,7 +6,7 @@ from .models import CategoryVideo, Video, Test, UserAnswer
 
 class CategoryVideoAdmin(admin.ModelAdmin):
     """Администратор для модели CategoryVideo"""
-    list_display = ("name", "slug")
+    list_display = ("name", "parent", "slug")
     prepopulated_fields = {"slug": ("name",)}
     
 
@@ -20,7 +20,7 @@ class VideoAdmin(admin.ModelAdmin):
 
 class TestAdmin(admin.ModelAdmin):
     """Администратор для модели Test"""
-    list_display = ("text", "video", "is_paid", "id_question")
+    list_display = ("text", "video", "is_paid", "is_correct")
 
 admin.site.register(CategoryVideo, CategoryVideoAdmin)
 admin.site.register(Video, VideoAdmin)

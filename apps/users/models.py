@@ -68,11 +68,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    
+    def has_paid_for_video(self, video):
+        """Проверяет, является ли пользователь платным за видео video"""
+        return self.paid == "Оплачено"
 
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+    
 
 # Модель профиля
 class Profile(models.Model):

@@ -9,11 +9,16 @@ class CategoryVideo(models.Model):
     """Моделка для сохранения информации о категориях видео"""
     
     name = models.CharField("Название", max_length=100, unique=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name="children", blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL", blank=True)
     created_data = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self):
-        return self.name
+    def __str__(self):  
+        if self.parent:
+            return f"{self.parent.name}/{self.name}"
+        else:   
+            return self.name
+        
     
     def save(self, *args, **kwargs):
         if not self.slug or self.slug.strip() == "":  
@@ -39,7 +44,7 @@ class Video(models.Model):
     
     subject = models.CharField("Название тема урока", max_length=100)
     description = models.TextField("Описание темы урока")
-    category = models.ForeignKey(CategoryVideo, on_delete=models.CASCADE, related_name="videos", blank=True,)
+    category = models.ForeignKey(CategoryVideo, on_delete=models.CASCADE, related_name="videos",  verbose_name="Категория видео", blank=True,)
     video_url = models.URLField("Ссылка на видео", max_length=100)
     is_paid = models.BooleanField("Является ли видео платным?", default=False)
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL", blank=True)
@@ -47,7 +52,7 @@ class Video(models.Model):
     
     
     def __str__(self):
-        return f'Урок {self.category.name}: {self.subject}'
+        return f'Предмет: {self.category.name} Тема:{self.subject}'
     
     def save(self, *args, **kwargs):
         if not self.slug or self.slug.strip() == "":  
@@ -65,6 +70,31 @@ class Video(models.Model):
     def get_video_type(self):  # возвращает строку с типом видео
         return "Платное" if self.is_paid else "Бесплатное"
        
+    
+    def get_total_questions(self):
+        return self.questions.count()
+
+
+    def get_correct_answers(self, user):
+        correct_answers = 0
+        for question in self.questions.all():
+            user_answer = question.user_answers.filter(student=user).first()
+            if user_answer and user_answer.is_correct:
+                correct_answers += 1
+        return correct_answers
+    
+
+    def is_passed(self, user):
+        """Колдонуучу видеону өткөнбү же өтпөгөнбү текшерүү."""
+        total_questions = self.get_total_questions()
+        if total_questions == 0:
+            return True  
+        correct_answers = self.get_correct_answers(user)
+        result = (correct_answers / total_questions) * 100
+        if result >= 80:
+            return True
+        
+        return False
         
     class Meta:
         verbose_name = "Видео"
@@ -78,18 +108,15 @@ class Test(models.Model):
     """Моделка для сохранения информации о вопросах урока"""
     
     IS_CORRECT_CHOICES = (
-    ("A", "A"),
-    ("Б", "Б"),
-    ("В", "В"),
-    ("Г", "Г"),
+        ("A", "A"),
+        ("Б", "Б"),
+        ("В", "В"),
+        ("Г", "Г"),
     )
     
     text = models.TextField("Текст вопроса")
-    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name="questions")
-    id_question = models.IntegerField("Номер вопроса")
-    
-    """Варианты ответов на вопрос"""
-    
+    image = models.ImageField("Изображение вопроса", upload_to="question_images/", null=True, blank=True)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name="questions", verbose_name="Видео")    
     answer_a = models.TextField("Вариянт А",  max_length=255, blank=True, null=True)
     answer_b = models.TextField("Вариянт Б", max_length=255, blank=True, null=True)
     answer_c = models.TextField("Вариянт В", max_length=255, blank=True, null=True)   
@@ -99,7 +126,7 @@ class Test(models.Model):
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f' {self.id_question}.  {self.text} в уроке {self.video.subject}'
+        return f' Вопрос:{self.text} в уроке {self.video.subject}'
 
     def save(self, *args, **kwargs):
         if self.video.is_paid:
@@ -115,6 +142,7 @@ class Test(models.Model):
 
 class UserAnswer(models.Model):
     """Моделка для сохранения информации о ответах на вопросы урока"""
+    
     CHOICES = (
         ("A", "A"),
         ("Б", "Б"),
@@ -128,7 +156,7 @@ class UserAnswer(models.Model):
     created_data = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'Студент {self.student} ответил на вопрос {self.answer} в вопросе {Test.objects.get(id=self.question.id)}'
+        return f'Студент {self.student} ответил на вопрос {self.answer} в вопросе {self.question}'
     
     def is_correct(self):
         """"Метод для проверки правильности ответа на вопрос"""
@@ -157,3 +185,4 @@ class Result(models.Model):
         verbose_name_plural = "Результаты"  
         ordering = ['-created_data']
     
+

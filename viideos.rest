@@ -1,0 +1,102 @@
+GET http://127.0.0.1:8001/api/v1/videos/category-video/
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8002/api/v1/videos/video/3/check_passed/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4
+###
+
+
+
+###
+GET http://127.0.0.1:8002/api/v1/videos/video/4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4
+
+
+### 
+GET http://127.0.0.1:8002/api/v1/videos/video/3
+
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDgxNDMzLCJpYXQiOjE3MzU5OTUwMzMsImp0aSI6IjU5YmZmOTI5MzQ3ZTQxYTQ4MTM2NDRkYWYxMGI5NWNkIiwidXNlcl9pZCI6N30.znl4w8qVADrIPALEjqAnqTS7FCW-4YZKNUhUhHCb76c
+
+
+###
+POST http://127.0.0.1:8002/api/v1/videos/video/3/submit_answers/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4
+
+# {
+#     "answers": [
+#         {
+#             "question_id":6,
+#             "answer": "А"
+#         },
+#         {
+#             "question_id": 7,
+#             "answer": "Г"
+#         },
+#         {
+#             "question_id": 17,
+#             "answer": "Б"
+#         },
+#         {
+#             "question_id": 18,
+#             "answer": "В"
+#         },
+#         {
+#             "question_id": 19,
+#             "answer": "Г"
+#         },
+#         {
+#             "question_id": 20,
+#             "answer": "Б"
+#         },
+#         {
+#             "question_id": 21,
+#             "answer": "Г"
+#         },
+#         {
+#             "question_id": 22,
+#             "answer": "В"            
+#         },
+#         {
+#             "question_id": 23,
+#             "answer": "Б"            
+#         },
+#         {
+#             "question_id": 24,
+#             "answer": "Б"            
+#         }
+#     ]
+# }
+
+###
+GET http://127.0.0.1:8001/api/v1/videos/test/
+Content-Type: application/json  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1OTc1OTgzLCJpYXQiOjE3MzU5NzU2ODMsImp0aSI6ImNlNDUyZTBlNGI2YTRjN2Y5ZTkyNzI5Y2UzNjMzZDJhIiwidXNlcl9pZCI6N30.iHGGaltTkV0QmTsUI41CaSxlcGqlMlX7-TTw60C0c0Q
+
+
+###
+GET http://127.0.0.1:8001/api/v1/videos/answer/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1OTc1MjYyLCJpYXQiOjE3MzU5NzQ5NjIsImp0aSI6ImM1NzA3ODEyNzQ3ZjRlYTNhNTU4ZjE5NGNiZjhhMjZkIiwidXNlcl9pZCI6N30.veksj2BFcnegybW55v-IblI4bV6HCJd6pRHfD9S-6rs
+
+###
+POST http://127.0.0.1:8001/api/v1/videos/answer/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1OTc1MjYyLCJpYXQiOjE3MzU5NzQ5NjIsImp0aSI6ImM1NzA3ODEyNzQ3ZjRlYTNhNTU4ZjE5NGNiZjhhMjZkIiwidXNlcl9pZCI6N30.veksj2BFcnegybW55v-IblI4bV6HCJd6pRHfD9S-6rs
+
+
+###
+GET http://127.0.0.1:8001/api/v1/videos/user_answers/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1OTc1MjYyLCJpYXQiOjE3MzU5NzQ5NjIsImp0aSI6ImM1NzA3ODEyNzQ3ZjRlYTNhNTU4ZjE5NGNiZjhhMjZkIiwidXNlcl9pZCI6N30.veksj2BFcnegybW55v-IblI4bV6HCJd6pRHfD9S-6rs
+
+
+##########################################
+###
+GET http://127.0.0.1:8002/api/v1/videos_tests/lessons/
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4

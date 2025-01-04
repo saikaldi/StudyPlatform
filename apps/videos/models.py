@@ -85,7 +85,6 @@ class Video(models.Model):
     
 
     def is_passed(self, user):
-        """Колдонуучу видеону өткөнбү же өтпөгөнбү текшерүү."""
         total_questions = self.get_total_questions()
         if total_questions == 0:
             return True  

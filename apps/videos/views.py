@@ -55,7 +55,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     
-    # @action(detail=True, methods=["POST"])
     def submit_answers(self, request, video_id):
         """Метод для отправки ответа на вопрос урока"""
         

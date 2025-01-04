@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/v1/", include("apps.users.urls")),
     path('swagger/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/v2/', include("apps.OrtTest.urls"))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

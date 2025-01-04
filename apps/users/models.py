@@ -38,12 +38,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('Не оплачено', 'Не оплачено'),
         ('Оплачено', 'Оплачено'),
     ]                                                                                               # Варианты статуса оплаты
-    first_name = models.CharField(max_length=50)                                                    # Имя пользователя
-    last_name = models.CharField(max_length=50)                                                     # Фамилия пользователя
-    email = models.EmailField(unique=True)                                                          # Электронная почта пользователя
-    user_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Студент')        # Статусы пользователей
-    paid = models.CharField(max_length=11, choices=PAID_CHOICES, default='Не оплачено')             # Статус оплаты
-    is_status_approved = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=50, verbose_name='Имя')                                                    # Имя пользователя
+    last_name = models.CharField(max_length=50, verbose_name='Фамилия')                                                     # Фамилия пользователя
+    email = models.EmailField(unique=True, verbose_name='Электронная почта')                                                          # Электронная почта пользователя
+    user_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Студент', verbose_name='Статус пользователя')        # Статусы пользователей
+    paid = models.CharField(max_length=11, choices=PAID_CHOICES, default='Не оплачено', verbose_name='Статус оплаты')             # Статус оплаты
+    is_status_approved = models.BooleanField(default=False, verbose_name='Статус подтверждения админом')
+    first_test_passed = models.BooleanField(default=False, verbose_name='Прошел ли пользователь первый тест')
 
     is_staff = models.BooleanField(default=False)                                                   # Для доступа в админку
     is_active = models.BooleanField(default=False)                                                   # Для управления статусом активности
@@ -63,12 +64,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 # Модель профиля
 class Profile(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,13}$', message="Введите корректный номер телефона")                         # Валидатор номера телефона
-    user = models.OneToOneField(User, on_delete=models.CASCADE)                                                                 # К какому пользователю пренадлежит Профиль
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)                                   # Фото профиля пользователя
-    address = models.CharField(max_length=100, blank=True, null=True)                                                           # Адрес пользователя
-    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True)                # Номер телефона пользователя
-    date_of_birth = models.DateField(null=True, blank=True)                                                                     # Дата рождения пользователя
-    gender = models.CharField(max_length=10, choices=[('мужской', 'Мужской'), ('женский', 'Женский')], null=True, blank=True)   # Пол пользователя
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')                                                                 # К какому пользователю пренадлежит Профиль
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True, verbose_name='Фото профиля')                                   # Фото профиля пользователя
+    address = models.CharField(max_length=100, blank=True, null=True, verbose_name='Адрес')                                                           # Адрес пользователя
+    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True, verbose_name='Номер телефона')                # Номер телефона пользователя
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name='Дата рождения')                                                                     # Дата рождения пользователя
+    gender = models.CharField(max_length=10, choices=[('мужской', 'Мужской'), ('женский', 'Женский')], null=True, blank=True, verbose_name='Пол')   # Пол пользователя
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name='Дата последнего обновления')
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
         return f"{self.user.email} профиль"
@@ -85,10 +88,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 # Подтверждения аккаунта по Email
 class EmailConfirmation(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)                    # Пользователь к которому приадлежит код подтверждения
-    code = models.CharField(max_length=6)                                                           # Код подтверждения
-    created_at = models.DateTimeField(auto_now_add=True)                                            # Дата выдачи кода
-    is_used = models.BooleanField(default=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')                    # Пользователь к которому приадлежит код подтверждения
+    code = models.CharField(max_length=6, verbose_name='Код активации')                                                           # Код подтверждения
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')                                            # Дата выдачи кода
+    is_used = models.BooleanField(default=False, verbose_name='Статус использован ли код')
 
     # Функция проверки времени жизни кода
     def is_expired(self):
@@ -107,10 +110,12 @@ class EmailConfirmation(models.Model):
         verbose_name_plural = 'Коды активации Аккаунта'
 
 class MockAssessmentTest(models.Model):
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,13}$', message="Введите корректный номер телефона")                         # Валидатор номера телефона
-    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True)                # Номер телефона пол
-    first_name = models.CharField(max_length=50)                                                                                # Имя пользователя
-    last_name = models.CharField(max_length=50)                                                                                 # Фамилия пользователя
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,13}$', message="Введите корректный номер телефона")                                                         # Валидатор номера телефона
+    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True, verbose_name='Номер телефона')                 # Номер телефона пол
+    first_name = models.CharField(max_length=50, verbose_name='Имя')                                                                                                                # Имя пользователя
+    last_name = models.CharField(max_length=50, verbose_name='Фамилия')                                                                                                                 # Фамилия пользователя
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name='Дата последнего обновления')
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
         return f'Данные пользователя: {self.first_name} - {self.last_name} - {self.phone_number}'

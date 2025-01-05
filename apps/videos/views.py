@@ -5,8 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import action
 
-
-
+from django.shortcuts import get_object_or_404
 
 
 from .models import CategoryVideo, Video, Test, UserAnswer, Result
@@ -57,8 +56,12 @@ class VideoViewSet(viewsets.ModelViewSet):
     
     def submit_answers(self, request, video_id):
         """Метод для отправки ответа на вопрос урока"""
+        if not request.user.is_authenticated:
+            return Response({"detail": "Доступ запрещен. Вы не авторизованы"}, status=status.HTTP_403_FORBIDDEN)
         
-        video = Video.objects.get(id=video_id)
+        student = request.user
+        
+        video = get_object_or_404(Video, id=video_id)
         answers = request.data.get('answers', [])  # получаем ответы пользователя
         correct_count = 0  # счетчик правильных ответов
         incorrect_count = 0  # счетчик неправильных ответов
@@ -92,9 +95,19 @@ class VideoViewSet(viewsets.ModelViewSet):
                              'total_questions': total_questions,
                             'correct_count': correct_count},
                             status=status.HTTP_400_BAD_REQUEST)
-        
-        
+            
         result = (correct_count / total_questions) * 100
+        
+        result_obj = Result(
+            student=request.user,
+            video=video,
+            total_questions=total_questions,
+            correct_answers=correct_count,
+            incorrect_answers=incorrect_count,
+            result_percentage=result
+        )
+        result_obj.save()      
+          
         if result >= 80:
             return Response({ 
                             'message': 'Поздравляем вы прошли урок.',

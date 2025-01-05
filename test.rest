@@ -1,8 +1,8 @@
-POST http://127.0.0.1:8002/api/v1/sign-up/
+POST http://127.0.0.1:8000/api/v1/sign-up/
 Content-Type: application/json
 
 {
-    "email": "ernistturgunbaev1@gmail.com",
+    "email": "ernistturgunbaev01@gmail.com",
     "password": "Adminpassword",
     "password_confirm": "Adminpassword",
     "user_status": "Студент",
@@ -15,13 +15,24 @@ Content-Type: application/json
 
 
 ###
-POST http://127.0.0.1:8002/api/v1/token/
+POST http://127.0.0.1:8000/api/v1/token/
 Content-Type: application/json
 
 {
   "email": "ernistturgunbaev1@gmail.com",
   "password": "Adminpassword"
 }
+
+
+###
+POST http://127.0.0.1:8000/api/v1/token/
+Content-Type: application/json
+
+{
+  "email": "ernistturgunbaev01@gmail.com",
+  "password": "Adminpassword"
+}
+
 
 
 ###

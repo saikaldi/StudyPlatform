@@ -3,44 +3,55 @@ Content-Type: application/json
 
 #### П
 ###
-GET http://127.0.0.1:8002/api/v1/videos/video/4
+GET http://127.0.0.1:8000/api/v1/videos/video/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDk3MTI1LCJpYXQiOjE3MzYwMTA3MjUsImp0aSI6ImM0YTdmM2NkNTJmYzRhOGU4ZTFiOWExZjVhYjJlNDhkIiwidXNlcl9pZCI6M30.ss6Wx7eH6Y-oWxLVRHLyU0C6CkNvHGfh9Tq0ilEgYgo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
+
+###
+GET http://127.0.0.1:8000/api/v1/videos/video/2/check_passed/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1MzIyLCJpYXQiOjE3MzYwODg5MjIsImp0aSI6IjQ0YWJhNDY4YjAwMzQ0NDY5MjI1OWVmNDBmYjA4YzcyIiwidXNlcl9pZCI6M30.HVNCEYUKM6ai3ggvOGshDLViD0CZk6HuYFkP08aMbVw
 
 
 ###
-GET http://127.0.0.1:8002/api/v1/videos/video/3/check_passed/
+GET http://127.0.0.1:8000/api/v1/videos/video/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDk3MTI1LCJpYXQiOjE3MzYwMTA3MjUsImp0aSI6ImM0YTdmM2NkNTJmYzRhOGU4ZTFiOWExZjVhYjJlNDhkIiwidXNlcl9pZCI6M30.ss6Wx7eH6Y-oWxLVRHLyU0C6CkNvHGfh9Tq0ilEgYgo
-
-
-###
-GET http://127.0.0.1:8002/api/v1/videos/video/3
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDk3MTI1LCJpYXQiOjE3MzYwMTA3MjUsImp0aSI6ImM0YTdmM2NkNTJmYzRhOGU4ZTFiOWExZjVhYjJlNDhkIiwidXNlcl9pZCI6M30.ss6Wx7eH6Y-oWxLVRHLyU0C6CkNvHGfh9Tq0ilEgYgo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
 
 ###
-POST  http://127.0.0.1:8002/api/v1/videos/video/3/submit_answers/
+POST  http://127.0.0.1:8000/api/v1/videos/video/2/submit_answers/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDk3MTI1LCJpYXQiOjE3MzYwMTA3MjUsImp0aSI6ImM0YTdmM2NkNTJmYzRhOGU4ZTFiOWExZjVhYjJlNDhkIiwidXNlcl9pZCI6M30.ss6Wx7eH6Y-oWxLVRHLyU0C6CkNvHGfh9Tq0ilEgYgo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
 
 {
-    "answers": [        
+    "answers": [
         {
-            "question_id": 6,
+            "question_id": 8,
             "answer": "А"
         },
         {
-            "question_id": 7,
-            "answer": "А"
-        },
-        {
-            "question_id": 17,
+            "question_id": 11,
             "answer": "Б"
         },
         {
-            "question_id": 18,
+            "question_id": 12,
+            "answer": "В"
+        },
+        {
+            "question_id": 15,
             "answer": "Г"
+        },
+        {
+            "question_id": 16,
+            "answer": "В"
+        },
+        {
+            "question_id": 17,
+            "answer": "Г"
+        },
+        {
+            "question_id": 18,
+            "answer": "Б"
         },
         {
             "question_id": 19,
@@ -48,26 +59,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
         },
         {
             "question_id": 20,
-            "answer": "Б"
+            "answer": "Г"
         },
         {
             "question_id": 21,
-            "answer": "В"
-        },
-        {
-            "question_id": 22,
-            "answer": "В"
-        },
-        {
-            "question_id": 23,
-            "answer": "В"
-        },
-        {
-            "question_id": 24,
-            "answer": "Х"
+            "answer": "В"   
         }
-    ]   
+    ]
 }
 
 
-
+###

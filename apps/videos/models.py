@@ -8,7 +8,7 @@ from slugify import slugify
 class CategoryVideo(models.Model):
     """Моделка для сохранения информации о категориях видео"""
     
-    name = models.CharField("Название", max_length=100, unique=True)
+    name = models.CharField("Название", max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name="children", blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL", blank=True)
     created_data = models.DateTimeField(auto_now_add=True)
@@ -87,7 +87,7 @@ class Video(models.Model):
     def is_passed(self, user):
         total_questions = self.get_total_questions()
         if total_questions == 0:
-            return True  
+            return False
         correct_answers = self.get_correct_answers(user)
         result = (correct_answers / total_questions) * 100
         if result >= 80:
@@ -172,20 +172,31 @@ class UserAnswer(models.Model):
     
     
 class Result(models.Model):
-    """Моделка для сохранения информации о результатах теста"""
-    
-    # test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="results")
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="results")
-    result = models.CharField(verbose_name="Результат теста", max_length=255)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='results')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='results')
+    total_questions = models.IntegerField(verbose_name="Всего вопросов", default=0)
+    correct_answers = models.IntegerField(verbose_name="Всего правильных ответов", default=0)
+    incorrect_answers = models.IntegerField(verbose_name="Всего неправильных ответов", default=0)
+    result_percentage = models.FloatField(verbose_name="Результат теста", default=0)
+    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL", blank=True)
     created_data = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self):
-        return f'Результат теста {self.test.id_question} для студента {self.student}'
-    
-    
-    class Meta: 
-        verbose_name = "Результат"  
-        verbose_name_plural = "Результаты"  
-        ordering = ['-created_data']
-    
+    def __str__(self):  
+        return f"{self.student} - {self.video.subject} - {self.result_percentage}%"
 
+    
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":  
+            base_slug = slugify(f"{self.student}-{self.video.slug}")
+            unique_slug = base_slug
+            counter = 1
+            while Result.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"                  
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Результат"
+        verbose_name_plural = "Результаты"
+        ordering = ['-student']

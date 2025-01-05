@@ -36,7 +36,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         else:
             return Video.objects.filter(is_paid=False)
     @action(detail=True, methods=["GET"])
-    def check_passed(self, request, pk=None):
+    def check_passed(self, request, pk=None):    
+        if not request.user.is_authenticated:
+            return Response({"detail": "Доступ запрещен. Вы не авторизованы"}, status=status.HTTP_403_FORBIDDEN)
+        
+            
         video = self.get_object()
         passed = video.is_passed(request.user)
         return Response({"passed": passed})
@@ -66,7 +70,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated:
             return Response({"detail": "Доступ запрещен. Вы не авторизованы"}, status=status.HTTP_403_FORBIDDEN)
         
-        student = request.user
         
         video = get_object_or_404(Video, id=video_id)
         answers = request.data.get('answers', [])  # получаем ответы пользователя

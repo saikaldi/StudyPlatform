@@ -2,10 +2,12 @@ from rest_framework import serializers
 from .models import Payment
 
 class PaymentSerializer(serializers.ModelSerializer):
+    slug = serializers.SlugField(read_only=True)
+    
     class Meta:
         model = Payment
-        fields = ['id', 'bank', 'amount', 'phone_number', 'status', 'created_at']
-        read_only_fields = ['status', 'created_at']
+        fields = ['id', 'slug', 'bank', 'amount', 'phone_number', 'status', 'created_at']
+        read_only_fields = ['status', 'created_at', 'slug']
 
     def validate_phone_number(self, value):
         if not value.startswith('+996'):

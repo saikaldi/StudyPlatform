@@ -7,6 +7,7 @@ from .serializers import PaymentSerializer
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'slug'
 
     def get_queryset(self):
         return Payment.objects.filter(user=self.request.user)
@@ -15,7 +16,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
-    def verify_payment(self, request, pk=None):
+    def verify_payment(self, request, slug=None):
         payment = self.get_object()
         if payment.status != 'PENDING':
             return Response(
@@ -23,7 +24,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Here you would implement verification logic with the bank's API
         payment.status = 'COMPLETED'
         payment.save()
         
@@ -33,7 +33,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         })
 
     @action(detail=True, methods=['post'])
-    def reject_payment(self, request, pk=None):
+    def reject_payment(self, request, slug=None):
         payment = self.get_object()
         if payment.status != 'PENDING':
             return Response(

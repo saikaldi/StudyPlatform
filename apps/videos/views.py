@@ -164,26 +164,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
 
 
 
-class UserAnswersView(APIView):
-    permission_classes = [IsAuthenticated] 
-    """ Метод для получения информации о ответах на вопросы урока"""
 
-    def get(self, request):
-        user = request.user
-        user_answers = UserAnswer.objects.filter(student=user)
-        
-    
-        answers = []
-        for answer in user_answers:
-            answers.append({       
-                'id_test': answer.question.id_question,
-                'question': answer.question.text,
-                'user_answer': answer.answer,
-                'correct_answer': answer.question.is_correct,
-                'is_correct': answer.is_correct(),
-            })
-        
-        return Response(answers, status=status.HTTP_200_OK)
     
     
 

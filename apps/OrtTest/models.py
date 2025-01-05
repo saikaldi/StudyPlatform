@@ -1,5 +1,6 @@
 from django.db import models
 from ..users.models import User
+from django.core.exceptions import ValidationError
 
 
 def upload_to_test(instance, filename):
@@ -38,14 +39,31 @@ class Test(models.Model):
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name='Тест')
     question = models.TextField(verbose_name='Вопрос')
-    var_A = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'A\'')
-    var_B = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'B\'')
-    var_C = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'C\'')
-    var_D = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'D\'')
+    var_A_image = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'A\' (В файловом варианте)', blank=True, null=True)
+    var_B_image = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'B\' (В файловом варианте)', blank=True, null=True)
+    var_C_image = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'C\' (В файловом варианте)', blank=True, null=True)
+    var_D_image = models.ImageField(upload_to=upload_to_test, verbose_name='Вариант ответа \'D\' (В файловом варианте)', blank=True, null=True)
+    var_A_text = models.TextField(verbose_name='Вариант ответа \'A\' (В текстовом варианте)', blank=True, null=True)
+    var_B_text = models.TextField(verbose_name='Вариант ответа \'B\' (В текстовом варианте)', blank=True, null=True)
+    var_C_text = models.TextField(verbose_name='Вариант ответа \'C\' (В текстовом варианте)', blank=True, null=True)
+    var_D_text = models.TextField(verbose_name='Вариант ответа \'D\' (В текстовом варианте)', blank=True, null=True)
     true_answer = models.CharField(max_length=10, choices=[('a', 'A'), ('b', 'B'), ('c', 'C'), ('d', 'D')], verbose_name='Правильный ответ')
     timer = models.PositiveIntegerField(verbose_name='Таймер (в секундах)')
     last_update_date = models.DateTimeField(auto_now=True, verbose_name='Последнее обновление')
     created_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def clean(self):
+        if self.var_A_image and self.var_A_text:
+            raise ValidationError({'var_A_image': 'Выберите только один вариант для A: либо текст, либо файл', 'var_A_text': 'Выберите только один вариант для A: либо текст, либо файл'})
+
+        if self.var_B_image and self.var_B_text:
+            raise ValidationError({'var_B_image': 'Выберите только один вариант для B: либо текст, либо файл', 'var_B_text': 'Выберите только один вариант для B: либо текст, либо файл'})
+
+        if self.var_C_image and self.var_C_text:
+            raise ValidationError({'var_C_image': 'Выберите только один вариант для C: либо текст, либо файл', 'var_C_text': 'Выберите только один вариант для C: либо текст, либо файл'})
+
+        if self.var_D_image and self.var_D_text:
+            raise ValidationError({'var_D_image': 'Выберите только один вариант для D: либо текст, либо файл', 'var_D_text': 'Выберите только один вариант для D: либо текст, либо файл'})
 
     def __str__(self):
         return f'{self.test.test_category.test_category_name} - {self.test.title} - {self.true_answer}'

@@ -13,31 +13,51 @@ def approve_user_status(modeladmin, request, queryset):
 
             # Отправляем уведомление на email пользователя
             send_mail(
-                'Изменение статуса одобрено',
-                'Ваш запрос на изменение статуса был одобрен администратором',
-                'aktanarynov566@gmail.com',
+                "Изменение статуса одобрено",
+                "Ваш запрос на изменение статуса был одобрен администратором",
+                "aktanarynov566@gmail.com",
                 [user.email],
                 fail_silently=False,
             )
 
+
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'user_status', 'is_status_approved')
+    list_display = ("email", "user_status", "is_status_approved")
     actions = [approve_user_status]
-    search_fields = ('email',)
+    search_fields = ("email",)
+
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'user__first_name', 'user__last_name', 'date_of_birth', 'gender')                       # Поля для отображения в списке
-    search_fields = ('user__email', 'user__first_name', 'user__last_name')                                          # Поиск по email пользователя и имени
-    list_filter = ('gender', 'date_of_birth')                                                                       # Фильтрация по полу и дате рождения
+    list_display = (
+        "user",
+        "user__first_name",
+        "user__last_name",
+        "date_of_birth",
+        "gender",
+    )  # Поля для отображения в списке
+    search_fields = (
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+    )  # Поиск по email пользователя и имени
+    list_filter = ("gender", "date_of_birth")  # Фильтрация по полу и дате рождения
+
 
 class EmailConfirmationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'code', 'created_at', 'is_expired')                                                     # Поля для отображения в списке
-    search_fields = ('user__email', 'code')                                                                         # Поиск по email пользователя и коду
-    list_filter = ('created_at',)                                                                                   # Фильтрация по дате создания кода
+    list_display = (
+        "user",
+        "code",
+        "created_at",
+        "is_expired",
+    )  # Поля для отображения в списке
+    search_fields = ("user__email", "code")  # Поиск по email пользователя и коду
+    list_filter = ("created_at",)  # Фильтрация по дате создания кода
 
     def is_expired(self, obj):
         return obj.is_expired()
-    is_expired.boolean = True                                                                                       # Отображение как иконки
+
+    is_expired.boolean = True
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)

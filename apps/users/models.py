@@ -30,6 +30,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
+
         return self.create_user(email, password, **extra_fields)
 
 
@@ -76,6 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # Модель профиля
 class Profile(models.Model):
+
     phone_regex = RegexValidator(
         regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
     )  # Валидатор номера телефона
@@ -117,6 +119,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 # Подтверждения аккаунта по Email
 class EmailConfirmation(models.Model):
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )  # Пользователь к которому приадлежит код подтверждения
@@ -147,6 +150,7 @@ class EmailConfirmation(models.Model):
 
 
 class MockAssessmentTest(models.Model):
+
     phone_regex = RegexValidator(
         regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
     )  # Валидатор номера телефона
@@ -155,6 +159,26 @@ class MockAssessmentTest(models.Model):
     )  # Номер телефона пол
     first_name = models.CharField(max_length=50)  # Имя пользователя
     last_name = models.CharField(max_length=50)  # Фамилия пользователя
+
+    phone_regex = RegexValidator(
+        regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
+    )  # Валидатор номера телефона
+    phone_number = models.CharField(
+        validators=[phone_regex],
+        max_length=13,
+        unique=True,
+        blank=True,
+        null=True,
+        verbose_name="Номер телефона",
+    )  # Номер телефона пол
+    first_name = models.CharField(max_length=50, verbose_name="Имя")  # Имя пользователя
+    last_name = models.CharField(
+        max_length=50, verbose_name="Фамилия"
+    )  # Фамилия пользователя
+    last_update_date = models.DateTimeField(
+        auto_now=True, verbose_name="Дата последнего обновления"
+    )
+    # created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
         return f"Данные пользователя: {self.first_name} - {self.last_name} - {self.phone_number}"

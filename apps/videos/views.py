@@ -51,7 +51,14 @@ class VideoViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Доступ запрещен"}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = self.get_serializer(instanse)
-        return Response(serializer.data)
+        questions = Test.objects.filter(video=instanse)
+        questions_serializer = TestSerializer(questions, many=True)
+        
+        response_data = {
+            "video": serializer.data,
+            "questions": questions_serializer.data
+        }
+        return Response(response_data)
     
     
     def submit_answers(self, request, video_id):

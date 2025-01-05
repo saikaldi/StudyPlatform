@@ -12,7 +12,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ###
-GET http://127.0.0.1:8000/api/v1/videos/video/1
+GET http://127.0.0.1:8000/api/v1/videos/video/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
 

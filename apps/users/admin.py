@@ -21,7 +21,7 @@ def approve_user_status(modeladmin, request, queryset):
             )
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'user_status', 'is_status_approved')
+    list_display = ('email', 'user_status', 'is_status_approved', 'paid')
     actions = [approve_user_status]
     search_fields = ('email',)
 

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from slugify import slugify
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -113,7 +114,7 @@ class Test(models.Model):
         ("Г", "Г"),
     )
     
-    text = models.TextField("Текст вопроса")
+    text = models.TextField("Текст вопроса", blank=True, null=True)
     image = models.ImageField("Изображение вопроса", upload_to="question_images/", null=True, blank=True)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name="questions", verbose_name="Видео")    
     image_a = models.ImageField("Изображение варианта А", upload_to="question_images/", null=True, blank=True)
@@ -130,8 +131,26 @@ class Test(models.Model):
     
     def __str__(self):
         return f' Вопрос:{self.text} в уроке {self.video.subject}'
+    
+    def clean(self):
+        if self.text and self.image:
+            raise ValidationError("Можно запонить текст или изображение, но не оба")
+        
+        options = [
+            (self.answer_a, self.image_a),
+            (self.answer_b, self.image_b),
+            (self.answer_c, self.image_c),
+            (self.answer_d, self.image_d),
+        ]
+        
+        for text, image in options:
+            if not text and not image:
+                raise ValidationError("Все варианты должны быть заполнены")
+        if text and image:
+            raise ValidationError("Можно запонить текст или изображение, но не оба")
 
     def save(self, *args, **kwargs):
+        self.clean()
         if self.video.is_paid:
             self.is_paid = True
         super().save(*args, **kwargs)
@@ -169,6 +188,7 @@ class UserAnswer(models.Model):
     class Meta:
         verbose_name = "Ответ"
         verbose_name_plural = "Ответы"
+        ordering = ['-student', '-created_data']
     
     
 class Result(models.Model):
@@ -199,4 +219,4 @@ class Result(models.Model):
     class Meta:
         verbose_name = "Результат"
         verbose_name_plural = "Результаты"
-        ordering = ['-student']
+        ordering = ['-created_data']

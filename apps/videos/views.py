@@ -54,7 +54,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if instanse.is_paid and not user.has_paid_for_video(instanse):              # проверка на платность видео
             return Response({"detail": "Доступ запрещен"}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = self.get_serializer(instanse)
+        serializer = self.get_serializer(instanse)          
         questions = Test.objects.filter(video=instanse)
         questions_serializer = TestSerializer(questions, many=True)
         
@@ -72,11 +72,12 @@ class VideoViewSet(viewsets.ModelViewSet):
         
         
         video = get_object_or_404(Video, id=video_id)
-        answers = request.data.get('answers', [])  # получаем ответы пользователя
-        correct_count = 0  # счетчик правильных ответов
-        incorrect_count = 0  # счетчик неправильных ответов
+        answers = request.data.get('answers', [])            # получаем ответы пользователя
+        correct_count = 0                                    # счетчик правильных ответов
+        incorrect_count = 0                                  # счетчик неправильных ответов
         
         for answer_data in answers:
+            
             question_id = answer_data.get('question_id')
             answer = answer_data.get('answer')
 
@@ -100,6 +101,14 @@ class VideoViewSet(viewsets.ModelViewSet):
                 answer_data['correct'] = False
                     
         total_questions = video.get_total_questions()
+        if len(answers) != total_questions:
+            return Response({
+                "detail": "Вы ответили не на все вопросы. Пожалуйста, ответьте на все вопросы.",
+                "total_questions": total_questions,
+                "answered_questions": len(answers)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        
         if correct_count == 0:
             return Response({'message': 'Вы не прошли урок.Смотрите видео урок и сдайте тест ище раз ', 
                              'total_questions': total_questions,

@@ -60,7 +60,7 @@ class ResultSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Result  
-        fields = ["id", "student", "video", "total_questions", "correct_answers", "incorrect_answers", "result_percentage"]
+        fields = ["id", "student", "video", "total_questions", "correct_answers", "incorrect_answers", "result_percentage", "created_data"]
 
 
     

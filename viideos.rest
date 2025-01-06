@@ -1,25 +1,23 @@
-GET http://127.0.0.1:8001/api/v1/videos/category-video/
+GET http://127.0.0.1:8000/api/v1/videos/category-video/
 Content-Type: application/json
-
-###
-GET http://127.0.0.1:8002/api/v1/videos/video/3/check_passed/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4
-###
 
 
 
 ###
-GET http://127.0.0.1:8002/api/v1/videos/video/4
+GET http://127.0.0.1:8000/api/v1/videos/video/3/check_passed/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDcxNTE0LCJpYXQiOjE3MzU5ODUxMTQsImp0aSI6ImI2YzU1MzUyMWRmMDQ5YjZhODA4YTM3YjA0NGU4ZTM5IiwidXNlcl9pZCI6N30.g3zSokAfDnkhwjULRJ1BP_MpdAq9rQ4NPyEulGPXUc4
+###
+
+
+
+###
+GET http://127.0.0.1:8000/api/v1/videos/video/
+Content-Type: application/json
 
 
 ### 
-GET http://127.0.0.1:8002/api/v1/videos/video/3
-
+GET http://127.0.0.1:8000/api/v1/videos/video/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MDgxNDMzLCJpYXQiOjE3MzU5OTUwMzMsImp0aSI6IjU5YmZmOTI5MzQ3ZTQxYTQ4MTM2NDRkYWYxMGI5NWNkIiwidXNlcl9pZCI6N30.znl4w8qVADrIPALEjqAnqTS7FCW-4YZKNUhUhHCb76c
 
 
 ###

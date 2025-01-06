@@ -14,7 +14,6 @@ router.register(r'result', ResultViewSet, basename='Result')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('video/<int:pk>/', VideoDetailViewSet.as_view(), name='video-detail'),
     path('video/<int:video_id>/submit_answers/', VideoViewSet.as_view({'post': 'submit_answers'}), name='submit-answers'),
 
 ]

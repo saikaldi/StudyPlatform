@@ -1,32 +1,32 @@
 # Не оплаченный пользователь
-GET http://127.0.0.1:8000/api/v1/videos/category-video/
+GET http://127.0.0.1:8001/api/v1/videos/category-video/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
 
 
-# Оплаченный пользователь
+#  Не Оплаченный пользователь
 ###
-GET http://127.0.0.1:8000/api/v1/videos/video/
+GET http://127.0.0.1:8001/api/v1/videos/video/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
-
-
-###
-GET http://127.0.0.1:8000/api/v1/videos/video/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
 
 
 ###
-GET http://127.0.0.1:8000/api/v1/videos/video/1/check_passed/
+GET http://127.0.0.1:8001/api/v1/videos/video/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
 
 
 ###
-POST http://127.0.0.1:8000/api/v1/videos/video/1/submit_answers/
+GET http://127.0.0.1:8001/api/v1/videos/video/1/check_passed/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTcxMzU0LCJpYXQiOjE3MzYwODQ5NTQsImp0aSI6IjQ3MTBjZmJhNGQ3ZTRjYWFhOGFhYTliZDllZTYyMGIzIiwidXNlcl9pZCI6M30.S4dBaZzm0i12uPSZL407zKjsH66L5yIsXI1NgF_a4xE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+
+###
+POST http://127.0.0.1:8001/api/v1/videos/video/2/submit_answers/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
 
 {
     "answers": [

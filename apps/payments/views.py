@@ -20,15 +20,14 @@ class PaymentViewSet(viewsets.ModelViewSet):
         payment = self.get_object()
         if payment.status != 'PENDING':
             return Response(
-                {"error": "Payment already processed"},
+                {"error": "Төлөм мурда эле жүргүзүлгөн"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         payment.status = 'COMPLETED'
         payment.save()
-        
         return Response({
-            "message": "Payment verified successfully",
+            "message": "Төлөм ийгиликтүү текшерилди",
             "status": payment.status
         })
 
@@ -37,14 +36,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
         payment = self.get_object()
         if payment.status != 'PENDING':
             return Response(
-                {"error": "Payment already processed"},
+                {"error": "Төлөм мурда эле иштетилген"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         payment.status = 'FAILED'
         payment.save()
-        
         return Response({
-            "message": "Payment rejected",
+            "message": "Төлөм четке кагылды",
             "status": payment.status
         })

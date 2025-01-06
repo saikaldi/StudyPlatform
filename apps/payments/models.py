@@ -18,19 +18,23 @@ class Payment(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
-    bank = models.CharField(max_length=10, choices=BANK_CHOICES)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    phone_number = models.CharField(max_length=15)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    payment_service_name = models.CharField(max_length=100)  # Название сервиса
+    service_logo = models.ImageField(upload_to='payment_service_logos/', blank=True, null=True)  # Логотип
+    qr_code = models.ImageField(upload_to='payment_qr_codes/', blank=True, null=True)  # QR-код
+    req_number = models.CharField(max_length=50, blank=True, null=True)  # Номер реквизита
+    full_name = models.CharField(max_length=150, blank=True, null=True)  # ФИО
+    amount = models.DecimalField(max_digits=10, decimal_places=2) # Сумма оплаты
+    phone_number = models.CharField(max_length=15)  # Номер телефона
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')# Статус оплаты
+    created_at = models.DateTimeField(auto_now_add=True)# Дата создания
+    updated_at = models.DateTimeField(auto_now=True)# Дата обновления
 
     class Meta:
         ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            # Create a unique slug combining timestamp and UUID
+            # Уникальный slug для платежа
             unique_string = f"{self.bank}-{uuid.uuid4().hex[:6]}"
             self.slug = slugify(unique_string)
         super().save(*args, **kwargs)

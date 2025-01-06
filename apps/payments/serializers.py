@@ -6,17 +6,20 @@ class PaymentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Payment
-        fields = ['id', 'slug', 'bank', 'amount', 'phone_number', 'status', 'created_at']
-        read_only_fields = ['status', 'created_at', 'slug']
+        fields = ['id', 'slug', 'payment_service_name','service_logo', 'qr_code','req_number',
+                   'full_name', 'amount', 'phone_number', 'status', 'created_at', 'updated_at'
+                   ]
+        
+        read_only_fields = ['status', 'created_at','updated_at', 'slug']
 
     def validate_phone_number(self, value):
         if not value.startswith('+996'):
-            raise serializers.ValidationError("Phone number must start with +996")
+            raise serializers.ValidationError("Телефон номери төмөнкү менен башталышы керек +996")
         if not len(value) == 13:
-            raise serializers.ValidationError("Invalid phone number length")
+            raise serializers.ValidationError("Телефон номери узундугу туура эмес")
         return value
 
     def validate_amount(self, value):
         if value <= 0:
-            raise serializers.ValidationError("Amount must be greater than 0")
+            raise serializers.ValidationError("Сумма 0дөн чоң болушу керек")
         return value

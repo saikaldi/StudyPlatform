@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Payment
+from .models import Payment, PaymentMethod
 from .serializers import PaymentSerializer
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -46,3 +46,8 @@ class PaymentViewSet(viewsets.ModelViewSet):
             "message": "Төлөм четке кагылды",
             "status": payment.status
         })
+
+class PaymentMethodViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = PaymentMethod.objects.all()
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]

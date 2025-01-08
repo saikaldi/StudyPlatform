@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Payment
+from .models import Payment, PaymentMethod
 
 class PaymentSerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(read_only=True)
@@ -23,3 +23,13 @@ class PaymentSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Сумма 0дөн чоң болушу керек")
         return value
+    
+
+class PaymentMethodSerializers(serializers.Serializer):
+    class Meta:
+        model = PaymentMethod
+        fields = [
+            'id', 'payment_service_name', 'service_logo', 'qr_code',
+            'req_number', 'full_name', 'whatsapp_url'
+        ]
+    

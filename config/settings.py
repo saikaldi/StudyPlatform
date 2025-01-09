@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.OrtTest",
     "apps.payments",
+    "apps.videos",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,78 @@
+GET http://127.0.0.1:8001/api/v1/videos/category-video/
+Content-Type: application/json
+
+#### П
+###
+GET http://127.0.0.1:8000/api/v1/videos/video/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
+
+###
+GET http://127.0.0.1:8000/api/v1/videos/video/2/check_passed/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1MzIyLCJpYXQiOjE3MzYwODg5MjIsImp0aSI6IjQ0YWJhNDY4YjAwMzQ0NDY5MjI1OWVmNDBmYjA4YzcyIiwidXNlcl9pZCI6M30.HVNCEYUKM6ai3ggvOGshDLViD0CZk6HuYFkP08aMbVw
+
+
+###
+### Оплаченный ползователь
+
+GET http://127.0.0.1:8001/api/v1/videos/video/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
+
+###
+POST  http://127.0.0.1:8001/api/v1/videos/video/2/submit_answers/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1NjUwLCJpYXQiOjE3MzYwODkyNTAsImp0aSI6Ijc5ODRmNmJiYzk0MTRmYmNhZTUwMjQ5ZDJiMGU3ZDQ4IiwidXNlcl9pZCI6Mn0.XSq0jiU5ZA9_6p_-QPrM-P6_z2ke_vL4SsQphSCYiDw
+
+{
+    "answers": [
+        {
+            "question_id": 8,
+            "answer": "А"
+        },
+        {
+            "question_id": 11,
+            "answer": "Б"
+        },
+        {
+            "question_id": 12,
+            "answer": "В"
+        },
+        {
+            "question_id": 15,
+            "answer": "Г"
+        },
+        {
+            "question_id": 16,
+            "answer": "В"
+        },
+        {
+            "question_id": 17,
+            "answer": "Г"
+        },
+        {
+            "question_id": 18,
+            "answer": "Б"
+        },
+        {
+            "question_id": 19,
+            "answer": "Г"
+        },
+        {
+            "question_id": 20,
+            "answer": "Г"
+        },
+        {
+            "question_id": 21,
+            "answer": "В"   
+        },
+        {
+            "question_id": 22,
+            "answer": "В"
+        }
+    ]
+}
+
+
+###

@@ -1,0 +1,83 @@
+# Не оплаченный пользователь
+GET http://127.0.0.1:8001/api/v1/videos/category-video/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+
+#  Не Оплаченный пользователь
+###
+GET http://127.0.0.1:8001/api/v1/videos/video/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+
+###
+GET http://127.0.0.1:8001/api/v1/videos/video/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+
+###
+GET http://127.0.0.1:8001/api/v1/videos/video/1/check_passed/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+
+###
+POST http://127.0.0.1:8001/api/v1/videos/video/2/submit_answers/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MjU3ODE1LCJpYXQiOjE3MzYxNzE0MTUsImp0aSI6Ijk3NGNiZTViZTZlNzQ2Mjg4YmFmNmJhNzc5ZDRjZjE2IiwidXNlcl9pZCI6M30.6U-g3IuBuH4B6u_HrRGdYucSAYe4YgEPWiYbnnbz7nI
+
+{
+    "answers": [
+        {
+            "question_id": 1,
+            "answer": "А"
+        },
+        {
+            "question_id": 2,
+            "answer": "Б"
+        },
+        {
+            "question_id": 3,
+            "answer": "В"
+        },
+        {
+            "question_id": 4,
+            "answer": "Г"
+        },
+        {
+            "question_id": 5,
+            "answer": "В"
+        },
+        {
+            "question_id": 6,
+            "answer": "Г"
+        },
+        {
+            "question_id": 7,
+            "answer": "Б"
+        },
+        {
+            "question_id": 9,
+            "answer": "Г"
+        },
+        {
+            "question_id": 10,
+            "answer": "Г"
+        },
+        {
+            "question_id": 13,
+            "answer": "Б"   
+        },
+        {
+            "question_id": 14,
+            "answer": "В"   
+        }
+    ]
+}
+
+###
+GET  http://127.0.0.1:8000/api/v1/videos/result/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTc1MzIyLCJpYXQiOjE3MzYwODg5MjIsImp0aSI6IjQ0YWJhNDY4YjAwMzQ0NDY5MjI1OWVmNDBmYjA4YzcyIiwidXNlcl9pZCI6M30.HVNCEYUKM6ai3ggvOGshDLViD0CZk6HuYFkP08aMbVw

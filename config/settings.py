@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.core",
     "apps.OrtTest",
+    "apps.payments",
 ]
 
 MIDDLEWARE = [

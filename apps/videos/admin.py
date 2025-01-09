@@ -1,42 +1,31 @@
 from django.contrib import admin
-
 from .models import CategoryVideo, Video, Test, UserAnswer, Result
 
-# Register your models here.
-
+@admin.register(CategoryVideo)
 class CategoryVideoAdmin(admin.ModelAdmin):
-    """Администратор для модели CategoryVideo"""
-    list_display = ("name", "parent", "slug")
-    prepopulated_fields = {"slug": ("name",)}
-    
+    list_display = ('name', 'parent', 'slug')
+    search_fields = ['name', 'slug']
 
+@admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    """Администратор для модели Video"""
-    list_display = ("subject", "category", "get_video_type")
-    prepopulated_fields = {"slug": ("subject",)}
-    
-    def get_video_type(self, obj):
-        return obj.get_video_type()
-    
+    list_display = ('subject', 'category', 'is_paid', 'slug')
+    list_filter = ('category', 'is_paid')
+    search_fields = ['subject', 'description', 'slug']
 
+@admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
-    """Администратор для модели Test"""
-    list_display = ("text", "video", "is_paid", "is_correct")
-    
-    
-class UserAnswerAdmin(admin.ModelAdmin):    
-    list_display = ('student', 'question', 'answer' )
-    
-    
-class ResultAdmin(admin.ModelAdmin):
-    """Администратор для модели Result"""
-    list_display = ("student", "video", "correct_answers",  "incorrect_answers", "result_percentage")
-    prepopulated_fields = {"slug": ("student", )}
-    
-    
+    list_display = ('text', 'video', 'is_paid')
+    list_filter = ('video', 'is_paid')
+    search_fields = ['text', 'video__subject']
 
-admin.site.register(CategoryVideo, CategoryVideoAdmin)
-admin.site.register(Video, VideoAdmin)
-admin.site.register(UserAnswer, UserAnswerAdmin)
-admin.site.register(Test, TestAdmin)
-admin.site.register(Result, ResultAdmin)
+@admin.register(UserAnswer)
+class UserAnswerAdmin(admin.ModelAdmin):
+    list_display = ('student', 'question', 'answer', 'is_correct', 'created_data')
+    list_filter = ('student', 'created_data')
+    search_fields = ['student__username', 'question__text']
+
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    list_display = ('student', 'video', 'result_percentage', 'passed', 'created_data')
+    list_filter = ('student', 'video', 'passed', 'created_data')
+    search_fields = ['student__username', 'video__subject']

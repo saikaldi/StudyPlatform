@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from .models import Graduate, AbountTeacher, Feedback
+from .models import Graduate, AbountTeacher, Feedback, TeacherType
+
+class TeacherTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = TeacherType        
+        fields = ['id', 'name', 'parent', 'created_data']
 
 class GraduateSerializer(serializers.ModelSerializer):
     

@@ -1,8 +1,9 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import GraduateView, AbountTeacherView, FeedbackView
+from .views import GraduateView, AbountTeacherView, FeedbackView, TeacherTypeView
 
 router = routers.DefaultRouter()
+router.register(r'teacher-type', TeacherTypeView, basename='teacher-type')
 router.register(r'graduates', GraduateView, basename='graduates')
 router.register(r'about-teacher', AbountTeacherView, basename='about-teacher')
 router.register(r'feedback', FeedbackView)

@@ -47,7 +47,7 @@ venv/*
 Thumbs.db
 
 # Nginx/Server configuration files
-*.conf
+
 *.log
 
 # Coverage reports

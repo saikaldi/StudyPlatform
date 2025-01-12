@@ -66,6 +66,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Add environment variables
+        shell: bash
         run: |
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
           echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV

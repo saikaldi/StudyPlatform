@@ -1,0 +1,98 @@
+name: Django CI/CD
+
+on:
+  push:
+    branches:
+      - develop-finish
+  pull_request:
+    branches:
+      - develop-finish
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+     
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false  
+          tags: my-django-app:latest
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: ort-user
+          POSTGRES_PASSWORD: ort2025
+          POSTGRES_DB: ORT_DB
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U ort-user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Add environment variables
+        run: |
+          echo "DB_NAME=ORT_DB" >> $GITHUB_ENV
+          echo "DB_USER=ort-user" >> $GITHUB_ENV
+          echo "DB_PASSWORD=ort2025" >> $GITHUB_ENV
+          echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=True" >> $GITHUB_ENV
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: postgres://ort-user:ort2025@127.0.0.1:5432/ORT_DB
+        run: python manage.py migrate
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://ort-user:ort2025@127.0.0.1:5432/ORT_DB
+        run: python manage.py test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        run: |
+          echo "Add your deployment script here, e.g., using rsync, SSH, or cloud CLI"

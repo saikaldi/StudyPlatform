@@ -40,13 +40,13 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: ort-user
-          POSTGRES_PASSWORD: ort2025
-          POSTGRES_DB: ORT_DB
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ort-user"
+          --health-cmd="pg_isready -U ${{ secrets.DB_USER }}"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -67,32 +67,47 @@ jobs:
 
       - name: Add environment variables
         run: |
-          echo "DB_NAME=ORT_DB" >> $GITHUB_ENV
-          echo "DB_USER=ort-user" >> $GITHUB_ENV
-          echo "DB_PASSWORD=ort2025" >> $GITHUB_ENV
-          echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
-          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DEBUG=True" >> $GITHUB_ENV
+          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
 
       - name: Run migrations
         env:
-          DATABASE_URL: postgres://ort-user:ort2025@127.0.0.1:5432/ORT_DB
+          DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}
         run: python manage.py migrate
 
       - name: Run tests
         env:
-          DATABASE_URL: postgres://ort-user:ort2025@127.0.0.1:5432/ORT_DB
+          DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}
         run: python manage.py test
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: test
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  #   steps:
+    
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Deploy to Server
-        run: |
-          echo "Add your deployment script here, e.g., using rsync, SSH, or cloud CLI"
+
+  #     - name: Deploy to Server
+  #       env:
+  #         DB_NAME: ${{ secrets.DB_NAME }}
+  #         DB_USER: ${{ secrets.DB_USER }}
+  #         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  #         DB_HOST: ${{ secrets.DB_HOST }}
+  #         DB_PORT: ${{ secrets.DB_PORT }}
+  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  #         DEBUG: ${{ secrets.DEBUG }}
+  #       run: |
+  #         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+  #         cd /path/to/project
+  #         git pull origin develop-finish
+  #         docker compose down
+  #         docker compose up -d --build
+  #         EOF

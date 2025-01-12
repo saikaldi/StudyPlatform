@@ -1,121 +1,132 @@
-name: Django CI/CD
-
+name: CI Pipeline for Develop
 on:
   push:
     branches:
-      - develop-finish
+      - develop-finish 
   pull_request:
     branches:
-      - develop-finish
-
+      - develop-finish  
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-     
-      - name: Log in to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      
-      - name: Build Docker Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false  
-          tags: my-django-app:latest
-
   test:
     runs-on: ubuntu-latest
-    needs: build
-
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: ${{ secrets.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U ort-user"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-    
 
     steps:
-      - name: Checkout code
+      
+      - name: Checkout Code
         uses: actions/checkout@v3
 
+    
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
-      - name: Install dependencies
+     
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Add environment variables
-        shell: bash
+    
+      - name: Set Environment Variables
         run: |
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
           echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
           echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+          printf "SECRET_KEY=%s\n" "${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
-      - name: Test database connection
+   
+      - name: Run Tests
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings
         run: |
-          psql -h postgres -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }} -c "\dt"
-        env:
-          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+          python manage.py test
 
-      - name: Run migrations
-        env:
-          DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@postgres:5432/${{ secrets.DB_NAME }}
-        run: python manage.py migrate
+  build:
+    runs-on: ubuntu-latest
+    needs: test  
+  
+    steps:
+  
+      - name: Checkout Code
+        uses: actions/checkout@v3
+  
+   
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+  
 
-      - name: Run tests
-        env:
-          DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@postgres:5432/${{ secrets.DB_NAME }}
-        run: python manage.py test
-
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  
+ 
+      - name: Build Docker Image
+        run: |
+          docker build \
+            --build-arg DB_NAME="${{ secrets.DB_NAME }}" \
+            --build-arg DB_USER="${{ secrets.DB_USER }}" \
+            --build-arg DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --build-arg DB_HOST="${{ secrets.DB_HOST }}" \
+            --build-arg DB_PORT="${{ secrets.DB_PORT }}" \
+            --build-arg SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            -t saikal123/ort:develop-finish .
+  
+  
+      - name: Push Docker Image
+        run: |
+          docker push saikal123/ort:develop-finish
   # deploy:
   #   runs-on: ubuntu-latest
-  #   needs: test
+  #   needs: [test, build]  
 
   #   steps:
-    
-  #     - name: Checkout code
+  #     # Step 1: Checkout the code
+  #     - name: Checkout Code
   #       uses: actions/checkout@v3
 
-
-  #     - name: Deploy to Server
+  #     # Step 2: Set up SSH private key
+  #     - name: Set up SSH private key
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Add the SSH private key
+  #         chmod 600 ~/.ssh/id_rsa  # Set secure permissions
+  #         ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts  # Add the server to known hosts
+  #         sudo apt-get install sshpass  # Install sshpass to handle password authentication
+  #         echo "$SSH_PASSWORD" | sshpass ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@$SERVER_IP 'exit'  # Use password to authenticate
   #       env:
+  #         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         SERVER_IP: ${{ secrets.SERVER_IP }}
+  #         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          
+  #     # Step 3: Grant execute permissions to the deploy script
+  #     - name: Grant execute permissions to deploy.sh
+  #       run: chmod +x deploy.sh
+
+  #     # Step 4: Deploy Docker container using deploy.sh script
+  #     - name: Deploy Docker container
+  #       run: |
+  #         ./deploy.sh
+  #       env:
+  #         SERVER_USER: ${{ secrets.SERVER_USER }}
+  #         SERVER_IP: ${{ secrets.SERVER_IP }}
+  #         DOCKER_IMAGE: saikal123/optics:develop  # Replace with your Docker image name
   #         DB_NAME: ${{ secrets.DB_NAME }}
   #         DB_USER: ${{ secrets.DB_USER }}
   #         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   #         DB_HOST: ${{ secrets.DB_HOST }}
   #         DB_PORT: ${{ secrets.DB_PORT }}
   #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         DEBUG: ${{ secrets.DEBUG }}
-  #       run: |
-  #         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-  #         cd /path/to/project
-  #         git pull origin develop-finish
-  #         docker compose down
-  #         docker compose up -d --build
-  #         EOF
+  #         SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+
+          
+
+
+
+
+
+

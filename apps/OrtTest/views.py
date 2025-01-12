@@ -101,7 +101,7 @@ class AdditionalInstructionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-@extend_schema(tags=['User-Answer'])
+@extend_schema(tags=['User Answer for Test'])
 class UserAnswerViewSet(viewsets.ModelViewSet):
     queryset = UserAnswer.objects.all()
     serializer_class = UserAnswerSerializer

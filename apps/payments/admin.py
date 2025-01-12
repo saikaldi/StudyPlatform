@@ -1,10 +1,16 @@
 from django.contrib import admin
-from .models import PaymentService, Payment
+from django.utils.html import format_html
+from django.urls import reverse
 from django.utils.text import slugify
+from django.utils import timezone
+from django.db.models import Sum
+from .models import PaymentService, Payment
+from django.db.models import Sum
 
 
+@admin.register(PaymentService)
 class PaymentServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'payment_service_name', 'prop_number', 'full_name')
+    list_display = ('id', 'name_with_logo', 'prop_number', 'full_name', 'whatsapp_link')
     search_fields = ('payment_service_name', 'prop_number', 'full_name')
     list_filter = ('payment_service_name',)
     fieldsets = (
@@ -16,17 +22,38 @@ class PaymentServiceAdmin(admin.ModelAdmin):
         }),
     )
 
+    def name_with_logo(self, obj):
+        if obj.service_logo:
+            return format_html('<img style="max-height: 30px; max-width: 30px; margin-right: 5px;" src="{}">{}', obj.service_logo.url, obj.payment_service_name)
+        return obj.payment_service_name
+    
+    name_with_logo.short_description = 'Имя сервиса с логотипом'
+
+    def whatsapp_link(self, obj):
+        if obj.whatsapp_url:
+            return format_html('<a href="{}" target="_blank">WhatsApp</a>', obj.whatsapp_url)
+        return '-'
+    
+    whatsapp_link.short_description = 'WhatsApp'
+    def total_payments(self, obj):
+        total = Payment.objects.filter(bank=obj).aggregate(total=Sum('amount'))['total']
+        return f"{total:.2f} KGS" if total else '0 KGS'
+    total_payments.short_description = 'Общая сумма платежей'
+    list_display += ('total_payments',)
+
+@admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'bank', 'amount', 'phone_number', 'status', 'created_at', 'updated_at')
-    list_filter = ('status', 'bank', 'created_at', 'updated_at')
-    search_fields = ('user__username', 'phone_number', 'slug')
-    readonly_fields = ('slug', 'created_at', 'updated_at')
+    list_display = ('id', 'user__email', 'bank__payment_service_name', 'amount', 'phone_number', 'status', 'last_update_date', 'created_date')
+    list_filter = ('status', 'last_update_date', 'created_date')
+    search_fields = ('user__email', 'phone_number', 'slug')
+    readonly_fields = ('slug', 'last_update_date', 'created_date')
+    date_hierarchy = 'created_date'
     fieldsets = (
         (None, {
             'fields': ('user', 'bank', 'amount', 'phone_number', 'status')
         }),
         ('Мета', {
-            'fields': ('slug', 'created_at', 'updated_at'),
+            'fields': ('slug', 'last_update_date', 'created_date'),
         }),
     )
 
@@ -38,5 +65,18 @@ class PaymentAdmin(admin.ModelAdmin):
             obj.slug = slugify(unique_string)
             obj.save()
 
-admin.site.register(PaymentService, PaymentServiceAdmin)
-admin.site.register(Payment, PaymentAdmin)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and not request.user.is_superuser and obj.user != request.user:
+            return False
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        if obj and not request.user.is_superuser and obj.user != request.user:
+            return False
+        return True

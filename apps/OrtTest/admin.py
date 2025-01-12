@@ -1,14 +1,6 @@
 from django.contrib import admin
-from .models import (
-    TestCategory, 
-    Test, 
-    TestContent, 
-    TestFullDescription, 
-    TestInstruction, 
-    AdditionalInstruction, 
-    UserAnswer, 
-    UserStatistic
-)
+from .models import TestCategory, Test, TestContent, TestFullDescription, TestInstruction, AdditionalInstruction, UserAnswer, UserStatistic
+
 
 @admin.register(TestCategory)
 class TestCategoryAdmin(admin.ModelAdmin):

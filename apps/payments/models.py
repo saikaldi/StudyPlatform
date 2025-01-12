@@ -11,9 +11,16 @@ class PaymentService(models.Model):
     prop_number = models.CharField(max_length=30, blank=True, null=True, verbose_name='Номер реквезита')  # Номер реквизита
     full_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='Имя Владельца карты')
     whatsapp_url = models.TextField(blank=True, null=True, verbose_name='Ссылка на WhatsApp')
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
         return self.payment_service_name
+
+    class Meta:
+        verbose_name = "Сервис для оплаты"
+        verbose_name_plural = "Сервисы для оплаты"
+        ordering = ['-created_date']
 
 class Payment(models.Model):
     STATUS_CHOICES = [
@@ -27,11 +34,13 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма оплаты') # Сумма оплаты
     phone_number = models.CharField(max_length=15, verbose_name='Номер телефона')  # Номер телефона
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING', verbose_name='Статус оплаты') # Статус оплаты
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания') # Дата создания
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления') # Дата обновления
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     class Meta:
-        ordering = ['-created_at']
+        verbose_name = "Оплата"
+        verbose_name_plural = "Оплаты"
+        ordering = ['-created_date']
 
     def save(self, *args, **kwargs):
         if not self.slug:

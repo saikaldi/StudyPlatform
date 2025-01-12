@@ -4,23 +4,55 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.mail import send_mail
 from django.conf import settings
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse, inline_serializer
 from .models import Payment, PaymentService
 from .serializers import PaymentSerializer, PaymentServiceSerializer
+from rest_framework import serializers
 import logging
 
 logger = logging.getLogger(__name__)
 
 
+@extend_schema(tags=['Payment Services'])
 class PaymentServiceViewSet(viewsets.ModelViewSet):
     queryset = PaymentService.objects.all()
     serializer_class = PaymentServiceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save()
+    @extend_schema(
+        summary="Список всех платежных сервисов",
+        description="Получение списка всех доступных платежных сервисов",
+        responses={
+            200: OpenApiResponse(
+                description="Успешный ответ",
+                response=PaymentServiceSerializer(many=True)
+            )
+        }
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+    @extend_schema(
+        summary="Создание нового платежного сервиса",
+        description="Создание нового платежного сервиса в системе",
+        request=PaymentServiceSerializer,
+        responses={
+            201: OpenApiResponse(
+                description="Создан новый платежный сервис",
+                response=PaymentServiceSerializer
+            ),
+            400: OpenApiResponse(
+                description="Ошибка валидации данных",
+                examples=[OpenApiExample("Ошибка валидации", value={"payment_service_name": ["Это поле обязательно"]})]
+            )
+        }
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+@extend_schema(tags=['Payments'])
 class PaymentViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.all().order_by('-created_at')
+    queryset = Payment.objects.all().order_by('-created_date')
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -34,7 +66,61 @@ class PaymentViewSet(viewsets.ModelViewSet):
             return self.queryset
         return self.queryset.filter(user=user)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    @extend_schema(
+        summary="Список всех платежей",
+        description="Получение списка платежей. Для администраторов доступны все платежи, остальным - только свои",
+        responses={
+            200: OpenApiResponse(
+                description="Список платежей",
+                response=PaymentSerializer(many=True)
+            )
+        }
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Создание нового платежа",
+        description="Создание нового платежа в системе",
+        request=PaymentSerializer,
+        responses={
+            201: OpenApiResponse(
+                description="Платеж создан",
+                response=PaymentSerializer
+            ),
+            400: OpenApiResponse(
+                description="Ошибка валидации данных",
+                examples=[
+                    OpenApiExample("Ошибка номера телефона", value={"phone_number": ["Телефонный номер должен начинаться с +996"]}),
+                    OpenApiExample("Ошибка суммы", value={"amount": ["Сумма должна быть больше 0"]})
+                ]
+            )
+        }
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Обновление статуса платежа",
+        description="Обновление статуса платежа. Доступно только для администраторов",
+        request=inline_serializer(
+            "UpdateStatusSerializer",
+            fields={
+                "status": serializers.ChoiceField(choices=Payment.STATUS_CHOICES),
+            },
+        ),
+        responses={
+            200: OpenApiResponse(
+                description="Статус успешно обновлен",
+                examples=[OpenApiExample("Успешное обновление", value={"status": "Статус успешно обновлен с PENDING на COMPLETED"})]
+            ),
+            400: OpenApiResponse(
+                description="Недопустимый статус или ошибка",
+                examples=[OpenApiExample("Недопустимый статус", value={"error": "Недопустимый статус"})]
+            )
+        }
+    )
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser], url_path='update_status')
     def update_status(self, request, pk=None):
         payment = self.get_object()
         new_status = request.data.get('status')

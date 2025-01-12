@@ -7,8 +7,8 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ['id', 'slug', 'bank', 'amount', 'phone_number', 'status', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at', 'slug']
+        fields = ['id', 'slug', 'bank', 'amount', 'phone_number', 'status', 'last_update_date', 'created_date']
+        read_only_fields = ['last_update_date', 'created_date', 'slug']
 
     def validate_phone_number(self, value):
         if not value.startswith('+996'):
@@ -26,3 +26,4 @@ class PaymentServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentService
         fields = ['id', 'payment_service_name', 'service_logo', 'qr_code', 'prop_number', 'full_name', 'whatsapp_url']
+        read_only_fields = ['last_update_date', 'created_date']

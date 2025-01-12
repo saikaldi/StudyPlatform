@@ -29,7 +29,7 @@ class TestSerializer(serializers.ModelSerializer):
 class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnswer   
-        fields = ["id", "student", "answer", "question"]
+        fields = ["id", "answer", "question"]
         read_only_fields = ['student']
 
     def create(self, validated_data):

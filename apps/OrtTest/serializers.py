@@ -21,7 +21,8 @@ class TestContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TestContent
-        fields = ['id', 'test', 'test_id', 'question', 'var_A', 'var_B', 'var_C', 'var_D', 'true_answer', 'timer']
+        fields = ['id', 'test', 'test_id', 'question', 'var_A_image', 'var_B_image', 'var_C_image', 'var_D_image', 
+                  'var_A_text', 'var_B_text', 'var_C_text', 'var_D_text', 'true_answer', 'timer']
 
 class TestFullDescriptionSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)

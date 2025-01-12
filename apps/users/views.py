@@ -17,7 +17,6 @@ from django.db import transaction
 User = get_user_model()
 
 
-# ================== Регистрация пользователя ==================
 @extend_schema(
     summary="Регистрация пользователя",
     description="Создание нового пользователя с отправкой кода подтверждения на email",
@@ -43,17 +42,21 @@ class RegisterView(APIView):
             email = serializer.validated_data['email']
             password = serializer.validated_data['password']
             user_status = serializer.validated_data['user_status']
+            first_name = serializer.validated_data['first_name']
+            last_name = serializer.validated_data['last_name']
 
             with transaction.atomic():
                 user = User.objects.create_user(
                     email=email,
                     password=password,
                     is_active=False,
-                    user_status=user_status
+                    user_status=user_status,
+                    first_name=first_name,
+                    last_name=last_name
                 )
 
                 if user_status != 'Студент':
-                    user.is_approved_by_admin = False
+                    user.is_status_approved = False
                     user.save()
 
                     send_mail(
@@ -340,6 +343,7 @@ class AdminConfirmUserView(APIView):
         if user.user_status == 'Админ':
             user.is_superuser = True
             user.is_staff = True
+            user.user_status = "Админ"
         user.save()
 
         self.send_confirmation_email(user)

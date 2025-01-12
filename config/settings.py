@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "apps.users",
-    "apps.core",
+    "apps.AboutStaffStudents",
     "apps.OrtTest",
     "apps.payments",
     "apps.videos",
@@ -177,7 +177,7 @@ EMAIL_HOST_PASSWORD = "zelt flio uuax zgnk"
 ADMIN_EMAIL = "aktanarynov566@gmail.com"
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "API для ОРТ",
-    "DESCRIPTION": "API для ОРТ",
+    "TITLE": "API для ЖРТ",
+    "DESCRIPTION": "API для ЖРТ",
     "VERSION": "1.0.0",
 }

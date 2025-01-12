@@ -73,6 +73,7 @@ class MockAssessmentTestAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name', 'phone_number')
         }),
         ('Даты', {
-            'fields': ('created_date', 'last_update_date')
+            'fields': ('created_date',)
         }),
     )
+    readonly_fields = ('last_update_date',)

@@ -22,6 +22,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -180,4 +181,19 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "API для ЖРТ",
     "DESCRIPTION": "API для ЖРТ",
     "VERSION": "1.0.0",
+}
+JAZZMIN_SETTINGS = {
+    "site_title": "My Admin",
+    "site_header": "My Admin Portal",
+    "welcome_sign": "Welcome to My Admin Portal",
+    "site_logo": "static/images/logo.png",  # Add your logo here
+    "login_logo": "static/images/login_logo.png",  # Add login logo
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": ["auth"],  # Hide specific apps
+    "icons": {
+        "auth": "fas fa-users",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users-cog",
+    },
 }

@@ -69,35 +69,35 @@ jobs:
       - name: Push Docker Image
         run: docker push saikal123/ort:develop-finish
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy Application
-        run: |
-          sshpass -p "$REMOTE_PASSWORD" ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << 'EOF'
-            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-            docker pull saikal123/ort:develop-finish
-            docker stop ort-app || true
-            docker rm ort-app || true
-            docker run -d --name ort-app \
-              -e DB_NAME="$DB_NAME" \
-              -e DB_USER="$DB_USER" \
-              -e DB_PASSWORD="$DB_PASSWORD" \
-              -e DB_HOST="$DB_HOST" \
-              -e DB_PORT="$DB_PORT" \
-              -e SECRET_KEY="$SECRET_KEY" \
-              -p 8002:8000 saikal123/ort:develop-finish
-          EOF
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Deploy Application
+  #       run: |
+  #         sshpass -p "$REMOTE_PASSWORD" ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << 'EOF'
+  #           docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  #           docker pull saikal123/ort:develop-finish
+  #           docker stop ort-app || true
+  #           docker rm ort-app || true
+  #           docker run -d --name ort-app \
+  #             -e DB_NAME="$DB_NAME" \
+  #             -e DB_USER="$DB_USER" \
+  #             -e DB_PASSWORD="$DB_PASSWORD" \
+  #             -e DB_HOST="$DB_HOST" \
+  #             -e DB_PORT="$DB_PORT" \
+  #             -e SECRET_KEY="$SECRET_KEY" \
+  #             -p 8002:8000 saikal123/ort:develop-finish
+  #         EOF
+  #       env:
+  #         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  #         REMOTE_USER: ${{ secrets.REMOTE_USER }}
+  #         REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
+  #         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+  #         DB_NAME: ${{ secrets.DB_NAME }}
+  #         DB_USER: ${{ secrets.DB_USER }}
+  #         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  #         DB_HOST: ${{ secrets.DB_HOST }}
+  #         DB_PORT: ${{ secrets.DB_PORT }}
+  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}

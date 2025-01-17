@@ -39,7 +39,8 @@ class Test(models.Model):
 
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
-    question = models.TextField(verbose_name="Вопрос")
+    question_text = models.TextField(verbose_name="Вопрос в текстовом формате")
+    question_image = models.ImageField(verbose_name="Вопрос в файловом формате")
     var_A_image = models.ImageField(
         upload_to=upload_to_test,
         verbose_name="Вариант ответа 'A' (В файловом варианте)",
@@ -81,10 +82,7 @@ class TestContent(models.Model):
         choices=[("a", "A"), ("b", "B"), ("c", "C"), ("d", "D")],
         verbose_name="Правильный ответ",
     )
-    timer = models.PositiveIntegerField(verbose_name="Таймер (в секундах)")
-    last_update_date = models.DateTimeField(
-        auto_now=True, verbose_name="Последнее обновление"
-    )
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def clean(self):
@@ -117,6 +115,14 @@ class TestContent(models.Model):
                 {
                     "var_D_image": "Выберите только один вариант для D: либо текст, либо файл",
                     "var_D_text": "Выберите только один вариант для D: либо текст, либо файл",
+                }
+            )
+
+        if self.question_text and self.question_image:
+            raise ValidationError(
+                {
+                    "question_image": "Выберите только один вариант для вопроса: либо текст, либо файл",
+                    "question_text": "Выберите только один вариант для вопроса: либо текст, либо файл",
                 }
             )
 

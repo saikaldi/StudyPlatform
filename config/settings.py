@@ -17,7 +17,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
-
+#DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
@@ -31,16 +31,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "corsheaders",
     "apps.users",
     "apps.AboutStaffStudents",
     "apps.OrtTest",
     "apps.payments",
-    "apps.videos",
+    "apps.VideoCourse",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -119,9 +121,13 @@ USE_TZ = True
 
 
 STATIC_URL = "/app/static/"
-STATIC_ROOT = "staticfiles"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Убедитесь, что это соответствует вашему монтированию в Docker
+# STATICFILES_DIRS = [
+#     # Удалите или закомментируйте, если не используете дополнительные директории для статических файлов
+#     # BASE_DIR / "static",
+# ]
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Это директория, куда будут собираться все статики
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 MEDIA_URL = "/app/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -137,6 +143,21 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+BASE_URL = 'http://127.0.0.1:8000/'
+
+# CORS Settings
+CORS_ALLOWED_ORIGINS = [
+    "https://api.recordonline.kg",
+    "https://recordonline.kg",
+]
+
+# CORS Settings
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://api.recordonline.kg']
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+
 AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
@@ -150,22 +171,14 @@ SIMPLE_JWT = {
     "VERIFYING_KEY": None,  # Публичный ключ (если используется асимметричное шифрование)
     "AUDIENCE": None,  # Аудитория токена
     "ISSUER": None,  # Издатель токена
-    "AUTH_HEADER_TYPES": (
-        "Bearer",
-    ),  # Префикс авторизации в заголовке (например, "Bearer <token>")
+    "AUTH_HEADER_TYPES": ("Bearer",),  # Префикс авторизации в заголовке (например, "Bearer <token>")
     "USER_ID_FIELD": "id",  # Поле для идентификации пользователя
     "USER_ID_CLAIM": "user_id",  # Поле внутри токена, в котором хранится user_id
-    "AUTH_TOKEN_CLASSES": (
-        "rest_framework_simplejwt.tokens.AccessToken",
-    ),  # Классы токенов
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),  # Классы токенов
     "TOKEN_TYPE_CLAIM": "token_type",  # Поле в токене, указывающее его тип
     "JTI_CLAIM": "jti",  # Уникальный идентификатор токена
-    "SLIDING_TOKEN_LIFETIME": timedelta(
-        minutes=5
-    ),  # Время жизни скользящих токенов (если используется SlidingToken)
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(
-        days=1
-    ),  # Время жизни refresh для SlidingToken
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),  # Время жизни скользящих токенов (если используется SlidingToken)
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),  # Время жизни refresh для SlidingToken
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -186,8 +199,8 @@ JAZZMIN_SETTINGS = {
     "site_title": "My Admin",
     "site_header": "My Admin Portal",
     "welcome_sign": "Welcome to My Admin Portal",
-    "site_logo": "static/images/logo.png",  # Add your logo here
-    "login_logo": "static/images/login_logo.png",  # Add login logo
+    "site_logo": "staticfiles/images/logo.png",  # Add your logo here
+    "login_logo": "staticfiles/images/login_logo.png",  # Add login logo
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": ["auth"],  # Hide specific apps

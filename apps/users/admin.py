@@ -129,9 +129,9 @@ class MockAssessmentTestAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("first_name", "last_name", "phone_number")} ),
-        (_("Даты"), {"fields": ("created_date", "last_update_date")}),  # Here you can add created_date if editable
+        (_("Даты"), {"fields": ("created_date", "last_update_date")}),
     )
-    readonly_fields = ("last_update_date", "created_date")  # Make sure created_date is read-only if needed
+    readonly_fields = ("last_update_date", "created_date")
 
     def formatted_last_update_date(self, obj):
         return (

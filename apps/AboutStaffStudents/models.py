@@ -34,7 +34,7 @@ class Graduate(models.Model):
     image = models.ImageField("Фотография", upload_to="graduates/images")
     score = models.IntegerField("Баллы", validators=[MinValueValidator(10), MaxValueValidator(245)])
     review = models.TextField("Отзыв")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="slug")
     last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -62,7 +62,7 @@ class Teacher(models.Model):
     last_name = models.CharField("Фамилия", max_length=55)
     subject = models.ForeignKey(Subject, verbose_name="Предмет", on_delete=models.CASCADE)
     image = models.ImageField("Фотография", upload_to="teachers/images")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="slug")
     last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -91,7 +91,7 @@ class Feedback(models.Model):
     email = models.EmailField("Email", max_length=100)
     phone_number = models.CharField("Номер телефона", max_length=55, validators=[RegexValidator(regex=r'^(0\d{9}|\+996\d{9})$', message='Введите правильный номер телефона')])
     text = models.TextField("Текст отзыва")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="slug")
     last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 

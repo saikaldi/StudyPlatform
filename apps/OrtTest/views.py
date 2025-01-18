@@ -1,8 +1,8 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import TestCategory, Test, TestContent, TestFullDescription, TestInstruction, AdditionalInstruction, UserAnswer, UserStatistic
-from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, TestInstructionSerializer, AdditionalInstructionSerializer, UserAnswerSerializer, UserStatisticSerializer
+from .models import TestCategory, Test, TestContent, TestFullDescription, TestInstruction, UserAnswer, UserStatistic #AdditionalInstruction
+from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, TestInstructionSerializer, UserAnswerSerializer, UserStatisticSerializer #AdditionalInstructionSerializer
 
 
 @extend_schema(
@@ -85,20 +85,20 @@ class TestInstructionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-@extend_schema(
-    summary="Создание и получение дополнительных инструкций для тестов",
-    description="Этот эндпоинт позволяет создавать и получать дополнительные инструкции для тестов",
-    request=AdditionalInstructionSerializer,
-    responses={
-        200: AdditionalInstructionSerializer,
-        201: OpenApiResponse(description="Дополнительная инструкция успешно создана"),
-    }
-)
-@extend_schema(tags=['Additional-Instructions'])
-class AdditionalInstructionViewSet(viewsets.ModelViewSet):
-    queryset = AdditionalInstruction.objects.all()
-    serializer_class = AdditionalInstructionSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# @extend_schema(
+#     summary="Создание и получение дополнительных инструкций для тестов",
+#     description="Этот эндпоинт позволяет создавать и получать дополнительные инструкции для тестов",
+#     request=AdditionalInstructionSerializer,
+#     responses={
+#         200: AdditionalInstructionSerializer,
+#         201: OpenApiResponse(description="Дополнительная инструкция успешно создана"),
+#     }
+# )
+# @extend_schema(tags=['Additional-Instructions'])
+# class AdditionalInstructionViewSet(viewsets.ModelViewSet):
+#     queryset = AdditionalInstruction.objects.all()
+#     serializer_class = AdditionalInstructionSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
 
 @extend_schema(tags=['User Answer for Test'])

@@ -18,7 +18,7 @@ class TestCategory(models.Model):
 
     class Meta:
         verbose_name = "Категория теста"
-        verbose_name_plural = "Категории тестов"
+        verbose_name_plural = "1. Категории тестов"
 
 
 class Test(models.Model):
@@ -35,12 +35,13 @@ class Test(models.Model):
 
     class Meta:
         verbose_name = "Тест"
-        verbose_name_plural = "Тесты"
+        verbose_name_plural = "2. Тесты"
 
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
-    question_text = models.TextField(verbose_name="Вопрос в текстовом формате")
-    question_image = models.ImageField(verbose_name="Вопрос в файловом формате")
+    question_text = models.TextField(verbose_name="Вопрос в текстовом формате", blank=True, null=True)
+    question_image = models.ImageField(verbose_name="Вопрос в файловом формате", blank=True, null=True)
+    additional_questions = models.TextField(verbose_name='Дополнительный текст к вопросу', blank=True, null=True)
     var_A_image = models.ImageField(
         upload_to=upload_to_test,
         verbose_name="Вариант ответа 'A' (В файловом варианте)",
@@ -131,7 +132,7 @@ class TestContent(models.Model):
 
     class Meta:
         verbose_name = "Вопрос теста"
-        verbose_name_plural = "Вопросы тестов"
+        verbose_name_plural = "5. Вопросы тестов"
 
 class TestFullDescription(models.Model):
     test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
@@ -145,7 +146,7 @@ class TestFullDescription(models.Model):
 
     class Meta:
         verbose_name = "Подробное описание теста"
-        verbose_name_plural = "Подробные описания тестов"
+        verbose_name_plural = "3. Подробные описания тестов"
 
 class TestInstruction(models.Model):
     test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
@@ -159,21 +160,21 @@ class TestInstruction(models.Model):
 
     class Meta:
         verbose_name = "Инструкция теста"
-        verbose_name_plural = "Инструкции тестов"
+        verbose_name_plural = "4. Инструкции тестов"
 
-class AdditionalInstruction(models.Model):
-    testing_instruction = models.ForeignKey(TestInstruction, on_delete=models.CASCADE, verbose_name="Инструкция теста")
-    additional_title = models.CharField(max_length=40, verbose_name="Название дополнительной инструкции")
-    additional_description = models.TextField(verbose_name="Описание дополнительной инструкции")
-    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
-    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+# class AdditionalInstruction(models.Model):
+#     testing_instruction = models.ForeignKey(TestInstruction, on_delete=models.CASCADE, verbose_name="Инструкция теста")
+#     additional_title = models.CharField(max_length=40, verbose_name="Название дополнительной инструкции")
+#     additional_description = models.TextField(verbose_name="Описание дополнительной инструкции")
+#     last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+#     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    def __str__(self):
-        return f"{self.testing_instruction} - {self.additional_title}"
+#     def __str__(self):
+#         return f"{self.testing_instruction} - {self.additional_title}"
 
-    class Meta:
-        verbose_name = "Дополнительная инструкция"
-        verbose_name_plural = "Дополнительные инструкции"
+#     class Meta:
+#         verbose_name = "Дополнительная инструкция"
+#         verbose_name_plural = "Дополнительные инструкции"
 
 class UserStatistic(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
@@ -188,7 +189,7 @@ class UserStatistic(models.Model):
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "Счета ответов"
+        verbose_name_plural = "7. Счета ответов"
         unique_together = ("test", "user")
 
 class UserAnswer(models.Model):
@@ -204,4 +205,4 @@ class UserAnswer(models.Model):
 
     class Meta:
         verbose_name = "Ответ пользователя"
-        verbose_name_plural = "Ответы пользователей"
+        verbose_name_plural = "6. Ответы пользователей"

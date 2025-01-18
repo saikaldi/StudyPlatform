@@ -1,8 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    TestCategory, Test, TestContent, TestFullDescription,
-    TestInstruction, AdditionalInstruction, UserAnswer, UserStatistic
-)
+from .models import TestCategory, Test, TestContent, TestFullDescription, TestInstruction, UserAnswer, UserStatistic #AdditionalInstruction
 
 
 class TestCategorySerializer(serializers.ModelSerializer):
@@ -32,7 +29,7 @@ class TestContentSerializer(serializers.ModelSerializer):
         model = TestContent
         fields = [
             'id', 'test', 'test_id', 'question_text', 'question_image', 'var_A_image', 'var_B_image', 
-            'var_C_image', 'var_D_image', 'var_A_text', 'var_B_text', 
+            'var_C_image', 'var_D_image', 'var_A_text', 'var_B_text', 'additional_questions',
             'var_C_text', 'var_D_text', 'true_answer', 'last_update_date', 'created_date'
         ]
 
@@ -63,17 +60,17 @@ class TestInstructionSerializer(serializers.ModelSerializer):
         ]
 
 
-class AdditionalInstructionSerializer(serializers.ModelSerializer):
-    testing_instruction = TestInstructionSerializer(read_only=True)
-    testing_instruction_id = serializers.PrimaryKeyRelatedField(queryset=TestInstruction.objects.all(), source='testing_instruction', write_only=True)
+# class AdditionalInstructionSerializer(serializers.ModelSerializer):
+#     testing_instruction = TestInstructionSerializer(read_only=True)
+#     testing_instruction_id = serializers.PrimaryKeyRelatedField(queryset=TestInstruction.objects.all(), source='testing_instruction', write_only=True)
 
-    class Meta:
-        model = AdditionalInstruction
-        fields = [
-            'id', 'testing_instruction', 'testing_instruction_id', 
-            'additional_title', 'additional_description', 
-            'last_update_date', 'created_date'
-        ]
+#     class Meta:
+#         model = AdditionalInstruction
+#         fields = [
+#             'id', 'testing_instruction', 'testing_instruction_id', 
+#             'additional_title', 'additional_description', 
+#             'last_update_date', 'created_date'
+#         ]
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):

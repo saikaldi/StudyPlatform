@@ -22,9 +22,13 @@ class TestContentAdmin(admin.ModelAdmin):
 
 @admin.register(UserStatistic)
 class UserStatisticAdmin(admin.ModelAdmin):
-    list_display = ('user', 'video', 'true_answer_count', 'false_answer_count', 'last_update_date', 'created_date')
+    list_display = ('user', 'video', 'true_answer_count', 'false_answer_count', 'accuracy_percentage', 'last_update_date', 'created_date')
     list_filter = ('user', 'video')
-    readonly_fields = ['last_update_date', 'created_date']
+    readonly_fields = ['last_update_date', 'created_date', 'accuracy_percentage']
+
+    def save_model(self, request, obj, form, change):
+        obj.update_accuracy()
+        super().save_model(request, obj, form, change)
 
 @admin.register(UserAnswer)
 class UserAnswerAdmin(admin.ModelAdmin):

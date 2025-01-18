@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     TestCategory, Test, TestContent, TestFullDescription,
-    TestInstruction, AdditionalInstruction, UserStatistic, UserAnswer
+    TestInstruction, UserStatistic, UserAnswer #AdditionalInstruction
 )
 
 @admin.register(TestCategory)
@@ -43,12 +43,12 @@ class TestInstructionAdmin(admin.ModelAdmin):
     ordering = ('-created_date',)
 
 
-@admin.register(AdditionalInstruction)
-class AdditionalInstructionAdmin(admin.ModelAdmin):
-    list_display = ('testing_instruction', 'additional_title', 'last_update_date', 'created_date')
-    search_fields = ('additional_title',)
-    list_filter = ('testing_instruction__test_category',)
-    ordering = ('-created_date',)
+# @admin.register(AdditionalInstruction)
+# class AdditionalInstructionAdmin(admin.ModelAdmin):
+#     list_display = ('testing_instruction', 'additional_title', 'last_update_date', 'created_date')
+#     search_fields = ('additional_title',)
+#     list_filter = ('testing_instruction__test_category',)
+#     ordering = ('-created_date',)
 
 
 @admin.register(UserStatistic)

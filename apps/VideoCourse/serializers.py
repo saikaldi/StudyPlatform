@@ -22,8 +22,8 @@ class TestContentSerializer(serializers.ModelSerializer):
 class UserStatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserStatistic
-        fields = ['user', 'video', 'true_answer_count', 'false_answer_count', 'last_update_date', 'created_date']
-        read_only_fields = ['last_update_date', 'created_date']
+        fields = ['user', 'video', 'true_answer_count', 'false_answer_count', 'accuracy_percentage', 'last_update_date', 'created_date']
+        read_only_fields = ['last_update_date', 'created_date', 'accuracy_percentage']
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:

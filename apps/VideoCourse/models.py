@@ -4,6 +4,7 @@ from django.conf import settings
 from slugify import slugify
 from django.core.exceptions import ValidationError
 
+
 def upload_to_test(instance, filename):
     if hasattr(instance, "video") and instance.video:
         return f"{instance.video.subject_name}/{filename}"
@@ -31,14 +32,14 @@ class CategoryVideo(models.Model):
 
     class Meta:
         verbose_name = "Категория видео"
-        verbose_name_plural = "Категории видео"
+        verbose_name_plural = "1 Категории видео"
 
 class Video(models.Model):
     video_category = models.ForeignKey(CategoryVideo, on_delete=models.CASCADE, related_name="videos", verbose_name="Категория видео", blank=True, null=True)
     subject_name = models.CharField(max_length=100, verbose_name='Название тема урока')
     description = models.TextField(verbose_name='Описание темы урока')
     video_url = models.TextField(verbose_name='Ссылка на видео')
-    video_order = models.PositiveIntegerField(unique=True, verbose_name='Порядковый номер')
+    video_order = models.PositiveIntegerField(verbose_name='Порядковый номер')
     is_paid = models.BooleanField(default=False, verbose_name='Является ли видео платным?')
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="slug", blank=True)
     last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
@@ -60,13 +61,14 @@ class Video(models.Model):
 
     class Meta:
         verbose_name = "Видео"
-        verbose_name_plural = "Видео"
+        verbose_name_plural = "2 Видео"
         ordering = ['video_order']
 
 class TestContent(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, verbose_name="Тест")
     question_text = models.TextField(verbose_name="Вопрос в текстовом формате")
     question_image = models.ImageField(verbose_name="Вопрос в файловом формате", blank=True, null=True)
+    additional_questions = models.TextField(verbose_name='Дополнительный текст к вопросу', blank=True, null=True)
     var_A_image = models.ImageField(upload_to=upload_to_test, verbose_name="Вариант ответа 'A' (В файловом варианте)", blank=True, null=True)
     var_B_image = models.ImageField(upload_to=upload_to_test, verbose_name="Вариант ответа 'B' (В файловом варианте)", blank=True, null=True)
     var_C_image = models.ImageField(upload_to=upload_to_test, verbose_name="Вариант ответа 'C' (В файловом варианте)", blank=True, null=True)
@@ -100,23 +102,34 @@ class TestContent(models.Model):
 
     class Meta:
         verbose_name = "Вопрос теста"
-        verbose_name_plural = "Вопросы тестов"
+        verbose_name_plural = "3 Вопросы тестов"
         ordering = ['test_order']
+        unique_together = ("video", "test_order")
+
 
 class UserStatistic(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, verbose_name="Тест")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="user_statistics_videocourse")
     true_answer_count = models.PositiveIntegerField(default=0, verbose_name="Количество правильных ответов")
     false_answer_count = models.PositiveIntegerField(default=0, verbose_name="Количество неправильных ответов")
+    accuracy_percentage = models.FloatField(default=0.0, verbose_name="Процент правильных ответов")
     last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def update_accuracy(self):
+        total_answers = self.true_answer_count + self.false_answer_count
+        if total_answers > 0:
+            self.accuracy_percentage = (self.true_answer_count / total_answers) * 100
+        else:
+            self.accuracy_percentage = 0.0
+        self.save()
+
     def __str__(self):
-        return f"{self.user.email} - {self.video.subject_name} - правильные ответы: {self.true_answer_count} - неправильные ответы: {self.false_answer_count}"
+        return f"{self.user.email} - {self.video.subject_name} - правильные ответы: {self.true_answer_count} - неправильные ответы: {self.false_answer_count} - точность: {self.accuracy_percentage}%"
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "Счета ответов"
+        verbose_name_plural = "4 Счета ответов"
         unique_together = ("video", "user")
 
 class UserAnswer(models.Model):
@@ -132,4 +145,4 @@ class UserAnswer(models.Model):
 
     class Meta:
         verbose_name = "Ответ пользователя"
-        verbose_name_plural = "Ответы пользователей"
+        verbose_name_plural = "5 Ответы пользователей"

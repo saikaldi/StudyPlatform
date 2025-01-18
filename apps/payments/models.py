@@ -29,7 +29,7 @@ class Payment(models.Model):
         ('FAILED', 'Failed'),
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, verbose_name='Пользователь')
-    slug = models.SlugField(max_length=250, unique=True, blank=True, verbose_name='Slug')
+    slug = models.SlugField(max_length=250, unique=True, blank=True, verbose_name='slug')
     bank = models.ForeignKey(PaymentService, on_delete=models.CASCADE, verbose_name='Сервис для оплаты')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма оплаты') # Сумма оплаты
     phone_number = models.CharField(max_length=15, verbose_name='Номер телефона')  # Номер телефона

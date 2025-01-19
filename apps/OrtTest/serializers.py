@@ -1,63 +1,100 @@
 from rest_framework import serializers
-from .models import TestCategory, Test, TestContent, TestFullDescription, TestInstruction, UserAnswer, UserStatistic #AdditionalInstruction
+from .models import (
+    TestCategory,
+    Test,
+    TestContent,
+    TestFullDescription,
+    UserAnswer,
+    UserStatistic,
+)  # AdditionalInstruction, TestInstruction
 
 
 class TestCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TestCategory
-        fields = ['id', 'test_category_name', 'last_update_date', 'created_date']
+        fields = ["id", "test_category_name", "last_update_date", "created_date"]
 
 
 class TestSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)
-    test_category_id = serializers.PrimaryKeyRelatedField(queryset=TestCategory.objects.all(), source='test_category', write_only=True)
+    test_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=TestCategory.objects.all(), source="test_category", write_only=True
+    )
 
     class Meta:
         model = Test
         fields = [
-            'id', 'test_category', 'test_category_id', 'title', 
-            'first_test', 'description', 'background_image', 
-            'last_update_date', 'created_date'
+            "id",
+            "test_category",
+            "test_category_id",
+            "title",
+            "first_test",
+            "description",
+            "background_image",
+            "last_update_date",
+            "created_date",
         ]
 
 
 class TestContentSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source='test', write_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="test", write_only=True
+    )
 
     class Meta:
         model = TestContent
         fields = [
-            'id', 'test', 'test_id', 'question_text', 'question_image', 'var_A_image', 'var_B_image', 
-            'var_C_image', 'var_D_image', 'var_A_text', 'var_B_text', 'additional_questions',
-            'var_C_text', 'var_D_text', 'true_answer', 'last_update_date', 'created_date'
+            "id",
+            "test",
+            "test_id",
+            "question_text",
+            "question_image",
+            "var_A_image",
+            "var_B_image",
+            "var_C_image",
+            "var_D_image",
+            "var_A_text",
+            "var_B_text",
+            "additional_questions",
+            "var_C_text",
+            "var_D_text",
+            "true_answer",
+            "last_update_date",
+            "created_date",
         ]
 
 
 class TestFullDescriptionSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)
-    test_category_id = serializers.PrimaryKeyRelatedField(queryset=TestCategory.objects.all(), source='test_category', write_only=True)
+    test_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=TestCategory.objects.all(), source="test_category", write_only=True
+    )
 
     class Meta:
         model = TestFullDescription
         fields = [
-            'id', 'test_category', 'test_category_id', 
-            'description_title', 'description', 
-            'last_update_date', 'created_date'
+            "id",
+            "test_category",
+            "test_category_id",
+            "description_title",
+            "description",
+            "last_update_date",
+            "created_date",
         ]
 
 
-class TestInstructionSerializer(serializers.ModelSerializer):
-    test_category = TestCategorySerializer(read_only=True)
-    test_category_id = serializers.PrimaryKeyRelatedField(queryset=TestCategory.objects.all(), source='test_category', write_only=True)
+# class TestInstructionSerializer(serializers.ModelSerializer):
+#     test_category = TestCategorySerializer(read_only=True)
+#     test_category_id = serializers.PrimaryKeyRelatedField(queryset=TestCategory.objects.all(), source='test_category', write_only=True)
 
-    class Meta:
-        model = TestInstruction
-        fields = [
-            'id', 'test_category', 'test_category_id', 
-            'instruction_title', 'instruction', 
-            'last_update_date', 'created_date'
-        ]
+#     class Meta:
+#         model = TestInstruction
+#         fields = [
+#             'id', 'test_category', 'test_category_id',
+#             'instruction_title', 'instruction',
+#             'last_update_date', 'created_date'
+#         ]
 
 
 # class AdditionalInstructionSerializer(serializers.ModelSerializer):
@@ -67,38 +104,51 @@ class TestInstructionSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = AdditionalInstruction
 #         fields = [
-#             'id', 'testing_instruction', 'testing_instruction_id', 
-#             'additional_title', 'additional_description', 
+#             'id', 'testing_instruction', 'testing_instruction_id',
+#             'additional_title', 'additional_description',
 #             'last_update_date', 'created_date'
 #         ]
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     test_content = TestContentSerializer(read_only=True)
-    test_content_id = serializers.PrimaryKeyRelatedField(queryset=TestContent.objects.all(), source='test_content', write_only=True)
+    test_content_id = serializers.PrimaryKeyRelatedField(
+        queryset=TestContent.objects.all(), source="test_content", write_only=True
+    )
 
     class Meta:
         model = UserAnswer
         fields = [
-            'id', 'test_content', 'test_content_id', 
-            'answer_vars', 'output_time', 
-            'last_update_date', 'created_date'
+            "id",
+            "test_content",
+            "test_content_id",
+            "answer_vars",
+            "output_time",
+            "last_update_date",
+            "created_date",
         ]
 
     def create(self, validated_data):
-        user = self.context['request'].user
-        validated_data['user'] = user
+        user = self.context["request"].user
+        validated_data["user"] = user
         return super().create(validated_data)
 
 
 class UserStatisticSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source='test', write_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="test", write_only=True
+    )
 
     class Meta:
         model = UserStatistic
         fields = [
-            'id', 'test', 'test_id', 'user', 
-            'true_answer_count', 'false_answer_count', 
-            'last_update_date', 'created_date'
+            "id",
+            "test",
+            "test_id",
+            "user",
+            "true_answer_count",
+            "false_answer_count",
+            "last_update_date",
+            "created_date",
         ]

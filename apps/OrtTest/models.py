@@ -8,6 +8,7 @@ def upload_to_test(instance, filename):
         return f"{instance.test.title}/{filename}"
     return f"unknown/{filename}"
 
+
 class TestCategory(models.Model):
     test_category_name = models.CharField(
         max_length=52, verbose_name="Название типа теста"
@@ -21,8 +22,9 @@ class TestCategory(models.Model):
         return self.test_category_name
 
     class Meta:
-        verbose_name = "Категория теста"
-        verbose_name_plural = "1. Категории тестов"
+        verbose_name = "Категория предмета"
+        verbose_name_plural = "1. Категории предметов"
+
 
 class SubjectCategory(models.Model):
     subject_category_name = models.CharField(
@@ -40,9 +42,14 @@ class SubjectCategory(models.Model):
         verbose_name = "Категория теста"
         verbose_name_plural = "2. Категории тестов"
 
+
 class Test(models.Model):
-    test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
-    subject_category = models.ForeignKey(SubjectCategory, on_delete=models.CASCADE, verbose_name='Категория предмета')
+    test_category = models.ForeignKey(
+        TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста"
+    )
+    subject_category = models.ForeignKey(
+        SubjectCategory, on_delete=models.CASCADE, verbose_name="Категория предмета"
+    )
     title = models.CharField(max_length=100, verbose_name="Название теста")
     first_test = models.BooleanField(
         default=False, verbose_name="Обозначение будет ли тест первым бесплатным тестом"
@@ -62,6 +69,7 @@ class Test(models.Model):
     class Meta:
         verbose_name = "Тест"
         verbose_name_plural = "3. Тесты"
+
 
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
@@ -183,6 +191,7 @@ class TestContent(models.Model):
         verbose_name = "Вопрос теста"
         verbose_name_plural = "6. Вопросы тестов"
 
+
 class TestFullDescription(models.Model):
     test_category = models.ForeignKey(
         TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста"
@@ -203,8 +212,111 @@ class TestFullDescription(models.Model):
         verbose_name = "Подробное описание теста"
         verbose_name_plural = "4. Подробные описания тестов"
 
+
+class OkupTushunuu(models.Model):
+    """
+    Represents a test with a name and description.
+    """
+
+    name = models.CharField(
+        max_length=255, verbose_name="Название теста", default="Default Title"
+    )
+    description = models.TextField(verbose_name="Описание теста")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Окуп тушунуу"
+        verbose_name_plural = "5. Окуп тушунуу"
+
+
+class OkupTushunuuText(models.Model):
+    """
+    Represents a text with a title and file for comprehension.
+    """
+
+    test = models.ForeignKey(
+        OkupTushunuu,
+        on_delete=models.CASCADE,
+        related_name="texts",
+        verbose_name="Тест",
+    )
+    question_number = models.PositiveIntegerField(
+        verbose_name="Номер текста", blank=True, null=True
+    )
+    title = models.CharField(
+        max_length=255, verbose_name="Название текста", default="Default Title"
+    )
+    text_file = models.FileField(
+        upload_to="okup_tushunuu_files/",
+        blank=True,
+        null=True,
+        verbose_name="Файл текста",
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Текст - Окуп тушунуу"
+        verbose_name_plural = "6. Тексты - Окуп тушунуу"
+
+
+class OkupTushunuuQuestion(models.Model):
+    """
+    Represents a question with multiple-choice answers, correct answer, and user answers.
+    """
+
+    question = models.ForeignKey(
+        OkupTushunuuText,
+        on_delete=models.CASCADE,
+        related_name="questions",
+        verbose_name="Текст",
+    )
+    question_number = models.PositiveIntegerField(
+        verbose_name="Номер вопроса", blank=True, null=True
+    )
+    question_text = models.TextField(
+        verbose_name="Вопрос", default="Default question text"
+    )
+    var_A_text = models.TextField(
+        verbose_name="Вариант ответа 'А'", blank=True, null=True
+    )
+    var_B_text = models.TextField(
+        verbose_name="Вариант ответа 'Б'", blank=True, null=True
+    )
+    var_C_text = models.TextField(
+        verbose_name="Вариант ответа 'В'", blank=True, null=True
+    )
+    var_D_text = models.TextField(
+        verbose_name="Вариант ответа 'Г'", blank=True, null=True
+    )
+    true_answer = models.CharField(
+        max_length=10,
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г")],
+        verbose_name="Правильный ответ",
+        default="а",  # Provide a default value
+    )
+
+    def __str__(self):
+        return f"{self.question_text} (Текст: {self.question.title})"
+
+    class Meta:
+        verbose_name = "Вопрос Окуп тушунуу"
+        verbose_name_plural = "7. Вопросы Окуп тушунуу"
+
+
 class UserStatistic(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
+    okup_tushunuu = models.ForeignKey(
+        OkupTushunuu,
+        on_delete=models.CASCADE,
+        verbose_name="Окуп тушунуу",
+        null=True,
+        blank=True,
+    )
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
@@ -220,20 +332,32 @@ class UserStatistic(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
+        if self.okup_tushunuu:
+            return f"{self.user.email} - {self.okup_tushunuu.name} - правильные: {self.true_answer_count} - неправильные: {self.false_answer_count}"
+
         return f"{self.user.email} - {self.test.title} - правильные ответы: {self.true_answer_count} - неправильные ответы: {self.false_answer_count}"
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "8. Счета ответов"
+        verbose_name_plural = "9. Счета ответов"
         unique_together = ("test", "user")
+
 
 class UserAnswer(models.Model):
     test_content = models.ForeignKey(
         TestContent, on_delete=models.CASCADE, verbose_name="Тест контент"
     )
+    okup_tushunuu_question = models.ForeignKey(
+        OkupTushunuuQuestion,
+        on_delete=models.CASCADE,
+        verbose_name="Вопрос Окуп Тушунуу",
+        null=True,
+        blank=True,
+    )
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
+
     answer_vars = models.CharField(
         max_length=1,
         choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г")],
@@ -248,8 +372,10 @@ class UserAnswer(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
+        if self.okup_tushunuu_question:
+            return f"{self.user.email} - {self.okup_tushunuu_question.question_text} - {self.answer_vars}"
         return f"{self.user.email} - {self.test_content.test.title}"
 
     class Meta:
         verbose_name = "Ответ пользователя"
-        verbose_name_plural = "7. Ответы пользователей"
+        verbose_name_plural = "8. Ответы пользователей"

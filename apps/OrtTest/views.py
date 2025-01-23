@@ -1,8 +1,28 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory  # AdditionalInstruction, TestInstruction
-from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer  # AdditionalInstructionSerializer,  TestInstructionSerializer,
+from .models import (
+    TestCategory,
+    Test,
+    TestContent,
+    TestFullDescription,
+    UserAnswer,
+    UserStatistic,
+    SubjectCategory,
+    OkupTushunuu,
+    OkupTushunuuQuestion,
+)
+from .serializers import (
+    TestCategorySerializer,
+    TestSerializer,
+    TestContentSerializer,
+    TestFullDescriptionSerializer,
+    UserAnswerSerializer,
+    UserStatisticSerializer,
+    SubjectCategorySerializer,
+    OkupTushunuuSerializer,
+    OkupTushunuuQuestionSerializer,
+)
 
 
 @extend_schema(
@@ -20,6 +40,7 @@ class TestCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = TestCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 @extend_schema(
     summary="Создание и получение категорий предметов",
     description="Этот эндпоинт позволяет создавать и получать категории предметов",
@@ -34,6 +55,7 @@ class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 @extend_schema(
     summary="Создание и получение тестов",
@@ -194,3 +216,23 @@ class UserStatisticViewSet(viewsets.ModelViewSet):
     queryset = UserStatistic.objects.all()
     serializer_class = UserStatisticSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+@extend_schema(tags=["OkupTushunuu Tests"])
+class OkupTushunuuViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing OkupTushunuu tests.
+    """
+
+    queryset = OkupTushunuu.objects.all()
+    serializer_class = OkupTushunuuSerializer
+
+
+@extend_schema(tags=["OkupTushunuu Questions"])
+class OkupTushunuuQuestionViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing OkupTushunuu questions.
+    """
+
+    queryset = OkupTushunuuQuestion.objects.all()
+    serializer_class = OkupTushunuuQuestionSerializer

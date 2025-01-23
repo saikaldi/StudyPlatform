@@ -6,7 +6,7 @@ from .models import (
     TestFullDescription,
     UserAnswer,
     UserStatistic,
-    SubjectCategory
+    SubjectCategory,
 )  # AdditionalInstruction, TestInstruction
 
 
@@ -15,10 +15,12 @@ class TestCategorySerializer(serializers.ModelSerializer):
         model = TestCategory
         fields = ["id", "test_category_name", "last_update_date", "created_date"]
 
+
 class SubjectCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectCategory
-        fields = '__all__'
+        fields = "__all__"
+
 
 class TestSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)
@@ -27,7 +29,9 @@ class TestSerializer(serializers.ModelSerializer):
     )
     subject_category = SubjectCategorySerializer(read_only=True)
     subject_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubjectCategory.objects.all(), source="subject_category", write_only=True
+        queryset=SubjectCategory.objects.all(),
+        source="subject_category",
+        write_only=True,
     )
 
     class Meta:
@@ -36,8 +40,8 @@ class TestSerializer(serializers.ModelSerializer):
             "id",
             "test_category",
             "test_category_id",
-            'subject_category',
-            'subject_category_id',
+            "subject_category",
+            "subject_category_id",
             "title",
             "first_test",
             "description",
@@ -120,6 +124,8 @@ class TestFullDescriptionSerializer(serializers.ModelSerializer):
 #             'last_update_date', 'created_date'
 #         ]
 
+from .models import UserStatistic, UserAnswer, OkupTushunuu, OkupTushunuuQuestion
+
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     test_content = TestContentSerializer(read_only=True)
@@ -131,10 +137,10 @@ class UserAnswerSerializer(serializers.ModelSerializer):
         model = UserAnswer
         fields = [
             "id",
+            "user",
+            "okup_tushunuu_question",
             "test_content",
-            "test_content_id",
             "answer_vars",
-            "output_time",
             "last_update_date",
             "created_date",
         ]
@@ -155,11 +161,33 @@ class UserStatisticSerializer(serializers.ModelSerializer):
         model = UserStatistic
         fields = [
             "id",
-            "test",
-            "test_id",
             "user",
+            "test",
+            "okup_tushunuu",
             "true_answer_count",
             "false_answer_count",
             "last_update_date",
             "created_date",
+        ]
+
+
+class OkupTushunuuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OkupTushunuu
+        fields = ["id", "name", "description", "created_at"]
+
+
+class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OkupTushunuuQuestion
+        fields = [
+            "id",
+            "question",
+            "question_number",
+            "question_text",
+            "var_A_text",
+            "var_B_text",
+            "var_C_text",
+            "var_D_text",
+            "true_answer",
         ]

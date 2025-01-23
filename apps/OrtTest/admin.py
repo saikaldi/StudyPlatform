@@ -7,8 +7,9 @@ from .models import (
     # TestInstruction,
     UserStatistic,
     UserAnswer,  # AdditionalInstruction
-    SubjectCategory
+    SubjectCategory,
 )
+from .models import OkupTushunuuQuestion
 
 
 @admin.register(TestCategory)
@@ -17,18 +18,20 @@ class TestCategoryAdmin(admin.ModelAdmin):
     search_fields = ("test_category_name",)
     ordering = ("-created_date",)
 
+
 @admin.register(SubjectCategory)
 class SubjectCategory(admin.ModelAdmin):
     list_display = ("subject_category_name", "last_update_date", "created_date")
     search_fields = ("subject_category_name",)
     ordering = ("-created_date",)
 
+
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "test_category",
-        'subject_category',
+        "subject_category",
         "first_test",
         "last_update_date",
         "created_date",
@@ -210,30 +213,87 @@ class TestFullDescriptionAdmin(admin.ModelAdmin):
     ordering = ("-created_date",)
 
 
+# @admin.register(UserStatistic)
+# class UserStatisticAdmin(admin.ModelAdmin):
+#     list_display = (
+#         "user",
+#         "test",
+#         "true_answer_count",
+#         "false_answer_count",
+#         "last_update_date",
+#         "created_date",
+#     )
+#     search_fields = ("user__email", "test__title")
+#     list_filter = ("test__test_category",)
+#     ordering = ("-created_date",)
+
+
+# @admin.register(UserAnswer)
+# class UserAnswerAdmin(admin.ModelAdmin):
+#     list_display = (
+#         "user",
+#         "test_content",
+#         "answer_vars",
+#         "last_update_date",
+#         "created_date",
+#     )
+#     search_fields = ("user__email", "test_content__test__title")
+#     list_filter = ("test_content__test__test_category",)
+#     ordering = ("-created_date",)
+
+from .models import UserStatistic, UserAnswer, OkupTushunuu, OkupTushunuuQuestion
+
+
 @admin.register(UserStatistic)
 class UserStatisticAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "test",
+        "okup_tushunuu",
         "true_answer_count",
         "false_answer_count",
-        "last_update_date",
-        "created_date",
     )
-    search_fields = ("user__email", "test__title")
-    list_filter = ("test__test_category",)
-    ordering = ("-created_date",)
+    search_fields = ("user__email", "test__title", "okup_tushunuu__name")
+    list_filter = ("last_update_date", "created_date")
 
 
 @admin.register(UserAnswer)
 class UserAnswerAdmin(admin.ModelAdmin):
     list_display = (
         "user",
+        "okup_tushunuu_question",
         "test_content",
         "answer_vars",
-        "last_update_date",
         "created_date",
     )
-    search_fields = ("user__email", "test_content__test__title")
-    list_filter = ("test_content__test__test_category",)
-    ordering = ("-created_date",)
+    search_fields = (
+        "user__email",
+        "okup_tushunuu_question__question_text",
+        "test_content__test__title",
+    )
+    list_filter = ("last_update_date", "created_date")
+
+
+from django.contrib import admin
+from .models import OkupTushunuu, OkupTushunuuText, OkupTushunuuQuestion
+
+
+@admin.register(OkupTushunuu)
+class OkupTushunuuAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "created_at")
+    search_fields = ("name", "description")
+    list_filter = ("created_at",)
+
+
+@admin.register(OkupTushunuuText)
+class OkupTushunuuTextAdmin(admin.ModelAdmin):
+    list_display = ("title", "test", "text_file", "question_number")
+    search_fields = ("title", "test__name")
+    list_filter = ("test",)
+
+
+@admin.register(OkupTushunuuQuestion)
+class OkupTushunuuQuestionAdmin(admin.ModelAdmin):
+    list_display = ("question_text", "question", "true_answer", "question_number")
+    search_fields = ("question_text", "question__title")
+    list_filter = ("true_answer",)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer
+from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer, SubjectCategory
+from .serializers import *
+
 
 class CategoryVideoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,10 +9,20 @@ class CategoryVideoSerializer(serializers.ModelSerializer):
         fields = ['category_name', 'last_update_date', 'created_date']
         read_only_fields = ['slug', 'last_update_date', 'created_date']
 
+class SubjectCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubjectCategory
+        fields = '__all__'
+        read_only_fields = ['last_update_date', 'created_date']
+
 class VideoSerializer(serializers.ModelSerializer):
+    subject_category = SubjectCategorySerializer(read_only=True)
+    subject_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubjectCategory.objects.all(), source="subject_category", write_only=True
+    )
     class Meta:
         model = Video
-        fields = ['video_category', 'subject_name', 'description', 'video_url', 'video_order', 'is_paid', 'last_update_date', 'created_date']
+        fields = ['video_category', 'subject_name', 'subject_category', 'subject_category_id', 'description', 'video_url', 'video_order', 'is_paid', 'last_update_date', 'created_date']
         read_only_fields = ['slug', 'last_update_date', 'created_date']
 
 class TestContentSerializer(serializers.ModelSerializer):

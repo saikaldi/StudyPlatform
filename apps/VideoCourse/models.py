@@ -34,8 +34,21 @@ class CategoryVideo(models.Model):
         verbose_name = "Категория видео"
         verbose_name_plural = "1 Категории видео"
 
+class SubjectCategory(models.Model):
+    subject_category_name = models.CharField(max_length=52, verbose_name="Название типа теста")
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return self.subject_category_name
+
+    class Meta:
+        verbose_name = "Категория теста"
+        verbose_name_plural = "2. Категории тестов"
+
 class Video(models.Model):
     video_category = models.ForeignKey(CategoryVideo, on_delete=models.CASCADE, related_name="videos", verbose_name="Категория видео", blank=True, null=True)
+    subject_category = models.ForeignKey(SubjectCategory, on_delete=models.CASCADE, verbose_name='Категория предмета')
     subject_name = models.CharField(max_length=100, verbose_name='Название тема урока')
     description = models.TextField(verbose_name='Описание темы урока')
     video_url = models.TextField(verbose_name='Ссылка на видео')

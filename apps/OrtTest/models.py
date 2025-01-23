@@ -8,7 +8,6 @@ def upload_to_test(instance, filename):
         return f"{instance.test.title}/{filename}"
     return f"unknown/{filename}"
 
-
 class TestCategory(models.Model):
     test_category_name = models.CharField(
         max_length=52, verbose_name="Название типа теста"
@@ -25,11 +24,25 @@ class TestCategory(models.Model):
         verbose_name = "Категория теста"
         verbose_name_plural = "1. Категории тестов"
 
+class SubjectCategory(models.Model):
+    subject_category_name = models.CharField(
+        max_length=52, verbose_name="Название типа теста"
+    )
+    last_update_date = models.DateTimeField(
+        auto_now=True, verbose_name="Последнее обновление"
+    )
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return self.subject_category_name
+
+    class Meta:
+        verbose_name = "Категория теста"
+        verbose_name_plural = "2. Категории тестов"
 
 class Test(models.Model):
-    test_category = models.ForeignKey(
-        TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста"
-    )
+    test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
+    subject_category = models.ForeignKey(SubjectCategory, on_delete=models.CASCADE, verbose_name='Категория предмета')
     title = models.CharField(max_length=100, verbose_name="Название теста")
     first_test = models.BooleanField(
         default=False, verbose_name="Обозначение будет ли тест первым бесплатным тестом"
@@ -48,8 +61,7 @@ class Test(models.Model):
 
     class Meta:
         verbose_name = "Тест"
-        verbose_name_plural = "2. Тесты"
-
+        verbose_name_plural = "3. Тесты"
 
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
@@ -112,7 +124,7 @@ class TestContent(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def save(self, *args, **kwargs):
-        if self.question_number is None:  # If not already assigned
+        if self.question_number is None:
             last_question = (
                 TestContent.objects.filter(test=self.test)
                 .order_by("question_number")
@@ -169,8 +181,7 @@ class TestContent(models.Model):
 
     class Meta:
         verbose_name = "Вопрос теста"
-        verbose_name_plural = "5. Вопросы тестов"
-
+        verbose_name_plural = "6. Вопросы тестов"
 
 class TestFullDescription(models.Model):
     test_category = models.ForeignKey(
@@ -190,8 +201,7 @@ class TestFullDescription(models.Model):
 
     class Meta:
         verbose_name = "Подробное описание теста"
-        verbose_name_plural = "3. Подробные описания тестов"
-
+        verbose_name_plural = "4. Подробные описания тестов"
 
 class UserStatistic(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
@@ -214,9 +224,8 @@ class UserStatistic(models.Model):
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "7. Счета ответов"
+        verbose_name_plural = "8. Счета ответов"
         unique_together = ("test", "user")
-
 
 class UserAnswer(models.Model):
     test_content = models.ForeignKey(
@@ -243,4 +252,4 @@ class UserAnswer(models.Model):
 
     class Meta:
         verbose_name = "Ответ пользователя"
-        verbose_name_plural = "6. Ответы пользователей"
+        verbose_name_plural = "7. Ответы пользователей"

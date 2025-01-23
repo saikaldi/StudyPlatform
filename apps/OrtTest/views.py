@@ -1,22 +1,8 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import (
-    TestCategory,
-    Test,
-    TestContent,
-    TestFullDescription,
-    UserAnswer,
-    UserStatistic,
-)  # AdditionalInstruction, TestInstruction
-from .serializers import (
-    TestCategorySerializer,
-    TestSerializer,
-    TestContentSerializer,
-    TestFullDescriptionSerializer,
-    UserAnswerSerializer,
-    UserStatisticSerializer,
-)  # AdditionalInstructionSerializer,  TestInstructionSerializer,
+from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory  # AdditionalInstruction, TestInstruction
+from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer  # AdditionalInstructionSerializer,  TestInstructionSerializer,
 
 
 @extend_schema(
@@ -34,6 +20,20 @@ class TestCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = TestCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+@extend_schema(
+    summary="Создание и получение категорий предметов",
+    description="Этот эндпоинт позволяет создавать и получать категории предметов",
+    request=SubjectCategory,
+    responses={
+        200: SubjectCategorySerializer,
+        201: OpenApiResponse(description="Категория Предмета успешно создана"),
+    },
+)
+@extend_schema(tags=["Test-Subject-Category"])
+class SubjectCategoryViewSet(viewsets.ModelViewSet):
+    queryset = SubjectCategory.objects.all()
+    serializer_class = SubjectCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 @extend_schema(
     summary="Создание и получение тестов",

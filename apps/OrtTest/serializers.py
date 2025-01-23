@@ -6,6 +6,7 @@ from .models import (
     TestFullDescription,
     UserAnswer,
     UserStatistic,
+    SubjectCategory
 )  # AdditionalInstruction, TestInstruction
 
 
@@ -14,11 +15,19 @@ class TestCategorySerializer(serializers.ModelSerializer):
         model = TestCategory
         fields = ["id", "test_category_name", "last_update_date", "created_date"]
 
+class SubjectCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubjectCategory
+        fields = '__all__'
 
 class TestSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)
     test_category_id = serializers.PrimaryKeyRelatedField(
         queryset=TestCategory.objects.all(), source="test_category", write_only=True
+    )
+    subject_category = SubjectCategorySerializer(read_only=True)
+    subject_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubjectCategory.objects.all(), source="subject_category", write_only=True
     )
 
     class Meta:
@@ -27,6 +36,8 @@ class TestSerializer(serializers.ModelSerializer):
             "id",
             "test_category",
             "test_category_id",
+            'subject_category',
+            'subject_category_id',
             "title",
             "first_test",
             "description",

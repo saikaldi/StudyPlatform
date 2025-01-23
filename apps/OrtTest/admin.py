@@ -7,6 +7,7 @@ from .models import (
     # TestInstruction,
     UserStatistic,
     UserAnswer,  # AdditionalInstruction
+    SubjectCategory
 )
 
 
@@ -16,18 +17,24 @@ class TestCategoryAdmin(admin.ModelAdmin):
     search_fields = ("test_category_name",)
     ordering = ("-created_date",)
 
+@admin.register(SubjectCategory)
+class SubjectCategory(admin.ModelAdmin):
+    list_display = ("subject_category_name", "last_update_date", "created_date")
+    search_fields = ("subject_category_name",)
+    ordering = ("-created_date",)
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "test_category",
+        'subject_category',
         "first_test",
         "last_update_date",
         "created_date",
     )
     search_fields = ("title",)
-    list_filter = ("test_category", "first_test")
+    list_filter = ("test_category", "subject_category", "first_test")
     ordering = ("-created_date",)
 
 
@@ -142,52 +149,52 @@ class Kyrgyz3Admin(admin.ModelAdmin):
         return queryset.filter(test__title="Кыргыз Тил - Грамматика")
 
 
-# Registering proxy models
-class Math1TestContent(TestContent):
+# # # Registering proxy models
+# # class Math1TestContent(TestContent):
 
-    class Meta:
-        proxy = True
-        verbose_name = "Математика 1 Болум"
-        verbose_name_plural = "Математика 1 Болум"
-
-
-class Math2TestContent(TestContent):
-
-    class Meta:
-        proxy = True
-        verbose_name = "Математика 2 Болум"
-        verbose_name_plural = "Математика 2 Болум"
+# #     class Meta:
+# #         proxy = True
+# #         verbose_name = "Математика 1 Болум"
+# #         verbose_name_plural = "Математика 1 Болум"
 
 
-class Kyrgyz1TestContent(TestContent):
+# # class Math2TestContent(TestContent):
 
-    class Meta:
-        proxy = True
-        verbose_name = "Кыргыз Тил - Аналогия"
-        verbose_name_plural = "Кыргыз Тил - Аналогия"
-
-
-class Kyrgyz2TestContent(TestContent):
-
-    class Meta:
-        proxy = True
-        verbose_name = "Кыргыз Тил - Окуу жана тушунуу"
-        verbose_name_plural = "Кыргыз Тил - Окуу жана тушунуу"
+# #     class Meta:
+# #         proxy = True
+# #         verbose_name = "Математика 2 Болум"
+# #         verbose_name_plural = "Математика 2 Болум"
 
 
-class Kyrgyz3TestContent(TestContent):
+# # class Kyrgyz1TestContent(TestContent):
 
-    class Meta:
-        proxy = True
-        verbose_name = "Кыргыз Тил - Грамматика"
-        verbose_name_plural = "Кыргыз Тил - Грамматика"
+# #     class Meta:
+# #         proxy = True
+# #         verbose_name = "Кыргыз Тил - Аналогия"
+# #         verbose_name_plural = "Кыргыз Тил - Аналогия"
 
 
-admin.site.register(Math1TestContent, Math1Admin)
-admin.site.register(Math2TestContent, Math2Admin)
-admin.site.register(Kyrgyz1TestContent, Kyrgyz1Admin)
-admin.site.register(Kyrgyz2TestContent, Kyrgyz2Admin)
-admin.site.register(Kyrgyz3TestContent, Kyrgyz3Admin)
+# # class Kyrgyz2TestContent(TestContent):
+
+# #     class Meta:
+# #         proxy = True
+# #         verbose_name = "Кыргыз Тил - Окуу жана тушунуу"
+# #         verbose_name_plural = "Кыргыз Тил - Окуу жана тушунуу"
+
+
+# # class Kyrgyz3TestContent(TestContent):
+
+# #     class Meta:
+# #         proxy = True
+# #         verbose_name = "Кыргыз Тил - Грамматика"
+# #         verbose_name_plural = "Кыргыз Тил - Грамматика"
+
+
+# admin.site.register(Math1TestContent, Math1Admin)
+# admin.site.register(Math2TestContent, Math2Admin)
+# admin.site.register(Kyrgyz1TestContent, Kyrgyz1Admin)
+# admin.site.register(Kyrgyz2TestContent, Kyrgyz2Admin)
+# admin.site.register(Kyrgyz3TestContent, Kyrgyz3Admin)
 
 
 @admin.register(TestFullDescription)

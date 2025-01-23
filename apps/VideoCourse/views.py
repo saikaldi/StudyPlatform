@@ -5,10 +5,11 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer
-from .serializers import CategoryVideoSerializer, VideoSerializer, TestContentSerializer, UserStatisticSerializer, UserAnswerSerializer
+from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer, SubjectCategory
+from .serializers import CategoryVideoSerializer, VideoSerializer, TestContentSerializer, UserStatisticSerializer, UserAnswerSerializer, SubjectCategorySerializer
 
 User = get_user_model()
 
@@ -18,10 +19,36 @@ def check_paid_access(user, video):
         return Response({'error': 'Доступ запрещен: Контент платный'}, status=status.HTTP_403_FORBIDDEN)
     return None
 
+@extend_schema(
+    summary="Создание и получение категорий видео",
+    description="Этот эндпоинт позволяет создавать и получать категории видео",
+    request=CategoryVideoSerializer,
+    responses={
+        200: CategoryVideoSerializer,
+        201: OpenApiResponse(description="Категория видео успешно создана"),
+    },
+)
+@extend_schema(tags=["Video-Category"])
 class CategoryVideoViewSet(viewsets.ModelViewSet):
     queryset = CategoryVideo.objects.all()
     serializer_class = CategoryVideoSerializer
 
+@extend_schema(
+    summary="Создание и получение категорий предметов",
+    description="Этот эндпоинт позволяет создавать и получать категории предметов",
+    request=SubjectCategorySerializer,
+    responses={
+        200: SubjectCategorySerializer,
+        201: OpenApiResponse(description="Категория Предмета успешно создана"),
+    },
+)
+@extend_schema(tags=["Video-Subject-Category"])
+class SubjectCategoryViewSet(viewsets.ModelViewSet):
+    queryset = SubjectCategory.objects.all()
+    serializer_class = SubjectCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+@extend_schema(tags=["Video-Cources"])
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
@@ -123,6 +150,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return Response({'message': f'Все ответы и статистика для видео "{video.subject_name}" сброшены'})
 
+@extend_schema(tags=["Video-Test-Content"])
 class TestContentViewSet(viewsets.ModelViewSet):
     queryset = TestContent.objects.all()
     serializer_class = TestContentSerializer
@@ -244,6 +272,17 @@ class TestContentViewSet(viewsets.ModelViewSet):
 
         return Response({'message': 'Тест сброшен для этого вопроса'})
 
+
+@extend_schema(
+    summary="Создание и получение статистики пользователей",
+    description="Этот эндпоинт позволяет создавать и получать статистику пользователей",
+    request=UserStatisticSerializer,
+    responses={
+        200: UserStatisticSerializer,
+        201: OpenApiResponse(description="Статистика пользоватлея успешно создана"),
+    },
+)
+@extend_schema(tags=["Video-Statistic"])
 class UserStatisticViewSet(viewsets.ModelViewSet):
     queryset = UserStatistic.objects.all()
     serializer_class = UserStatisticSerializer
@@ -254,6 +293,16 @@ class UserStatisticViewSet(viewsets.ModelViewSet):
             stat.update_accuracy()
         return queryset
 
+@extend_schema(
+    summary="Создание и получение ответов пользователей",
+    description="Этот эндпоинт позволяет создавать и получать ответы пользоватлеей",
+    request=UserAnswerSerializer,
+    responses={
+        200: UserAnswerSerializer,
+        201: OpenApiResponse(description="Ответ пользоватлея успешно создан"),
+    },
+)
+@extend_schema(tags=["Video-Answer"])
 class UserAnswerViewSet(viewsets.ModelViewSet):
     queryset = UserAnswer.objects.all()
     serializer_class = UserAnswerSerializer

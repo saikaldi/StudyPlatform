@@ -1,11 +1,18 @@
 from django.contrib import admin
-from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer
+from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer, SubjectCategory
+
 
 @admin.register(CategoryVideo)
 class CategoryVideoAdmin(admin.ModelAdmin):
     list_display = ('category_name', 'last_update_date', 'created_date')
     search_fields = ['category_name']
     readonly_fields = ['slug', 'last_update_date', 'created_date']
+
+@admin.register(SubjectCategory)
+class SubjectCategory(admin.ModelAdmin):
+    list_display = ("subject_category_name", "last_update_date", "created_date")
+    search_fields = ("subject_category_name",)
+    ordering = ("-created_date",)
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):

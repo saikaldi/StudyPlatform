@@ -8,8 +8,11 @@ from .models import (
     UserStatistic,
     UserAnswer,  # AdditionalInstruction
     SubjectCategory,
+    OkupTushunuuQuestion,
+    OkupTushunuu,
+    OkupTushunuuText,
+    OkupTushunuuQuestion,
 )
-from .models import OkupTushunuuQuestion
 
 
 @admin.register(TestCategory)
@@ -41,20 +44,20 @@ class TestAdmin(admin.ModelAdmin):
     ordering = ("-created_date",)
 
 
-# @admin.register(TestContent)
-# class TestContentAdmin(admin.ModelAdmin):
-#     list_display = (
-#         "question_number",
-#         "question_text",
-#         "question_image",
-#         "true_answer",
-#         "last_update_date",
-#         "created_date",
-#     )
-#     search_fields = ("test__title", "true_answer")
-#     # list_editable = ("question_number",)
-#     list_filter = ("test__test_category",)
-#     ordering = ("test", "question_number")
+@admin.register(TestContent)
+class TestContentAdmin(admin.ModelAdmin):
+    list_display = (
+        "question_number",
+        "question_text",
+        "question_image",
+        "true_answer",
+        "last_update_date",
+        "created_date",
+    )
+    search_fields = ("test__title", "true_answer")
+    # list_editable = ("question_number",)
+    list_filter = ("test__test_category",)
+    ordering = ("test", "question_number")
 
 
 class Math1Admin(admin.ModelAdmin):
@@ -272,10 +275,6 @@ class UserAnswerAdmin(admin.ModelAdmin):
         "test_content__test__title",
     )
     list_filter = ("last_update_date", "created_date")
-
-
-from django.contrib import admin
-from .models import OkupTushunuu, OkupTushunuuText, OkupTushunuuQuestion
 
 
 @admin.register(OkupTushunuu)

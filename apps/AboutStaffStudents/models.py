@@ -5,9 +5,14 @@ from slugify import slugify
 
 class Subject(models.Model):
     name = models.CharField(max_length=40, verbose_name="Название предмета")
-    # slug = models.SlugField(
-    #     max_length=255, unique=True, db_index=True, verbose_name="URL"
-    # )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        db_index=True,
+        verbose_name="slug",
+        null=True,
+        blank=True,
+    )
     last_updated = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
     )
@@ -16,16 +21,16 @@ class Subject(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug or self.slug.strip() == "":
-    #         base_slug = slugify(self.name, allow_unicode=False)
-    #         unique_slug = base_slug
-    #         counter = 1
-    #         while Subject.objects.filter(slug=unique_slug).exists():
-    #             unique_slug = f"{base_slug}-{counter}"
-    #             counter += 1
-    #         self.slug = unique_slug
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":
+            base_slug = slugify(self.name, allow_unicode=False)
+            unique_slug = base_slug
+            counter = 1
+            while Subject.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Предмет"
@@ -41,9 +46,14 @@ class Graduate(models.Model):
         "Баллы", validators=[MinValueValidator(10), MaxValueValidator(245)]
     )
     review = models.TextField("Отзыв")
-    # slug = models.SlugField(
-    #     max_length=255, unique=True, db_index=True, verbose_name="slug"
-    # )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        db_index=True,
+        verbose_name="slug",
+        null=True,
+        blank=True,
+    )
     last_updated = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
     )
@@ -52,16 +62,16 @@ class Graduate(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug or self.slug.strip() == "":
-    #         base_slug = slugify(f"{self.first_name} {self.last_name}")
-    #         unique_slug = base_slug
-    #         counter = 1
-    #         while Graduate.objects.filter(slug=unique_slug).exists():
-    #             unique_slug = f"{base_slug}-{counter}"
-    #             counter += 1
-    #         self.slug = unique_slug
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":
+            base_slug = slugify(f"{self.first_name} {self.last_name}")
+            unique_slug = base_slug
+            counter = 1
+            while Graduate.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Выпускник"
@@ -76,9 +86,14 @@ class Teacher(models.Model):
         Subject, verbose_name="Предмет", on_delete=models.CASCADE
     )
     image = models.ImageField("Фотография", upload_to="teachers/images")
-    # slug = models.SlugField(
-    #     max_length=255, unique=True, db_index=True, verbose_name="slug"
-    # )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        db_index=True,
+        verbose_name="slug",
+        null=True,
+        blank=True,
+    )
     last_updated = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
     )
@@ -87,16 +102,16 @@ class Teacher(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug or self.slug.strip() == "":
-    #         base_slug = slugify(f"{self.first_name} {self.last_name}")
-    #         unique_slug = base_slug
-    #         counter = 1
-    #         while Teacher.objects.filter(slug=unique_slug).exists():
-    #             unique_slug = f"{base_slug}-{counter}"
-    #             counter += 1
-    #         self.slug = unique_slug
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":
+            base_slug = slugify(f"{self.first_name} {self.last_name}")
+            unique_slug = base_slug
+            counter = 1
+            while Teacher.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Преподаватель"
@@ -119,9 +134,14 @@ class Feedback(models.Model):
         ],
     )
     text = models.TextField("Текст отзыва")
-    # slug = models.SlugField(
-    #     max_length=255, unique=True, db_index=True, verbose_name="slug"
-    # )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        db_index=True,
+        verbose_name="slug",
+        null=True,
+        blank=True,
+    )
     last_updated = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
     )
@@ -130,18 +150,18 @@ class Feedback(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug or self.slug.strip() == "":
-    #         base_slug = slugify(
-    #             f"{self.first_name} {self.last_name}", allow_unicode=False
-    #         )
-    #         unique_slug = base_slug
-    #         counter = 1
-    #         while Feedback.objects.filter(slug=unique_slug).exists():
-    #             unique_slug = f"{base_slug}-{counter}"
-    #             counter += 1
-    #         self.slug = unique_slug
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":
+            base_slug = slugify(
+                f"{self.first_name} {self.last_name}", allow_unicode=False
+            )
+            unique_slug = base_slug
+            counter = 1
+            while Feedback.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Отзыв"

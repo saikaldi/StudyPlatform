@@ -10,9 +10,8 @@ def upload_to_test(instance, filename):
         return f"{instance.video.subject_name}/{filename}"
     return f"unknown/{filename}"
 
-
 class Category(models.Model):
-    categoryName = models.CharField(max_length=100, verbose_name="Название предмета")
+    category_name = models.CharField(max_length=100, verbose_name="Название предмета")
     slug = models.SlugField(
         max_length=100, unique=True, db_index=True, verbose_name="slug", blank=True
     )

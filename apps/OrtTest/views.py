@@ -1,28 +1,10 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import (
-    TestCategory,
-    Test,
-    TestContent,
-    TestFullDescription,
-    UserAnswer,
-    UserStatistic,
-    SubjectCategory,
-    OkupTushunuu,
-    OkupTushunuuQuestion,
-)
-from .serializers import (
-    TestCategorySerializer,
-    TestSerializer,
-    TestContentSerializer,
-    TestFullDescriptionSerializer,
-    UserAnswerSerializer,
-    UserStatisticSerializer,
-    SubjectCategorySerializer,
-    OkupTushunuuSerializer,
-    OkupTushunuuQuestionSerializer,
-)
+from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory, OkupTushunuu, OkupTushunuuQuestion
+from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer
+from .filters import *
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 @extend_schema(
@@ -34,12 +16,13 @@ from .serializers import (
         201: OpenApiResponse(description="Категория теста успешно создана"),
     },
 )
-@extend_schema(tags=["Test-Category"])
+@extend_schema(tags=["Test-Category: Основные тесты, Тесты предметов"])
 class TestCategoryViewSet(viewsets.ModelViewSet):
     queryset = TestCategory.objects.all()
     serializer_class = TestCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TestCategoryFilter
 
 @extend_schema(
     summary="Создание и получение категорий предметов",
@@ -50,12 +33,13 @@ class TestCategoryViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Категория Предмета успешно создана"),
     },
 )
-@extend_schema(tags=["Test-Subject-Category"])
+@extend_schema(tags=["Test-Subject-Category: Математика, Кыргыз тили"])
 class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubjectCategoryFilter
 
 @extend_schema(
     summary="Создание и получение тестов",
@@ -71,7 +55,8 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TestFilter
 
 @extend_schema(
     summary="Создание и получение данных теста",
@@ -82,12 +67,13 @@ class TestViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Данные теста успешно созданы"),
     },
 )
-@extend_schema(tags=["Test-Content"])
+@extend_schema(tags=["Test-Content: Вопросы тестов"])
 class TestContentViewSet(viewsets.ModelViewSet):
     queryset = TestContent.objects.all()
     serializer_class = TestContentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TestContentFilter
 
 @extend_schema(
     summary="Создание и получение полного описания тестов",
@@ -98,12 +84,13 @@ class TestContentViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Описание теста успешно создано"),
     },
 )
-@extend_schema(tags=["Test-Description"])
+@extend_schema(tags=["Test-Description: Описание тестов"])
 class TestFullDescriptionViewSet(viewsets.ModelViewSet):
     queryset = TestFullDescription.objects.all()
     serializer_class = TestFullDescriptionSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TestFullDescriptionFilter
 
 # @extend_schema(
 #     summary="Создание и получение инструкций для тестов",
@@ -141,6 +128,8 @@ class TestFullDescriptionViewSet(viewsets.ModelViewSet):
 class UserAnswerViewSet(viewsets.ModelViewSet):
     queryset = UserAnswer.objects.all()
     serializer_class = UserAnswerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserAnswerFilter
 
     @extend_schema(
         summary="Создание ответа пользователя на тест",
@@ -201,7 +190,6 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
 @extend_schema(
     summary="Создание и получение количества ответов пользователей на тесты",
     description="Этот эндпоинт позволяет создавать и получать количество правильных и неправильных ответов пользователей на тесты",
@@ -211,28 +199,24 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Счёт ответов пользователя успешно сохранён"),
     },
 )
-@extend_schema(tags=["User-Statistics"])
+@extend_schema(tags=["User-Statistics: C"])
 class UserStatisticViewSet(viewsets.ModelViewSet):
     queryset = UserStatistic.objects.all()
     serializer_class = UserStatisticSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserStatisticFilter
 
-
-@extend_schema(tags=["OkupTushunuu Tests"])
+@extend_schema(tags=["OkupTushunuu Tests: Тесты - Чтение и понимание"])
 class OkupTushunuuViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing OkupTushunuu tests.
-    """
-
     queryset = OkupTushunuu.objects.all()
     serializer_class = OkupTushunuuSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OkupTushunuuFilter
 
-
-@extend_schema(tags=["OkupTushunuu Questions"])
+@extend_schema(tags=["OkupTushunuu Questions: Вопросы - Чтение и понимание"])
 class OkupTushunuuQuestionViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing OkupTushunuu questions.
-    """
-
     queryset = OkupTushunuuQuestion.objects.all()
     serializer_class = OkupTushunuuQuestionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OkupTushunuuQuestionFilter

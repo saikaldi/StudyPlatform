@@ -14,7 +14,7 @@ from .serializers import *
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["categoryName", "last_update_date", "created_date"]
+        fields = ["category_name", "last_update_date", "created_date"]
         read_only_fields = ["slug", "last_update_date", "created_date"]
 
 

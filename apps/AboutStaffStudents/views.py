@@ -1,12 +1,20 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
 from .models import Subject, Graduate, Teacher, Feedback
 from .serializers import SubjectSerializer, GraduateSerializer, TeacherSerializer, FeedbackSerializer
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import status
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import *
 
+
+class CanViewGraduates(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return True
+        return request.user.is_authenticated and request.user.user_status in ["Менеджер", "Админ", "Учитель"]
 
 def check_user_status(request):
     return request.user.is_status_approved and request.user.user_status in ["Менеджер", "Админ", "Учитель"]
@@ -20,6 +28,8 @@ class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubjectFilter
 
     @extend_schema(
         summary="Создать предмет",
@@ -100,7 +110,9 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class GraduateViewSet(viewsets.ModelViewSet):
     queryset = Graduate.objects.all()
     serializer_class = GraduateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CanViewGraduates]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GraduateFilter
 
     @extend_schema(
         summary="Создать выпускника",
@@ -175,7 +187,9 @@ class GraduateViewSet(viewsets.ModelViewSet):
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CanViewGraduates]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TeacherFilter
 
     @extend_schema(
         summary="Создать преподавателя",
@@ -243,11 +257,13 @@ class TeacherViewSet(viewsets.ModelViewSet):
             return Response({'message': 'У вас нет прав для этого действия'}, status=status.HTTP_403_FORBIDDEN)
 
 @extend_schema(
-    summary="Отзывы",
-    description="API для создания отзывов",
-    tags=['Review'],
+    summary="Обратная связь",
+    description="API для создания обратной связи",
+    tags=['Feedback'],
 )
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FeedbackFilter

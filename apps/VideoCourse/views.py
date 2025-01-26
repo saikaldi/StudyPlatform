@@ -8,23 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from .models import (
-    CategoryVideo,
-    Video,
-    TestContent,
-    UserStatistic,
-    UserAnswer,
-    SubjectCategory,
-    Category,
-)
-from .serializers import (
-    CategoryVideoSerializer,
-    VideoSerializer,
-    TestContentSerializer,
-    UserStatisticSerializer,
-    UserAnswerSerializer,
-    SubjectCategorySerializer,
-)
+from .models import CategoryVideo, Video, TestContent, UserStatistic, UserAnswer, SubjectCategory,Category
+from .serializers import CategoryVideoSerializer, VideoSerializer, TestContentSerializer, UserStatisticSerializer, UserAnswerSerializer, SubjectCategorySerializer, CategorySerializer
+from .filters import *
+from django_filters.rest_framework import DjangoFilterBackend
 
 User = get_user_model()
 
@@ -37,7 +24,6 @@ def check_paid_access(user, video):
         )
     return None
 
-
 @extend_schema(
     summary="Создание и получение категорий видео",
     description="Этот эндпоинт позволяет создавать и получать категории видео",
@@ -47,11 +33,12 @@ def check_paid_access(user, video):
         201: OpenApiResponse(description="Категория видео успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Category"])
+@extend_schema(tags=["Video-Category: Негизки тест, Предметтик тест"])
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategoryVideoSerializer
-
+    serializer_class = CategorySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CategoryFilter
 
 @extend_schema(
     summary="Создание и получение категорий предметов",
@@ -62,11 +49,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Категория Предмета успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Category"])
+@extend_schema(tags=["Video-Category: Математика, Кыргыз тил"])
 class CategoryVideoViewSet(viewsets.ModelViewSet):
     queryset = CategoryVideo.objects.all()
     serializer_class = CategoryVideoSerializer
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CategoryVideoFilter
 
 @extend_schema(
     summary="Создание и получение категорий предметов",
@@ -77,17 +65,20 @@ class CategoryVideoViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Категория Предмета успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Subject-Category"])
+@extend_schema(tags=["Video-Subject-Category: Математика 1 болум, математика 2 болум"])
 class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubjectCategoryFilter
 
 @extend_schema(tags=["Video-Cources"])
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = VideoFilter
 
     @extend_schema(
         summary="Проверка доступа к видео",
@@ -248,11 +239,12 @@ class VideoViewSet(viewsets.ModelViewSet):
             }
         )
 
-
-@extend_schema(tags=["Video-Test-Content"])
+@extend_schema(tags=["Video-Test-Content: Тесты видео уроков"])
 class TestContentViewSet(viewsets.ModelViewSet):
     queryset = TestContent.objects.all()
     serializer_class = TestContentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TestContentFilter
 
     @extend_schema(
         summary="Отправка ответа на тест",
@@ -395,7 +387,6 @@ class TestContentViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "Тест сброшен для этого вопроса"})
 
-
 @extend_schema(
     summary="Создание и получение статистики пользователей",
     description="Этот эндпоинт позволяет создавать и получать статистику пользователей",
@@ -405,17 +396,18 @@ class TestContentViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Статистика пользоватлея успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Statistic"])
+@extend_schema(tags=["Video-Statistic: Статистика студентов"])
 class UserStatisticViewSet(viewsets.ModelViewSet):
     queryset = UserStatistic.objects.all()
     serializer_class = UserStatisticSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserStatisticFilter
 
     def get_queryset(self):
         queryset = super().get_queryset()
         for stat in queryset:
             stat.update_accuracy()
         return queryset
-
 
 @extend_schema(
     summary="Создание и получение ответов пользователей",
@@ -426,8 +418,10 @@ class UserStatisticViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Ответ пользоватлея успешно создан"),
     },
 )
-@extend_schema(tags=["Video-Answer"])
+@extend_schema(tags=["Video-Answer: Ответы студентов"])
 class UserAnswerViewSet(viewsets.ModelViewSet):
     queryset = UserAnswer.objects.all()
     serializer_class = UserAnswerSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserAnswerFilter

@@ -12,8 +12,8 @@ from .models import (
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("categoryName", "last_update_date", "created_date")
-    search_fields = ["categoryName"]
+    list_display = ("category_name", "last_update_date", "created_date")
+    search_fields = ["category_name"]
     readonly_fields = ["slug", "last_update_date", "created_date"]
 
 

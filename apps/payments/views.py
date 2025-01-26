@@ -9,6 +9,8 @@ from .models import Payment, PaymentService
 from .serializers import PaymentSerializer, PaymentServiceSerializer
 from rest_framework import serializers
 import logging
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import *
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +20,8 @@ class PaymentServiceViewSet(viewsets.ModelViewSet):
     queryset = PaymentService.objects.all()
     serializer_class = PaymentServiceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PaymentServiceFilter
 
     @extend_schema(
         summary="Список всех платежных сервисов",
@@ -56,6 +60,8 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PaymentFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

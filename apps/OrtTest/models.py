@@ -8,7 +8,6 @@ def upload_to_test(instance, filename):
         return f"{instance.test.title}/{filename}"
     return f"unknown/{filename}"
 
-
 class TestCategory(models.Model):
     test_category_name = models.CharField(
         max_length=52, verbose_name="Название типа теста"

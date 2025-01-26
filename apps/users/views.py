@@ -13,6 +13,8 @@ from .models import EmailConfirmation, Profile, MockAssessmentTest
 from .serializers import ProfileSerializer, RegisterSerializer, ConfirmRegistrationSerializer, LoginSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer, MockAssessmentTestSerializer
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample, OpenApiParameter
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import *
 
 User = get_user_model()
 
@@ -99,6 +101,8 @@ class RegisterView(APIView):
 @extend_schema(tags=['Register'])
 class ConfirmRegistrationView(APIView):
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EmailConfirmationFilter
 
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
@@ -279,6 +283,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()  
     serializer_class = ProfileSerializer  
     permission_classes = [IsAuthenticated]  
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProfileFilter
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)  
@@ -375,3 +381,5 @@ class AdminConfirmUserView(APIView):
 class MockAssessmentTestViewSet(viewsets.ModelViewSet):
     queryset = MockAssessmentTest.objects.all()
     serializer_class = MockAssessmentTestSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MockAssessmentTestFilter

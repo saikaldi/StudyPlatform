@@ -14,14 +14,14 @@ from .serializers import *
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["category_name", "last_update_date", "created_date"]
+        fields = ["id", "category_name", "last_update_date", "created_date"]
         read_only_fields = ["slug", "last_update_date", "created_date"]
 
 
 class CategoryVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryVideo
-        fields = ["category_name", "last_update_date", "created_date"]
+        fields = ["id", "category_name", "last_update_date", "created_date"]
         read_only_fields = ["slug", "last_update_date", "created_date"]
 
 
@@ -34,17 +34,22 @@ class SubjectCategorySerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     subject_category = SubjectCategorySerializer(read_only=True)
-    subject_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubjectCategory.objects.all(),
-        source="subject_category",
-        write_only=True,
-    )
+    subject_category_id = serializers.PrimaryKeyRelatedField(queryset=SubjectCategory.objects.all(), source="subject_category", write_only=True)
+
+    video_category = CategoryVideoSerializer(read_only=True)
+    video_category_id = serializers.PrimaryKeyRelatedField(queryset=CategoryVideo.objects.all(), source="video_category", write_only=True)
+
+    category = CategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source="category", write_only=True)
 
     class Meta:
         model = Video
         fields = [
+            "id",
             "category",
+            "category_id",
             "video_category",
+            "video_category_id",
             "subject_name",
             "subject_category",
             "subject_category_id",
@@ -69,6 +74,7 @@ class UserStatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserStatistic
         fields = [
+            "id",
             "user",
             "video",
             "true_answer_count",
@@ -84,6 +90,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnswer
         fields = [
+            "id",
             "test_content",
             "user",
             "answer_vars",

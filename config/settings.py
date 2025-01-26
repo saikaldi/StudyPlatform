@@ -152,17 +152,21 @@ REST_FRAMEWORK = {
 BASE_URL = "http://127.0.0.1:8000/"
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    "https://api.recordonline.kg",
-    "https://recordonline.kg",
-]
 
-# CORS Settings
-CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ["https://api.recordonline.kg"]
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = "Lax"
+CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ["https://api.recordonline.kg", "https://recordonline.kg"]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://api.recordonline.kg",
+#     "https://recordonline.kg",
+# ]
+
+# # CORS Settings
+# CSRF_COOKIE_SECURE = True
+# CSRF_TRUSTED_ORIGINS = ["https://api.recordonline.kg"]
+# CSRF_USE_SESSIONS = True
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SAMESITE = "Lax"
 
 AUTH_USER_MODEL = "users.User"
 

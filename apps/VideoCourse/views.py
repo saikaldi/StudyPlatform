@@ -33,7 +33,7 @@ def check_paid_access(user, video):
         201: OpenApiResponse(description="Категория видео успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Category: Негизки тест, Предметтик тест"])
+@extend_schema(tags=["Video-Category: Негизки пердмет, Кошумча предмет"])
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -49,7 +49,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Категория Предмета успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Category: Математика, Кыргыз тил"])
+@extend_schema(tags=["Video-Subject: Математика, Кыргыз тил"])
 class CategoryVideoViewSet(viewsets.ModelViewSet):
     queryset = CategoryVideo.objects.all()
     serializer_class = CategoryVideoSerializer
@@ -65,7 +65,7 @@ class CategoryVideoViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Категория Предмета успешно создана"),
     },
 )
-@extend_schema(tags=["Video-Subject-Category: Математика 1 болум, математика 2 болум"])
+@extend_schema(tags=["Video-Subject-Part: Математика 1 болум, математика 2 болум"])
 class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
@@ -73,7 +73,7 @@ class SubjectCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = SubjectCategoryFilter
 
-@extend_schema(tags=["Video-Cources"])
+@extend_schema(tags=["Video: Видео"])
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer

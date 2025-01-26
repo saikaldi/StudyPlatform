@@ -21,11 +21,11 @@ class Category(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
-        return self.categoryName
+        return self.category_name
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug.strip() == "":
-            base_slug = slugify(self.categoryName)
+            base_slug = slugify(self.category_name)
             unique_slug = base_slug
             counter = 1
             while CategoryVideo.objects.filter(slug=unique_slug).exists():

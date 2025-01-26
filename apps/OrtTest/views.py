@@ -16,7 +16,7 @@ from django_filters.rest_framework import DjangoFilterBackend
         201: OpenApiResponse(description="Категория теста успешно создана"),
     },
 )
-@extend_schema(tags=["Test-Category: Основные тесты, Тесты предметов"])
+@extend_schema(tags=["Test-Category: Негизки тест, Тесты предметов"])
 class TestCategoryViewSet(viewsets.ModelViewSet):
     queryset = TestCategory.objects.all()
     serializer_class = TestCategorySerializer
@@ -50,7 +50,7 @@ class SubjectCategoryViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Тест успешно создан"),
     },
 )
-@extend_schema(tags=["Test"])
+@extend_schema(tags=["Test: Математика 1 болум, Математика 2 болум"])
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
@@ -199,7 +199,7 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Счёт ответов пользователя успешно сохранён"),
     },
 )
-@extend_schema(tags=["User-Statistics: C"])
+@extend_schema(tags=["User-Statistics: Cтатистика студентов"])
 class UserStatisticViewSet(viewsets.ModelViewSet):
     queryset = UserStatistic.objects.all()
     serializer_class = UserStatisticSerializer

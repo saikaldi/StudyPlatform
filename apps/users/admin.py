@@ -4,7 +4,18 @@ from .models import User, Profile, EmailConfirmation, MockAssessmentTest
 from django.utils import timezone
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
 
+
+class ProfileAdminForm(forms.ModelForm):
+    address = forms.CharField(
+        widget=CKEditorUploadingWidget(),
+        label="Адрес пользователя"
+    )
+    class Meta:
+        model = Profile
+        fields = '__all__'
 
 @admin.action(description=_("Одобрить статус пользователя"))
 def approve_user_status(modeladmin, request, queryset):
@@ -29,7 +40,6 @@ def approve_user_status(modeladmin, request, queryset):
                         _(f"Ошибка отправки письма пользователю {user.email}: {str(e)}"),
                         level="error",
                     )
-
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -77,9 +87,9 @@ class UserAdmin(admin.ModelAdmin):
 
     ordering = ("email",)
 
-
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
+    form = ProfileAdminForm
     list_display = (
         "user",
         "get_first_name",
@@ -102,7 +112,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
     get_last_name.short_description = _(f"Фамилия")
 
-
 @admin.register(EmailConfirmation)
 class EmailConfirmationAdmin(admin.ModelAdmin):
     list_display = ("user", "code", "created_at", "is_expired_display")
@@ -113,7 +122,6 @@ class EmailConfirmationAdmin(admin.ModelAdmin):
         return _(f"Истек") if obj.is_expired() else _(f"Действителен")
 
     is_expired_display.short_description = _(f"Состояние")
-
 
 @admin.register(MockAssessmentTest)
 class MockAssessmentTestAdmin(admin.ModelAdmin):

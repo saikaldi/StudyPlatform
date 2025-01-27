@@ -74,6 +74,7 @@ class TestContentSerializer(serializers.ModelSerializer):
             "additional_questions",
             "var_C_text",
             "var_D_text",
+            "var_E_text",
             "true_answer",
             "last_update_date",
             "created_date",
@@ -189,5 +190,6 @@ class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):
             "var_B_text",
             "var_C_text",
             "var_D_text",
+            "var_E_text",
             "true_answer",
         ]

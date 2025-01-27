@@ -5,12 +5,22 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.db.models import Sum
 from .models import PaymentService, Payment
-from django.db.models import Sum
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
 
+class PaymentServiceAdminForm(forms.ModelForm):
+    whatsapp_url = forms.CharField(
+        widget=CKEditorUploadingWidget(),
+        label="Ссылка на WhatsApp"
+    )
+    class Meta:
+        model = PaymentService
+        fields = '__all__'
 
 @admin.register(PaymentService)
 class PaymentServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_with_logo', 'prop_number', 'full_name', 'whatsapp_link')
+    form = PaymentServiceAdminForm
+    list_display = ('id', 'name_with_logo', 'prop_number', 'full_name', 'whatsapp_link', 'total_payments')
     search_fields = ('payment_service_name', 'prop_number', 'full_name')
     list_filter = ('payment_service_name',)
     fieldsets = (
@@ -35,11 +45,11 @@ class PaymentServiceAdmin(admin.ModelAdmin):
         return '-'
     
     whatsapp_link.short_description = 'WhatsApp'
+
     def total_payments(self, obj):
         total = Payment.objects.filter(bank=obj).aggregate(total=Sum('amount'))['total']
         return f"{total:.2f} KGS" if total else '0 KGS'
     total_payments.short_description = 'Общая сумма платежей'
-    list_display += ('total_payments',)
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):

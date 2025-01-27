@@ -108,6 +108,12 @@ class TestContent(models.Model):
         blank=True,
         null=True,
     )
+    var_E_image = models.ImageField(
+        upload_to=upload_to_test,
+        verbose_name="Вариант ответа 'Д' (В файловом варианте)",
+        blank=True,
+        null=True,
+    )
     var_A_text = models.TextField(
         verbose_name="Вариант ответа 'А' (В текстовом варианте)", blank=True, null=True
     )
@@ -120,9 +126,12 @@ class TestContent(models.Model):
     var_D_text = models.TextField(
         verbose_name="Вариант ответа 'Г' (В текстовом варианте)", blank=True, null=True
     )
+    var_E_text = models.TextField(
+        verbose_name="Вариант ответа 'Д' (В текстовом варианте)", blank=True, null=True
+    )
     true_answer = models.CharField(
         max_length=10,
-        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г")],
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Правильный ответ",
     )
     last_update_date = models.DateTimeField(
@@ -180,6 +189,13 @@ class TestContent(models.Model):
                 {
                     "question_image": "Выберите только один вариант для вопроса: либо текст, либо файл",
                     "question_text": "Выберите только один вариант для вопроса: либо текст, либо файл",
+                }
+            )
+        if self.var_E_image and self.var_E_text:
+            raise ValidationError(
+                {
+                    "var_E_image": "Выберите только один вариант для Д: либо текст, либо файл",
+                    "var_E_text": "Выберите только один вариант для Д: либо текст, либо файл",
                 }
             )
 
@@ -260,7 +276,7 @@ class OkupTushunuuText(models.Model):
 
     class Meta:
         verbose_name = "Текст - Окуп тушунуу"
-        verbose_name_plural = "6. Тексты - Окуп тушунуу"
+        verbose_name_plural = "7. Тексты - Окуп тушунуу"
 
 
 class OkupTushunuuQuestion(models.Model):
@@ -304,7 +320,7 @@ class OkupTushunuuQuestion(models.Model):
 
     class Meta:
         verbose_name = "Вопрос Окуп тушунуу"
-        verbose_name_plural = "7. Вопросы Окуп тушунуу"
+        verbose_name_plural = "8. Вопросы Окуп тушунуу"
 
 
 class UserStatistic(models.Model):
@@ -338,7 +354,7 @@ class UserStatistic(models.Model):
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "9. Счета ответов"
+        verbose_name_plural = "10. Счета ответов"
         unique_together = ("test", "user")
 
 
@@ -377,4 +393,4 @@ class UserAnswer(models.Model):
 
     class Meta:
         verbose_name = "Ответ пользователя"
-        verbose_name_plural = "8. Ответы пользователей"
+        verbose_name_plural = "9. Ответы пользователей"

@@ -158,37 +158,46 @@ class TestContent(models.Model):
     )
     var_B_image = models.ImageField(
         upload_to=upload_to_test,
-        verbose_name="Вариант ответа 'B' (В файловом варианте)",
+        verbose_name="Вариант ответа 'Б' (В файловом варианте)",
         blank=True,
         null=True,
     )
     var_C_image = models.ImageField(
         upload_to=upload_to_test,
-        verbose_name="Вариант ответа 'C' (В файловом варианте)",
+        verbose_name="Вариант ответа 'В' (В файловом варианте)",
         blank=True,
         null=True,
     )
     var_D_image = models.ImageField(
         upload_to=upload_to_test,
-        verbose_name="Вариант ответа 'D' (В файловом варианте)",
+        verbose_name="Вариант ответа 'Г' (В файловом варианте)",
+        blank=True,
+        null=True,
+    )
+    var_E_image = models.ImageField(
+        upload_to=upload_to_test,
+        verbose_name="Вариант ответа 'Д' (В файловом варианте)",
         blank=True,
         null=True,
     )
     var_A_text = models.TextField(
-        verbose_name="Вариант ответа 'A' (В текстовом варианте)", blank=True, null=True
+        verbose_name="Вариант ответа 'А' (В текстовом варианте)", blank=True, null=True
     )
     var_B_text = models.TextField(
-        verbose_name="Вариант ответа 'B' (В текстовом варианте)", blank=True, null=True
+        verbose_name="Вариант ответа 'Б' (В текстовом варианте)", blank=True, null=True
     )
     var_C_text = models.TextField(
-        verbose_name="Вариант ответа 'C' (В текстовом варианте)", blank=True, null=True
+        verbose_name="Вариант ответа 'В' (В текстовом варианте)", blank=True, null=True
     )
     var_D_text = models.TextField(
-        verbose_name="Вариант ответа 'D' (В текстовом варианте)", blank=True, null=True
+        verbose_name="Вариант ответа 'Г' (В текстовом варианте)", blank=True, null=True
+    )
+    var_E_text = models.TextField(
+        verbose_name="Вариант ответа 'Д' (В текстовом варианте)", blank=True, null=True
     )
     true_answer = models.CharField(
         max_length=10,
-        choices=[("a", "A"), ("b", "B"), ("c", "C"), ("d", "D")],
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Правильный ответ",
     )
     test_order = models.PositiveIntegerField(
@@ -199,7 +208,51 @@ class TestContent(models.Model):
     )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def save(self, *args, **kwargs):
+        if self.question_number is None:
+            last_question = (
+                TestContent.objects.filter(test=self.test)
+                .order_by("question_number")
+                .last()
+            )
+            self.question_number = (
+                (last_question.question_number + 1) if last_question else 1
+            )
+        super().save(*args, **kwargs)
+
     def clean(self):
+        if self.var_A_image and self.var_A_text:
+            raise ValidationError(
+                {
+                    "var_A_image": "Выберите только один вариант для A: либо текст, либо файл",
+                    "var_A_text": "Выберите только один вариант для A: либо текст, либо файл",
+                }
+            )
+
+        if self.var_B_image and self.var_B_text:
+            raise ValidationError(
+                {
+                    "var_B_image": "Выберите только один вариант для B: либо текст, либо файл",
+                    "var_B_text": "Выберите только один вариант для B: либо текст, либо файл",
+                }
+            )
+
+        if self.var_C_image and self.var_C_text:
+            raise ValidationError(
+                {
+                    "var_C_image": "Выберите только один вариант для C: либо текст, либо файл",
+                    "var_C_text": "Выберите только один вариант для C: либо текст, либо файл",
+                }
+            )
+
+        if self.var_D_image and self.var_D_text:
+            raise ValidationError(
+                {
+                    "var_D_image": "Выберите только один вариант для D: либо текст, либо файл",
+                    "var_D_text": "Выберите только один вариант для D: либо текст, либо файл",
+                }
+            )
+
         if self.question_text and self.question_image:
             raise ValidationError(
                 {
@@ -207,14 +260,13 @@ class TestContent(models.Model):
                     "question_text": "Выберите только один вариант для вопроса: либо текст, либо файл",
                 }
             )
-        for var in ["A", "B", "C", "D"]:
-            if getattr(self, f"var_{var}_image") and getattr(self, f"var_{var}_text"):
-                raise ValidationError(
-                    {
-                        f"var_{var}_image": f"Выберите только один вариант для {var}: либо текст, либо файл",
-                        f"var_{var}_text": f"Выберите только один вариант для {var}: либо текст, либо файл",
-                    }
-                )
+        if self.var_E_image and self.var_E_text:
+            raise ValidationError(
+                {
+                    "var_E_image": "Выберите только один вариант для Д: либо текст, либо файл",
+                    "var_E_text": "Выберите только один вариант для Д: либо текст, либо файл",
+                }
+            )
 
     def __str__(self):
         return f"{self.video.video_category.category_name} - {self.video.subject_name} - {self.true_answer}"

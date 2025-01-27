@@ -51,6 +51,11 @@ class TestContentAdminForm(forms.ModelForm):
         label="Вариант ответа Г",
         required=False
     )
+    var_E_text = forms.CharField(
+        widget=CKEditorUploadingWidget(),
+        label="Вариант ответа Д",
+        required=False
+    )
     class Meta:
         model = TestContent
         fields = '__all__'

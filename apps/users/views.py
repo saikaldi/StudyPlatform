@@ -117,6 +117,11 @@ class ConfirmRegistrationView(APIView):
         if confirmation.is_used:
             return Response({'message': 'Этот код уже был использован'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if confirmation.is_expired():
+            if not confirmation.is_used:
+                user.delete()
+                return Response({'message': 'Код подтверждения истек, запросите код повторно'}, status=status.HTTP_400_BAD_REQUEST)
+
         confirmation.is_used = True
         confirmation.save()
 
@@ -127,7 +132,9 @@ class ConfirmRegistrationView(APIView):
             user.is_approved_by_admin = False
             user.save()
 
-        return Response({'message': 'Аккаунт успешно подтвержден и активирован'}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        token = str(refresh.access_token)
+        return Response({'message': 'Каттоо эсеби ийгиликтүү ырасталды жана жандырылды', 'token': token}, status=status.HTTP_200_OK)
 
 # ================== Авторизация пользователя ==================
 @extend_schema(

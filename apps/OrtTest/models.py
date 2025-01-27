@@ -308,9 +308,12 @@ class OkupTushunuuQuestion(models.Model):
     var_D_text = models.TextField(
         verbose_name="Вариант ответа 'Г'", blank=True, null=True
     )
+    var_E_text = models.TextField(
+        verbose_name="Вариант ответа 'Д'", blank=True, null=True
+    )
     true_answer = models.CharField(
         max_length=10,
-        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г")],
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Правильный ответ",
         default="а",  # Provide a default value
     )
@@ -375,7 +378,7 @@ class UserAnswer(models.Model):
 
     answer_vars = models.CharField(
         max_length=1,
-        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г")],
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Ответ студента",
     )
     # output_time = models.PositiveIntegerField(

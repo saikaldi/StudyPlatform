@@ -1,18 +1,7 @@
 import django_filters
 from django_filters import DateFilter, CharFilter, BooleanFilter, ModelChoiceFilter, NumberFilter, ChoiceFilter
 from django.conf import settings
-from .models import (
-    TestCategory,
-    SubjectCategory,
-    Test,
-    TestContent,
-    TestFullDescription,
-    OkupTushunuu,
-    OkupTushunuuText,
-    OkupTushunuuQuestion,
-    UserStatistic,
-    UserAnswer,
-)
+from .models import TestCategory, SubjectCategory, Test, TestContent, TestFullDescription, OkupTushunuu, OkupTushunuuText, OkupTushunuuQuestion, UserStatistic, UserAnswer
 from django.contrib.auth import get_user_model
 
 
@@ -57,19 +46,21 @@ class TestContentFilter(django_filters.FilterSet):
     var_B_image = CharFilter(field_name='var_B_image', lookup_expr='icontains')
     var_C_image = CharFilter(field_name='var_C_image', lookup_expr='icontains')
     var_D_image = CharFilter(field_name='var_D_image', lookup_expr='icontains')
+    var_E_image = CharFilter(field_name='var_E_image', lookup_expr='icontains')
     var_A_text = CharFilter(field_name='var_A_text', lookup_expr='icontains')
     var_B_text = CharFilter(field_name='var_B_text', lookup_expr='icontains')
     var_C_text = CharFilter(field_name='var_C_text', lookup_expr='icontains')
     var_D_text = CharFilter(field_name='var_D_text', lookup_expr='icontains')
-    true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г')])
+    var_E_text = CharFilter(field_name='var_E_text', lookup_expr='icontains')
+    true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
     last_update_date = DateFilter(field_name='last_update_date', lookup_expr='date')
     created_date = DateFilter(field_name='created_date', lookup_expr='date')
 
     class Meta:
         model = TestContent
         fields = ['test', 'question_number', 'question_text', 'question_image', 'additional_questions',
-                  'var_A_image', 'var_B_image', 'var_C_image', 'var_D_image', 
-                  'var_A_text', 'var_B_text', 'var_C_text', 'var_D_text', 
+                  'var_A_image', 'var_B_image', 'var_C_image', 'var_D_image', 'var_E_image',
+                  'var_A_text', 'var_B_text', 'var_C_text', 'var_D_text',  'var_E_text',
                   'true_answer', 'last_update_date', 'created_date']
 
 class TestFullDescriptionFilter(django_filters.FilterSet):
@@ -109,12 +100,13 @@ class OkupTushunuuQuestionFilter(django_filters.FilterSet):
     var_B_text = CharFilter(field_name='var_B_text', lookup_expr='icontains')
     var_C_text = CharFilter(field_name='var_C_text', lookup_expr='icontains')
     var_D_text = CharFilter(field_name='var_D_text', lookup_expr='icontains')
-    true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г')])
+    var_E_text = CharFilter(field_name='var_E_text', lookup_expr='icontains')
+    true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
 
     class Meta:
         model = OkupTushunuuQuestion
         fields = ['question', 'question_number', 'question_text', 
-                  'var_A_text', 'var_B_text', 'var_C_text', 'var_D_text', 'true_answer']
+                  'var_A_text', 'var_B_text', 'var_C_text', 'var_D_text', 'var_E_text', 'true_answer']
 
 class UserStatisticFilter(django_filters.FilterSet):
     test = ModelChoiceFilter(field_name='test', queryset=Test.objects.all())
@@ -133,7 +125,7 @@ class UserAnswerFilter(django_filters.FilterSet):
     test_content = ModelChoiceFilter(field_name='test_content', queryset=TestContent.objects.all())
     okup_tushunuu_question = ModelChoiceFilter(field_name='okup_tushunuu_question', queryset=OkupTushunuuQuestion.objects.all())
     user = ModelChoiceFilter(field_name='user', queryset=get_user_model().objects.all())
-    answer_vars = ChoiceFilter(field_name='answer_vars', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г')])
+    answer_vars = ChoiceFilter(field_name='answer_vars', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
     last_update_date = DateFilter(field_name='last_update_date', lookup_expr='date')
     created_date = DateFilter(field_name='created_date', lookup_expr='date')
 

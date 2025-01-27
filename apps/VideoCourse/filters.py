@@ -53,7 +53,7 @@ class VideoFilter(django_filters.FilterSet):
 class TestContentFilter(django_filters.FilterSet):
     video = ModelChoiceFilter(field_name='video', queryset=Video.objects.all())
     question_text = CharFilter(field_name='question_text', lookup_expr='icontains')
-    true_answer = ChoiceFilter(field_name='true_answer', choices=[('a', 'A'), ('b', 'B'), ('c', 'C'), ('d', 'D')])
+    true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
     test_order = NumberFilter(field_name='test_order')
     last_update_date = DateFilter(field_name='last_update_date', lookup_expr='date')
     created_date = DateFilter(field_name='created_date', lookup_expr='date')
@@ -78,7 +78,7 @@ class UserStatisticFilter(django_filters.FilterSet):
 class UserAnswerFilter(django_filters.FilterSet):
     test_content = ModelChoiceFilter(field_name='test_content', queryset=TestContent.objects.all())
     user = ModelChoiceFilter(field_name='user', queryset=get_user_model().objects.all())
-    answer_vars = ChoiceFilter(field_name='answer_vars', choices=[('a', 'A'), ('b', 'B'), ('c', 'C'), ('d', 'D')])
+    answer_vars = ChoiceFilter(field_name='answer_vars', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
     output_time = NumberFilter(field_name='output_time')
     last_update_date = DateFilter(field_name='last_update_date', lookup_expr='date')
     created_date = DateFilter(field_name='created_date', lookup_expr='date')

@@ -300,7 +300,7 @@ class TestContentViewSet(viewsets.ModelViewSet):
                 return paid_access_error
 
         answer = request.data.get("answer")
-        if answer not in ["a", "b", "c", "d"]:
+        if answer not in ["а", "б", "в", "г", "д"]:
             return Response(
                 {"error": "Неверный формат ответа"}, status=status.HTTP_400_BAD_REQUEST
             )

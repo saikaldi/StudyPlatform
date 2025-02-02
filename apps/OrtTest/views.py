@@ -1,8 +1,29 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory, OkupTushunuu, OkupTushunuuQuestion
-from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer
+from .models import (
+    TestCategory,
+    Test,
+    TestContent,
+    TestFullDescription,
+    UserAnswer,
+    UserStatistic,
+    SubjectCategory,
+    OkupTushunuu,
+    OkupTushunuuQuestion,
+)
+from .serializers import (
+    TestCategorySerializer,
+    TestSerializer,
+    TestContentSerializer,
+    TestFullDescriptionSerializer,
+    UserAnswerSerializer,
+    UserStatisticSerializer,
+    SubjectCategorySerializer,
+    OkupTushunuuSerializer,
+    OkupTushunuuQuestionSerializer,
+    OkupTushunuuTextSerializer,
+)
 from .filters import *
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -24,6 +45,7 @@ class TestCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestCategoryFilter
 
+
 @extend_schema(
     summary="Создание и получение категорий предметов",
     description="Этот эндпоинт позволяет создавать и получать категории предметов",
@@ -40,6 +62,7 @@ class SubjectCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = SubjectCategoryFilter
+
 
 @extend_schema(
     summary="Создание и получение тестов",
@@ -58,6 +81,7 @@ class TestViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestFilter
 
+
 @extend_schema(
     summary="Создание и получение данных теста",
     description="Этот эндпоинт позволяет создавать и получать данные теста",
@@ -75,6 +99,7 @@ class TestContentViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestContentFilter
 
+
 @extend_schema(
     summary="Создание и получение полного описания тестов",
     description="Этот эндпоинт позволяет создавать и получать полное описание тестов",
@@ -91,6 +116,7 @@ class TestFullDescriptionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestFullDescriptionFilter
+
 
 # @extend_schema(
 #     summary="Создание и получение инструкций для тестов",
@@ -190,6 +216,7 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 @extend_schema(
     summary="Создание и получение количества ответов пользователей на тесты",
     description="Этот эндпоинт позволяет создавать и получать количество правильных и неправильных ответов пользователей на тесты",
@@ -207,12 +234,22 @@ class UserStatisticViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = UserStatisticFilter
 
+
 @extend_schema(tags=["OkupTushunuu Tests: Тесты - Чтение и понимание"])
 class OkupTushunuuViewSet(viewsets.ModelViewSet):
     queryset = OkupTushunuu.objects.all()
     serializer_class = OkupTushunuuSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = OkupTushunuuFilter
+
+
+@extend_schema(tags=["OkupTushunuu Text: Текст - Чтение и понимание"])
+class OkupTushunuuTextViewSet(viewsets.ModelViewSet):
+    queryset = OkupTushunuuText.objects.all()
+    serializer_class = OkupTushunuuTextSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OkupTushunuuTextFilter
+
 
 @extend_schema(tags=["OkupTushunuu Questions: Вопросы - Чтение и понимание"])
 class OkupTushunuuQuestionViewSet(viewsets.ModelViewSet):

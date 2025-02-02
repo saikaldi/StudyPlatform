@@ -17,12 +17,13 @@ from django import forms
 
 class TestForm(forms.ModelForm):
     description = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Описание теста"
+        widget=CKEditorUploadingWidget(), label="Описание теста"
     )
+
     class Meta:
         model = Test
-        fields = '__all__'
+        fields = "__all__"
+
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
@@ -39,45 +40,36 @@ class TestAdmin(admin.ModelAdmin):
     ordering = ("-created_date",)
     form = TestForm
 
+
 class TestContentForm(forms.ModelForm):
     question_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Текст вопроса",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Текст вопроса", required=False
     )
     additional_questions = forms.CharField(
         widget=CKEditorUploadingWidget(),
         label="Дополнительный текст к вопросу",
-        required=False
+        required=False,
     )
     var_A_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа A",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа A", required=False
     )
     var_B_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Б",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Б", required=False
     )
     var_C_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа В",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа В", required=False
     )
     var_D_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Г",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Г", required=False
     )
     var_E_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Д",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Д", required=False
     )
+
     class Meta:
         model = TestContent
-        fields = '__all__'
+        fields = "__all__"
+
 
 @admin.register(TestContent)
 class TestContentAdmin(admin.ModelAdmin):
@@ -94,14 +86,16 @@ class TestContentAdmin(admin.ModelAdmin):
     ordering = ("test", "question_number")
     form = TestContentForm
 
+
 class TestFullDescriptionAdminForm(forms.ModelForm):
     description = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Подробное описание"
+        widget=CKEditorUploadingWidget(), label="Подробное описание"
     )
+
     class Meta:
         model = TestFullDescription
-        fields = '__all__'
+        fields = "__all__"
+
 
 @admin.register(TestFullDescription)
 class TestFullDescriptionAdmin(admin.ModelAdmin):
@@ -116,14 +110,16 @@ class TestFullDescriptionAdmin(admin.ModelAdmin):
     list_filter = ("test_category",)
     ordering = ("-created_date",)
 
+
 class OkupTushunuuForm(forms.ModelForm):
     description = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Описание теста"
+        widget=CKEditorUploadingWidget(), label="Описание теста"
     )
+
     class Meta:
         model = OkupTushunuu
-        fields = '__all__'
+        fields = "__all__"
+
 
 @admin.register(OkupTushunuu)
 class OkupTushunuuAdmin(admin.ModelAdmin):
@@ -132,39 +128,50 @@ class OkupTushunuuAdmin(admin.ModelAdmin):
     list_filter = ("created_at",)
     form = OkupTushunuuForm
 
+
 class OkupTushunuuQuestionForm(forms.ModelForm):
     question_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Текст вопроса"
+        widget=CKEditorUploadingWidget(), label="Текст вопроса"
     )
     var_A_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа A",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа A", required=False
     )
     var_B_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Б",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Б", required=False
     )
     var_C_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа В",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа В", required=False
     )
     var_D_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Г",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Г", required=False
     )
     var_E_text = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Вариант ответа Д",
-        required=False
+        widget=CKEditorUploadingWidget(), label="Вариант ответа Д", required=False
     )
+
     class Meta:
         model = OkupTushunuuQuestion
-        fields = '__all__'
+        fields = "__all__"
+
+
+@admin.register(OkupTushunuuText)
+class OkupTushunuuTextAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "test",
+        "question_number",
+        "text1",
+        "text2",
+        "text3",
+        "text4",
+        "text5",
+        "text6",
+        "text7",
+    )
+    list_filter = ("test",)
+    search_fields = ("title",)
+
 
 @admin.register(OkupTushunuuQuestion)
 class OkupTushunuuQuestionAdmin(admin.ModelAdmin):
@@ -173,17 +180,20 @@ class OkupTushunuuQuestionAdmin(admin.ModelAdmin):
     list_filter = ("true_answer",)
     form = OkupTushunuuQuestionForm
 
+
 @admin.register(TestCategory)
 class TestCategoryAdmin(admin.ModelAdmin):
     list_display = ("test_category_name", "last_update_date", "created_date")
     search_fields = ("test_category_name",)
     ordering = ("-created_date",)
 
+
 @admin.register(SubjectCategory)
 class SubjectCategoryAdmin(admin.ModelAdmin):
     list_display = ("subject_category_name", "last_update_date", "created_date")
     search_fields = ("subject_category_name",)
     ordering = ("-created_date",)
+
 
 @admin.register(UserStatistic)
 class UserStatisticAdmin(admin.ModelAdmin):
@@ -198,6 +208,7 @@ class UserStatisticAdmin(admin.ModelAdmin):
     )
     search_fields = ("user__email", "test__title", "okup_tushunuu__name")
     list_filter = ("last_update_date", "created_date")
+
 
 @admin.register(UserAnswer)
 class UserAnswerAdmin(admin.ModelAdmin):
@@ -215,9 +226,3 @@ class UserAnswerAdmin(admin.ModelAdmin):
         "test_content__test__title",
     )
     list_filter = ("last_update_date", "created_date")
-
-@admin.register(OkupTushunuuText)
-class OkupTushunuuTextAdmin(admin.ModelAdmin):
-    list_display = ("title", "test", "text_file", "question_number")
-    search_fields = ("title", "test__name")
-    list_filter = ("test",)

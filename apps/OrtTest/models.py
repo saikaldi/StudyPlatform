@@ -8,6 +8,7 @@ def upload_to_test(instance, filename):
         return f"{instance.test.title}/{filename}"
     return f"unknown/{filename}"
 
+
 class TestCategory(models.Model):
     test_category_name = models.CharField(
         max_length=52, verbose_name="Название типа теста"
@@ -248,9 +249,6 @@ class OkupTushunuu(models.Model):
 
 
 class OkupTushunuuText(models.Model):
-    """
-    Represents a text with a title and file for comprehension.
-    """
 
     test = models.ForeignKey(
         OkupTushunuu,
@@ -264,12 +262,13 @@ class OkupTushunuuText(models.Model):
     title = models.CharField(
         max_length=255, verbose_name="Название текста", default="Default Title"
     )
-    text_file = models.FileField(
-        upload_to="okup_tushunuu_files/",
-        blank=True,
-        null=True,
-        verbose_name="Файл текста",
-    )
+    text1 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text2 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text3 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text4 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text5 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text6 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text7 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
 
     def __str__(self):
         return self.title

@@ -7,6 +7,7 @@ from .models import (
     UserAnswer,
     UserStatistic,
     SubjectCategory,
+    OkupTushunuuText,
 )  # AdditionalInstruction, TestInstruction
 
 
@@ -177,6 +178,13 @@ class OkupTushunuuSerializer(serializers.ModelSerializer):
     class Meta:
         model = OkupTushunuu
         fields = ["id", "name", "description", "created_at"]
+
+
+class OkupTushunuuTextSerializer(serializers.ModelSerializer):
+    class Meta:
+
+        model = OkupTushunuuText
+        fields = "__all__"
 
 
 class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):

@@ -200,8 +200,8 @@ class TestContent(models.Model):
         choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Правильный ответ",
     )
-    question_number = models.PositiveIntegerField(
-        verbose_name="Порядковый номер вопроса", blank=True, null=True
+    test_order = models.PositiveIntegerField(
+        unique=True, verbose_name="Порядковый номер"
     )
     last_update_date = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
@@ -209,14 +209,14 @@ class TestContent(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def save(self, *args, **kwargs):
-        if self.question_number is None:
+        if self.test_order is None:
             last_question = (
                 TestContent.objects.filter(test=self.test)
-                .order_by("question_number")
+                .order_by("test_order")
                 .last()
             )
-            self.question_number = (
-                (last_question.question_number + 1) if last_question else 1
+            self.test_order = (
+                (last_question.test_order + 1) if last_question else 1
             )
         super().save(*args, **kwargs)
 
@@ -273,9 +273,9 @@ class TestContent(models.Model):
 
     class Meta:
         verbose_name = "Вопрос теста"
-        verbose_name_plural = "5. Вопросы тестов в видео"
-        ordering = ["question_number"]
-        unique_together = ("video", "question_number")
+        verbose_name_plural = "5. Вопросы тестов"
+        ordering = ["test_order"]
+        unique_together = ("video", "test_order")
 
 
 class UserStatistic(models.Model):
@@ -329,7 +329,7 @@ class UserAnswer(models.Model):
     )
     answer_vars = models.CharField(
         max_length=1,
-        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
+        choices=[("a", "A"), ("b", "B"), ("c", "C"), ("d", "D")],
         verbose_name="Ответ",
     )
     output_time = models.PositiveIntegerField(

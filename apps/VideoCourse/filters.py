@@ -54,13 +54,13 @@ class TestContentFilter(django_filters.FilterSet):
     video = ModelChoiceFilter(field_name='video', queryset=Video.objects.all())
     question_text = CharFilter(field_name='question_text', lookup_expr='icontains')
     true_answer = ChoiceFilter(field_name='true_answer', choices=[('а', 'А'), ('б', 'Б'), ('в', 'В'), ('г', 'Г'), ('д', 'Д')])
-    question_number = NumberFilter(field_name='question_number')
+    test_order = NumberFilter(field_name='test_order')
     last_update_date = DateFilter(field_name='last_update_date', lookup_expr='date')
     created_date = DateFilter(field_name='created_date', lookup_expr='date')
 
     class Meta:
         model = TestContent
-        fields = ['video', 'question_text', 'true_answer', 'question_number', 'last_update_date', 'created_date']
+        fields = ['video', 'question_text', 'true_answer', 'test_order', 'last_update_date', 'created_date']
 
 class UserStatisticFilter(django_filters.FilterSet):
     video = ModelChoiceFilter(field_name='video', queryset=Video.objects.all())

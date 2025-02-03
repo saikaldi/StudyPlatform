@@ -1,8 +1,8 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory, OkupTushunuu, OkupTushunuuQuestion
-from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer, OkupTushunuuTextSerializer
+from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory, OkupTushunuu, OkupTushunuuQuestion, TestInstruction
+from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer, OkupTushunuuTextSerializer, TestInstructionSerializer
 from .filters import *
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -92,20 +92,20 @@ class TestFullDescriptionViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestFullDescriptionFilter
 
-# @extend_schema(
-#     summary="Создание и получение инструкций для тестов",
-#     description="Этот эндпоинт позволяет создавать и получать инструкции для тестов",
-#     request=TestInstructionSerializer,
-#     responses={
-#         200: TestInstructionSerializer,
-#         201: OpenApiResponse(description="Инструкция успешно создана"),
-#     },
-# )
-# @extend_schema(tags=["Test-Instructions"])
-# class TestInstructionViewSet(viewsets.ModelViewSet):
-#     queryset = TestInstruction.objects.all()
-#     serializer_class = TestInstructionSerializer
-#     permission_classes = [permissions.IsAuthenticated]
+@extend_schema(
+    summary="Создание и получение инструкций для тестов",
+    description="Этот эндпоинт позволяет создавать и получать инструкции для тестов",
+    request=TestInstructionSerializer,
+    responses={
+        200: TestInstructionSerializer,
+        201: OpenApiResponse(description="Инструкция успешно создана"),
+    },
+)
+@extend_schema(tags=["Test-Instructions"])
+class TestInstructionViewSet(viewsets.ModelViewSet):
+    queryset = TestInstruction.objects.all()
+    serializer_class = TestInstructionSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # @extend_schema(

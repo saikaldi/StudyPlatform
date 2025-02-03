@@ -208,7 +208,7 @@ class TestContent(models.Model):
 
 
 class TestFullDescription(models.Model):
-    test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
     description_title = models.CharField(max_length=60, verbose_name="Название описания")
     # description = models.TextField(verbose_name="Описание")
     description_image = models.ImageField(upload_to='TestFullDescription/', verbose_name="Описаниев в формате изображения")
@@ -216,11 +216,25 @@ class TestFullDescription(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
-        return f"{self.test_category.test_category_name} - {self.description_title}"
+        return f"{self.test.test_category_name} - {self.description_title}"
 
     class Meta:
         verbose_name = "Подробное описание теста"
         verbose_name_plural = "4. Подробные описания тестов"
+
+class TestInstruction(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
+    instruction_title = models.CharField(max_length=60, verbose_name="Название описания")
+    instruction_image = models.ImageField(upload_to='TestInstruction/', verbose_name="Описаниев в формате изображения")
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return f"{self.test.test_category_name} - {self.description_title}"
+
+    class Meta:
+        verbose_name = "5. Инструкция тестов"
+        verbose_name_plural = "5. Инструкции тестов"
 
 
 class OkupTushunuu(models.Model):
@@ -233,7 +247,7 @@ class OkupTushunuu(models.Model):
 
     class Meta:
         verbose_name = "Окуп тушунуу"
-        verbose_name_plural = "5. Окуп тушунуу"
+        verbose_name_plural = "6. Окуп тушунуу"
 
 
 class OkupTushunuuText(models.Model):
@@ -262,7 +276,7 @@ class OkupTushunuuText(models.Model):
 
     class Meta:
         verbose_name = "Текст - Окуп тушунуу"
-        verbose_name_plural = "7. Тексты - Окуп тушунуу"
+        verbose_name_plural = "8. Тексты - Окуп тушунуу"
 
 class OkupTushunuuQuestion(models.Model):
     okup_tushunuu = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, verbose_name='Окуп тушунуу')
@@ -295,7 +309,7 @@ class OkupTushunuuQuestion(models.Model):
 
     class Meta:
         verbose_name = "Вопрос Окуп тушунуу"
-        verbose_name_plural = "8. Вопросы Окуп тушунуу"
+        verbose_name_plural = "9. Вопросы Окуп тушунуу"
 
 
 class UserStatistic(models.Model):
@@ -329,7 +343,7 @@ class UserStatistic(models.Model):
 
     class Meta:
         verbose_name = "Счет ответов"
-        verbose_name_plural = "10. Счета ответов"
+        verbose_name_plural = "9. Счета ответов"
         unique_together = ("test", "user")
 
 

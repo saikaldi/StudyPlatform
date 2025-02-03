@@ -10,6 +10,7 @@ from .models import (
     OkupTushunuu,
     OkupTushunuuText,
     OkupTushunuuQuestion,
+    TestInstruction
 )
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
@@ -106,14 +107,36 @@ class TestFullDescriptionAdminForm(forms.ModelForm):
 @admin.register(TestFullDescription)
 class TestFullDescriptionAdmin(admin.ModelAdmin):
     list_display = (
-        "test_category",
+        "test",
         "description_title",
         "last_update_date",
         "created_date",
     )
     form = TestFullDescriptionAdminForm
     search_fields = ("description_title",)
-    list_filter = ("test_category",)
+    list_filter = ("test",)
+    ordering = ("-created_date",)
+
+class TestInstructionAdminForm(forms.ModelForm):
+    # description = forms.CharField(
+    #     widget=CKEditorUploadingWidget(),
+    #     label="Подробное описание"
+    # )
+    class Meta:
+        model = TestInstruction
+        fields = '__all__'
+
+@admin.register(TestInstruction)
+class TestInstructionAdmin(admin.ModelAdmin):
+    list_display = (
+        "test",
+        "instruction_title",
+        "last_update_date",
+        "created_date",
+    )
+    form = TestInstructionAdminForm
+    search_fields = ("instruction_title",)
+    list_filter = ("test",)
     ordering = ("-created_date",)
 
 class OkupTushunuuForm(forms.ModelForm):

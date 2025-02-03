@@ -200,8 +200,8 @@ class TestContent(models.Model):
         choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Правильный ответ",
     )
-    test_order = models.PositiveIntegerField(
-        unique=True, verbose_name="Порядковый номер"
+    question_number = models.PositiveIntegerField(
+        verbose_name="Порядковый номер вопроса", blank=True, null=True
     )
     last_update_date = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
@@ -273,7 +273,7 @@ class TestContent(models.Model):
 
     class Meta:
         verbose_name = "Вопрос теста"
-        verbose_name_plural = "5. Вопросы тестов"
+        verbose_name_plural = "5. Вопросы тестов в видео"
         ordering = ["test_order"]
         unique_together = ("video", "test_order")
 

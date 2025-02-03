@@ -185,16 +185,16 @@ class OkupTushunuuTextSerializer(serializers.ModelSerializer):
 class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):
     okup_tushunuu = OkupTushunuuSerializer(read_only=True)
     okup_tushunuu_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuu.objects.all(), source="okup_tushunuu", write_only=True)
-    okup_tushunuu_text = OkupTushunuuTextSerializer(read_only=True)
-    okup_tushunuu_text_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuuText.objects.all(), source="okup_tushunuu_text", write_only=True)
+    # okup_tushunuu_text = OkupTushunuuTextSerializer(read_only=True)
+    # okup_tushunuu_text_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuuText.objects.all(), source="okup_tushunuu_text", write_only=True)
     class Meta:
         model = OkupTushunuuQuestion
         fields = [
             "id",
             "okup_tushunuu",
             "okup_tushunuu_id",
-            "okup_tushunuu_text",
-            "okup_tushunuu_text_id",
+            # "okup_tushunuu_text",
+            # "okup_tushunuu_text_id",
             "question",
             "question_number",
             "question_text",

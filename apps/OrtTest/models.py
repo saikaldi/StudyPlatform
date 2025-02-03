@@ -211,7 +211,7 @@ class TestFullDescription(models.Model):
     test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
     description_title = models.CharField(max_length=60, verbose_name="Название описания")
     # description = models.TextField(verbose_name="Описание")
-    description = models.ImageField(upload_to='TestFullDescription/', verbose_name="Описаниев в формате изображения")
+    description_image = models.ImageField(upload_to='TestFullDescription/', verbose_name="Описаниев в формате изображения")
     last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -237,10 +237,25 @@ class OkupTushunuu(models.Model):
 
 
 class OkupTushunuuText(models.Model):
-    test = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, related_name="texts", verbose_name="Тест")
-    question_number = models.PositiveIntegerField(verbose_name="Номер текста", blank=True, null=True)
-    title = models.CharField(max_length=255, verbose_name="Название текста", default="Default Title")
-    text_file = models.FileField(upload_to="okup_tushunuu_files/", blank=True, null=True, verbose_name="Файл текста")
+    test = models.ForeignKey(
+        OkupTushunuu,
+        on_delete=models.CASCADE,
+        related_name="texts",
+        verbose_name="Тест",
+    )
+    question_number = models.PositiveIntegerField(
+        verbose_name="Номер текста", blank=True, null=True
+    )
+    title = models.CharField(
+        max_length=255, verbose_name="Название текста", default="Default Title"
+    )
+    text1 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text2 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text3 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text4 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text5 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text6 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
+    text7 = models.ImageField(upload_to="okup_tushunuu/", blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -249,10 +264,9 @@ class OkupTushunuuText(models.Model):
         verbose_name = "Текст - Окуп тушунуу"
         verbose_name_plural = "7. Тексты - Окуп тушунуу"
 
-
 class OkupTushunuuQuestion(models.Model):
     okup_tushunuu = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, verbose_name='Окуп тушунуу')
-    okup_tushunuu_text = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, verbose_name='Окуп тушунуу текст')
+    # okup_tushunuu_text = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, verbose_name='Окуп тушунуу текст')
     question = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, related_name="questions", verbose_name="Текст")
     question_number = models.PositiveIntegerField(verbose_name="Номер вопроса", blank=True, null=True)
     question_text = models.TextField(verbose_name="Вопрос", default="Default question text")

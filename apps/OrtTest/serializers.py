@@ -7,6 +7,7 @@ from .models import (
     UserAnswer,
     UserStatistic,
     SubjectCategory,
+    OkupTushunuuText
 )  # AdditionalInstruction, TestInstruction
 
 
@@ -155,9 +156,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
 
 class UserStatisticSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
-    )
+    test_id = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source="test", write_only=True)
 
     class Meta:
         model = UserStatistic
@@ -178,12 +177,24 @@ class OkupTushunuuSerializer(serializers.ModelSerializer):
         model = OkupTushunuu
         fields = ["id", "name", "description", "created_at"]
 
+class OkupTushunuuTextSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OkupTushunuuText
+        fields = '__all__'
 
 class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):
+    okup_tushunuu = OkupTushunuuSerializer(read_only=True)
+    okup_tushunuu_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuu.objects.all(), source="okup_tushunuu", write_only=True)
+    okup_tushunuu_text = OkupTushunuuTextSerializer(read_only=True)
+    okup_tushunuu_text_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuuText.objects.all(), source="okup_tushunuu_text", write_only=True)
     class Meta:
         model = OkupTushunuuQuestion
         fields = [
             "id",
+            "okup_tushunuu",
+            "okup_tushunuu_id",
+            "okup_tushunuu_text",
+            "okup_tushunuu_text_id",
             "question",
             "question_number",
             "question_text",

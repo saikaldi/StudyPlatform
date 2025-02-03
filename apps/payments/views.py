@@ -11,7 +11,9 @@ from rest_framework import serializers
 import logging
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import *
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
@@ -138,11 +140,18 @@ class PaymentViewSet(viewsets.ModelViewSet):
         payment.status = new_status
         payment.save()
 
+        # Обновление статуса пользователя при успешной оплате
+        if new_status == "COMPLETED":
+            user = payment.user
+            user.user_status = "Студент"  # Или user.status = "Студент", если у тебя другое поле
+            user.save()
+
         user_email = payment.user.email
         if user_email:
             self._send_status_update_email(user_email, payment, new_status)
 
         return Response({'status': f'Статус успешно обновлен с {old_status} на {new_status}'})
+
 
     def _send_status_update_email(self, email, payment, new_status):
         subject = f"Изменение статуса вашей оплаты - {payment.slug}"

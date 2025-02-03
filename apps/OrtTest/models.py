@@ -73,7 +73,7 @@ class Test(models.Model):
 class TestContent(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
     question_number = models.PositiveIntegerField(
-        verbose_name="Номер вопроса", blank=True, null=True
+        verbose_name="Порядковый номер вопроса", blank=True, null=True
     )
     question_text = models.TextField(
         verbose_name="Вопрос в текстовом формате", blank=True, null=True
@@ -208,16 +208,11 @@ class TestContent(models.Model):
 
 
 class TestFullDescription(models.Model):
-    test_category = models.ForeignKey(
-        TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста"
-    )
-    description_title = models.CharField(
-        max_length=60, verbose_name="Название описания"
-    )
-    description = models.TextField(verbose_name="Описание")
-    last_update_date = models.DateTimeField(
-        auto_now=True, verbose_name="Последнее обновление"
-    )
+    test_category = models.ForeignKey(TestCategory, on_delete=models.CASCADE, verbose_name="Категория теста")
+    description_title = models.CharField(max_length=60, verbose_name="Название описания")
+    # description = models.TextField(verbose_name="Описание")
+    description = models.ImageField(upload_to='TestFullDescription/', verbose_name="Описаниев в формате изображения")
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
@@ -229,13 +224,7 @@ class TestFullDescription(models.Model):
 
 
 class OkupTushunuu(models.Model):
-    """
-    Represents a test with a name and description.
-    """
-
-    name = models.CharField(
-        max_length=255, verbose_name="Название теста", default="Default Title"
-    )
+    name = models.CharField(max_length=255, verbose_name="Название теста", default="Default Title")
     description = models.TextField(verbose_name="Описание теста")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -248,28 +237,10 @@ class OkupTushunuu(models.Model):
 
 
 class OkupTushunuuText(models.Model):
-    """
-    Represents a text with a title and file for comprehension.
-    """
-
-    test = models.ForeignKey(
-        OkupTushunuu,
-        on_delete=models.CASCADE,
-        related_name="texts",
-        verbose_name="Тест",
-    )
-    question_number = models.PositiveIntegerField(
-        verbose_name="Номер текста", blank=True, null=True
-    )
-    title = models.CharField(
-        max_length=255, verbose_name="Название текста", default="Default Title"
-    )
-    text_file = models.FileField(
-        upload_to="okup_tushunuu_files/",
-        blank=True,
-        null=True,
-        verbose_name="Файл текста",
-    )
+    test = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, related_name="texts", verbose_name="Тест")
+    question_number = models.PositiveIntegerField(verbose_name="Номер текста", blank=True, null=True)
+    title = models.CharField(max_length=255, verbose_name="Название текста", default="Default Title")
+    text_file = models.FileField(upload_to="okup_tushunuu_files/", blank=True, null=True, verbose_name="Файл текста")
 
     def __str__(self):
         return self.title
@@ -280,25 +251,12 @@ class OkupTushunuuText(models.Model):
 
 
 class OkupTushunuuQuestion(models.Model):
-    """
-    Represents a question with multiple-choice answers, correct answer, and user answers.
-    """
-
-    question = models.ForeignKey(
-        OkupTushunuuText,
-        on_delete=models.CASCADE,
-        related_name="questions",
-        verbose_name="Текст",
-    )
-    question_number = models.PositiveIntegerField(
-        verbose_name="Номер вопроса", blank=True, null=True
-    )
-    question_text = models.TextField(
-        verbose_name="Вопрос", default="Default question text"
-    )
-    var_A_text = models.TextField(
-        verbose_name="Вариант ответа 'А'", blank=True, null=True
-    )
+    okup_tushunuu = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, verbose_name='Окуп тушунуу')
+    okup_tushunuu_text = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, verbose_name='Окуп тушунуу текст')
+    question = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, related_name="questions", verbose_name="Текст")
+    question_number = models.PositiveIntegerField(verbose_name="Номер вопроса", blank=True, null=True)
+    question_text = models.TextField(verbose_name="Вопрос", default="Default question text")
+    var_A_text = models.TextField(verbose_name="Вариант ответа 'А'", blank=True, null=True)
     var_B_text = models.TextField(
         verbose_name="Вариант ответа 'Б'", blank=True, null=True
     )

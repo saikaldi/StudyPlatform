@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     STATUS_CHOICES = [
         ("Менеджер", "Менеджер"),
         ("Студент", "Студент"),
-        ("Учитель", "Учитель"),
+        ("Пользователь", "Пользователь"),
         ("Админ", "Админ"),
     ]  # Варианты статуса пользователя
     PAID_CHOICES = [
@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )  # Фамилия пользователя
     email = models.EmailField(unique=True)  # Электронная почта пользователя
     user_status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, default="Студент"
+        max_length=12, choices=STATUS_CHOICES, default="Пользователь"
     )  # Статусы пользователей
     paid = models.CharField(
         max_length=11, choices=PAID_CHOICES, default="Не оплачено"
@@ -181,3 +181,17 @@ class MockAssessmentTest(models.Model):
     class Meta:
         verbose_name = "Пробная запись на оценочный тест"
         verbose_name_plural = "Пробные записи на оценочные тесты"
+
+
+class MockAssessmentAnswer(models.Model):
+    mock_test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, related_name='answers')
+    question_number = models.IntegerField()
+    answer = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Ответ на вопрос {self.question_number} пользователя {self.mock_test.first_name} {self.mock_test.last_name}"
+
+    class Meta:
+        verbose_name = "Ответ на пробный тест"
+        verbose_name_plural = "Ответы на пробные тесты"

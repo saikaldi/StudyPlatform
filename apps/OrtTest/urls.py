@@ -10,6 +10,7 @@ from .views import (
     SubjectCategoryViewSet,
     OkupTushunuuViewSet,
     OkupTushunuuQuestionViewSet,
+    OkupTushunuuTextViewSet
 )  # AdditionalInstructionViewSet, TestInstructionViewSet
 
 
@@ -27,7 +28,7 @@ router.register(
 # router.register(r"additionalinstructions", AdditionalInstructionViewSet, basename="additionalinstruction")
 router.register(r"useranswers", UserAnswerViewSet, basename="useranswer")
 router.register(r"userstatistics", UserStatisticViewSet, basename="userstatistics")
-
+router.register(r"okup-tushunuu-text", OkupTushunuuTextViewSet, basename="OkupTushunuuText")
 
 router.register(r"okup-tushunuu", OkupTushunuuViewSet, basename="okup-tushunuu")
 router.register(

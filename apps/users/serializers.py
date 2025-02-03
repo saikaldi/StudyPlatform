@@ -3,8 +3,13 @@ from django.core.validators import EmailValidator
 from django.contrib.auth import get_user_model
 from .models import EmailConfirmation, Profile, MockAssessmentTest
 from django.contrib.auth import authenticate
+from ..OrtTest.serializers import UserStatistic as TUS
+from ..OrtTest.serializers import UserStatisticSerializer as TUSS
+from ..VideoCourse.serializers import UserStatistic as VUS
+from ..VideoCourse.serializers import UserStatisticSerializer as VUSS
 
 User = get_user_model()
+
 
 # Сериализатор для регистрации
 class RegisterSerializer(serializers.Serializer):
@@ -81,11 +86,42 @@ class ProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='user.last_name', read_only=True)
     user_status = serializers.CharField(source='user.user_status', read_only=True)
     paid = serializers.CharField(source='user.paid', read_only=True)
+    
+    # Добавляем информацию о пройденных тестах
+    test_statistics = serializers.SerializerMethodField()
+    video_statistics = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ['email', 'first_name', 'last_name', 'profile_picture', 'address', 'date_of_birth', 'gender', 'user_status', 'paid']
+        fields = [
+            'email', 'first_name', 'last_name', 'profile_picture', 'address', 
+            'date_of_birth', 'gender', 'user_status', 'paid', 
+            'test_statistics', 'video_statistics'
+        ]
         read_only_fields = ['email', 'first_name', 'last_name', 'user_status', 'paid']
+
+    def get_test_statistics(self, obj):
+        # Получаем статистику по тестам для текущего пользователя
+        user = obj.user
+        test_statistics = TUS.objects.filter(user=user)
+        return TUSS(test_statistics, many=True).data
+
+    def get_video_statistics(self, obj):
+        # Получаем статистику по видео для текущего пользователя
+        user = obj.user
+        video_statistics = VUS.objects.filter(user=user, video__isnull=False)
+        return VUSS(video_statistics, many=True).data
+# class ProfileSerializer(serializers.ModelSerializer):
+#     email = serializers.EmailField(source='user.email', read_only=True)
+#     first_name = serializers.CharField(source='user.first_name', read_only=True)
+#     last_name = serializers.CharField(source='user.last_name', read_only=True)
+#     user_status = serializers.CharField(source='user.user_status', read_only=True)
+#     paid = serializers.CharField(source='user.paid', read_only=True)
+
+#     class Meta:
+#         model = Profile
+#         fields = ['email', 'first_name', 'last_name', 'profile_picture', 'address', 'date_of_birth', 'gender', 'user_status', 'paid']
+#         read_only_fields = ['email', 'first_name', 'last_name', 'user_status', 'paid']
 
 class MockAssessmentTestSerializer(serializers.ModelSerializer):
     class Meta:

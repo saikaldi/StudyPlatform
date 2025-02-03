@@ -95,10 +95,10 @@ class TestContentAdmin(admin.ModelAdmin):
     form = TestContentForm
 
 class TestFullDescriptionAdminForm(forms.ModelForm):
-    description = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Подробное описание"
-    )
+    # description = forms.CharField(
+    #     widget=CKEditorUploadingWidget(),
+    #     label="Подробное описание"
+    # )
     class Meta:
         model = TestFullDescription
         fields = '__all__'

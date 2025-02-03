@@ -57,7 +57,7 @@ class RegisterView(APIView):
                     last_name=last_name
                 )
 
-                if user_status != 'Студент':
+                if user_status != 'Пользователь' and user_status != 'Студент':
                     user.is_status_approved = False
                     user.save()
 
@@ -128,7 +128,7 @@ class ConfirmRegistrationView(APIView):
         user.is_active = True
         user.save()
 
-        if user.user_status != 'Студент':
+        if user.user_status != 'Пользователь' and user.user_status != 'Студент':
             user.is_approved_by_admin = False
             user.save()
 
@@ -201,7 +201,7 @@ class RequestPasswordResetView(APIView):
 
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                reset_url = f"{settings.DOMEN_URL}/api/authentication/reset-password/{uid}/{token}/"
+                reset_url = f"{settings.BASE_URL}/api/v1/reset-password/{uid}/{token}/"
 
                 send_mail(
                     'Ссылка для сброса пароля',

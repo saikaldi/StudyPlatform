@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .models import TestCategory, Test, TestContent, TestFullDescription, UserAnswer, UserStatistic, SubjectCategory, OkupTushunuu, OkupTushunuuQuestion
-from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer
+from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer, OkupTushunuuTextSerializer
 from .filters import *
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -213,6 +213,13 @@ class OkupTushunuuViewSet(viewsets.ModelViewSet):
     serializer_class = OkupTushunuuSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = OkupTushunuuFilter
+
+@extend_schema(tags=["OkupTushunuu Text: тексты - Чтение и понимание текст"])
+class OkupTushunuuTextViewSet(viewsets.ModelViewSet):
+    queryset = OkupTushunuuText.objects.all()
+    serializer_class = OkupTushunuuTextSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OkupTushunuuTextFilter
 
 @extend_schema(tags=["OkupTushunuu Questions: Вопросы - Чтение и понимание"])
 class OkupTushunuuQuestionViewSet(viewsets.ModelViewSet):

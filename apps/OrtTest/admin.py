@@ -218,6 +218,18 @@ class UserAnswerAdmin(admin.ModelAdmin):
 
 @admin.register(OkupTushunuuText)
 class OkupTushunuuTextAdmin(admin.ModelAdmin):
-    list_display = ("title", "test", "text_file", "question_number")
-    search_fields = ("title", "test__name")
+    list_display = (
+        "id",
+        "title",
+        "test",
+        "question_number",
+        "text1",
+        "text2",
+        "text3",
+        "text4",
+        "text5",
+        "text6",
+        "text7",
+    )
     list_filter = ("test",)
+    search_fields = ("title",)

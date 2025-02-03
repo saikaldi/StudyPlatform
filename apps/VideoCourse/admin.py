@@ -100,7 +100,7 @@ class TestContentAdmin(admin.ModelAdmin):
     list_display = (
         "video",
         "true_answer",
-        "test_order",
+        "question_number",
         "last_update_date",
         "created_date",
     )

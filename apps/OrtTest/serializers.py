@@ -83,6 +83,7 @@ class TestContentSerializer(serializers.ModelSerializer):
             "var_E_text",
             "additional_questions",
             "true_answer",
+            "question_number",
             "last_update_date",
             "created_date",
         ]

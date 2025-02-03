@@ -274,8 +274,8 @@ class TestContent(models.Model):
     class Meta:
         verbose_name = "Вопрос теста"
         verbose_name_plural = "5. Вопросы тестов в видео"
-        ordering = ["test_order"]
-        unique_together = ("video", "test_order")
+        ordering = ["question_number"]
+        unique_together = ("video", "question_number")
 
 
 class UserStatistic(models.Model):
@@ -329,7 +329,7 @@ class UserAnswer(models.Model):
     )
     answer_vars = models.CharField(
         max_length=1,
-        choices=[("a", "A"), ("b", "B"), ("c", "C"), ("d", "D")],
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
         verbose_name="Ответ",
     )
     output_time = models.PositiveIntegerField(

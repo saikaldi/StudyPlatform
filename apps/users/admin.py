@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.core.mail import send_mail
-from .models import User, Profile, EmailConfirmation, MockAssessmentTest
+from .models import User, Profile, EmailConfirmation
 from django.utils import timezone
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
@@ -123,29 +123,29 @@ class EmailConfirmationAdmin(admin.ModelAdmin):
 
     is_expired_display.short_description = _(f"Состояние")
 
-@admin.register(MockAssessmentTest)
-class MockAssessmentTestAdmin(admin.ModelAdmin):
-    list_display = (
-        "first_name",
-        "last_name",
-        "phone_number",
-        "created_date",
-        "formatted_last_update_date",
-    )
-    search_fields = ("first_name", "last_name", "phone_number")
-    list_filter = ("created_date", "last_update_date")
+# @admin.register(MockAssessmentTest)
+# class MockAssessmentTestAdmin(admin.ModelAdmin):
+#     list_display = (
+#         "first_name",
+#         "last_name",
+#         "phone_number",
+#         "created_date",
+#         "formatted_last_update_date",
+#     )
+#     search_fields = ("first_name", "last_name", "phone_number")
+#     list_filter = ("created_date", "last_update_date")
 
-    fieldsets = (
-        (None, {"fields": ("first_name", "last_name", "phone_number")} ),
-        (_("Даты"), {"fields": ("created_date", "last_update_date")}),
-    )
-    readonly_fields = ("last_update_date", "created_date")
+#     fieldsets = (
+#         (None, {"fields": ("first_name", "last_name", "phone_number")} ),
+#         (_("Даты"), {"fields": ("created_date", "last_update_date")}),
+#     )
+#     readonly_fields = ("last_update_date", "created_date")
 
-    def formatted_last_update_date(self, obj):
-        return (
-            obj.last_update_date.strftime("%d.%m.%Y %H:%M")
-            if obj.last_update_date
-            else _(f"Не обновлялся")
-        )
+#     def formatted_last_update_date(self, obj):
+#         return (
+#             obj.last_update_date.strftime("%d.%m.%Y %H:%M")
+#             if obj.last_update_date
+#             else _(f"Не обновлялся")
+#         )
 
-    formatted_last_update_date.short_description = _(f"Последнее обновление")
+#     formatted_last_update_date.short_description = _(f"Последнее обновление")

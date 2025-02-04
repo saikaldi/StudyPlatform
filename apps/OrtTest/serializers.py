@@ -72,6 +72,7 @@ class TestSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     test_questions = serializers.SerializerMethodField()
+    okup_tushunuu_questions = serializers.SerializerMethodField()
 
     class Meta:
         model = Test
@@ -85,15 +86,19 @@ class TestSerializer(serializers.ModelSerializer):
             "first_test",
             "description",
             "background_image",
+            "test_questions",
+            "okup_tushunuu_questions",
             "last_update_date",
             "created_date",
-            "test_questions",
         ]
 
     def get_test_questions(self, obj):
-        """Возвращает только вопросы, относящиеся к этому тесту."""
-        test_questions = TestContent.objects.filter(test=obj)  # Фильтрация по test
+        test_questions = TestContent.objects.filter(test=obj)
         return TestContentSerializer(test_questions, many=True).data
+
+    def get_okup_tushunuu_questions(self, obj):
+        questions = OkupTushunuuQuestion.objects.all()
+        return OkupTushunuuQuestionSerializer(questions, many=True).data
 
 
 class TestFullDescriptionSerializer(serializers.ModelSerializer):

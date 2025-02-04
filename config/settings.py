@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "apps.OrtTest",
     "apps.payments",
     "apps.VideoCourse",
+    # "apps.MockAssessmentTest",
 ]
 
 MIDDLEWARE = [

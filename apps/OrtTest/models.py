@@ -223,7 +223,7 @@ class TestFullDescription(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
-        return f"{self.test.test_category_name} - {self.description_title}"
+        return f"{self.test.test_category.test_category_name} - {self.description_title}"
 
     class Meta:
         verbose_name = "Подробное описание теста"
@@ -236,7 +236,7 @@ class TestInstruction(models.Model):
         max_length=60, verbose_name="Название описания"
     )
     instruction_image = models.ImageField(
-        upload_to="TestInstruction/", verbose_name="Описаниев в формате изображения"
+        upload_to="TestInstruction/", verbose_name="Описаниев в формате изображения", blank=True, null=True
     )
     last_update_date = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
@@ -244,7 +244,7 @@ class TestInstruction(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
-        return f"{self.test.test_category_name} - {self.description_title}"
+        return f"{self.test.test_category.test_category_name} - {self.instruction_title}"
 
     class Meta:
         verbose_name = "5. Инструкция тестов"
@@ -268,9 +268,9 @@ class OkupTushunuu(models.Model):
 
 class OkupTushunuuText(models.Model):
     test = models.ForeignKey(
-        OkupTushunuu,
+        Test,
         on_delete=models.CASCADE,
-        related_name="texts",
+        related_name="test",
         verbose_name="Тест",
     )
     question_number = models.PositiveIntegerField(

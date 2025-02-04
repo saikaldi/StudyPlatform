@@ -8,7 +8,6 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'profile', ProfileViewSet, basename='Profile')
-router.register(r'mock-assessment-tests', MockAssessmentTestViewSet)
 urlpatterns = [
     path('sign-up/', RegisterView.as_view(), name='register'),
     path('sign-up-confirmation/', ConfirmRegistrationView.as_view(), name='sign-up-confirmation'),

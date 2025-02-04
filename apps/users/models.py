@@ -1,8 +1,4 @@
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.utils.timezone import now
@@ -144,54 +140,3 @@ class EmailConfirmation(models.Model):
     class Meta:
         verbose_name = "Код активации Аккаунта"
         verbose_name_plural = "Коды активации Аккаунтов"
-
-
-class MockAssessmentTest(models.Model):
-    phone_regex = RegexValidator(
-        regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
-    )  # Валидатор номера телефона
-    phone_number = models.CharField(
-        validators=[phone_regex], max_length=13, unique=True, blank=True, null=True
-    )  # Номер телефона пол
-    first_name = models.CharField(max_length=50)  # Имя пользователя
-    last_name = models.CharField(max_length=50)  # Фамилия пользователя
-    phone_regex = RegexValidator(
-        regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
-    )  # Валидатор номера телефона
-    phone_number = models.CharField(
-        validators=[phone_regex],
-        max_length=13,
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name="Номер телефона",
-    )  # Номер телефона пол
-    first_name = models.CharField(max_length=50, verbose_name="Имя")  # Имя пользователя
-    last_name = models.CharField(
-        max_length=50, verbose_name="Фамилия"
-    )  # Фамилия пользователя
-    last_update_date = models.DateTimeField(
-        auto_now=True, verbose_name="Дата последнего обновления"
-    )
-    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-
-    def __str__(self):
-        return f"Данные пользователя: {self.first_name} - {self.last_name} - {self.phone_number}"
-
-    class Meta:
-        verbose_name = "Пробная запись на оценочный тест"
-        verbose_name_plural = "Пробные записи на оценочные тесты"
-
-
-class MockAssessmentAnswer(models.Model):
-    mock_test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, related_name='answers')
-    question_number = models.IntegerField()
-    answer = models.CharField(max_length=255)
-    is_correct = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Ответ на вопрос {self.question_number} пользователя {self.mock_test.first_name} {self.mock_test.last_name}"
-
-    class Meta:
-        verbose_name = "Ответ на пробный тест"
-        verbose_name_plural = "Ответы на пробные тесты"

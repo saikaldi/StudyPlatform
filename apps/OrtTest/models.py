@@ -8,9 +8,10 @@ def upload_to_test(instance, filename):
         return f"{instance.test.title}/{filename}"
     return f"unknown/{filename}"
 
+
 class TestCategory(models.Model):
     test_category_name = models.CharField(
-        max_length=52, verbose_name="Название типа теста"
+        max_length=52, verbose_name="Название типа предмета"
     )
     last_update_date = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
@@ -209,10 +210,16 @@ class TestContent(models.Model):
 
 class TestFullDescription(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
-    description_title = models.CharField(max_length=60, verbose_name="Название описания")
+    description_title = models.CharField(
+        max_length=60, verbose_name="Название описания"
+    )
     # description = models.TextField(verbose_name="Описание")
-    description_image = models.ImageField(upload_to='TestFullDescription/', verbose_name="Описаниев в формате изображения")
-    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    description_image = models.ImageField(
+        upload_to="TestFullDescription/", verbose_name="Описаниев в формате изображения"
+    )
+    last_update_date = models.DateTimeField(
+        auto_now=True, verbose_name="Последнее обновление"
+    )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
@@ -222,11 +229,18 @@ class TestFullDescription(models.Model):
         verbose_name = "Подробное описание теста"
         verbose_name_plural = "4. Подробные описания тестов"
 
+
 class TestInstruction(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
-    instruction_title = models.CharField(max_length=60, verbose_name="Название описания")
-    instruction_image = models.ImageField(upload_to='TestInstruction/', verbose_name="Описаниев в формате изображения")
-    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    instruction_title = models.CharField(
+        max_length=60, verbose_name="Название описания"
+    )
+    instruction_image = models.ImageField(
+        upload_to="TestInstruction/", verbose_name="Описаниев в формате изображения"
+    )
+    last_update_date = models.DateTimeField(
+        auto_now=True, verbose_name="Последнее обновление"
+    )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
@@ -238,7 +252,9 @@ class TestInstruction(models.Model):
 
 
 class OkupTushunuu(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Название теста", default="Default Title")
+    name = models.CharField(
+        max_length=255, verbose_name="Название теста", default="Default Title"
+    )
     description = models.TextField(verbose_name="Описание теста")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -278,13 +294,27 @@ class OkupTushunuuText(models.Model):
         verbose_name = "Текст - Окуп тушунуу"
         verbose_name_plural = "8. Тексты - Окуп тушунуу"
 
+
 class OkupTushunuuQuestion(models.Model):
-    okup_tushunuu = models.ForeignKey(OkupTushunuu, on_delete=models.CASCADE, verbose_name='Окуп тушунуу')
+    okup_tushunuu = models.ForeignKey(
+        OkupTushunuu, on_delete=models.CASCADE, verbose_name="Окуп тушунуу"
+    )
     # okup_tushunuu_text = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, verbose_name='Окуп тушунуу текст')
-    question = models.ForeignKey(OkupTushunuuText, on_delete=models.CASCADE, related_name="questions", verbose_name="Текст")
-    question_number = models.PositiveIntegerField(verbose_name="Номер вопроса", blank=True, null=True)
-    question_text = models.TextField(verbose_name="Вопрос", default="Default question text")
-    var_A_text = models.TextField(verbose_name="Вариант ответа 'А'", blank=True, null=True)
+    question = models.ForeignKey(
+        OkupTushunuuText,
+        on_delete=models.CASCADE,
+        related_name="questions",
+        verbose_name="Текст",
+    )
+    question_number = models.PositiveIntegerField(
+        verbose_name="Номер вопроса", blank=True, null=True
+    )
+    question_text = models.TextField(
+        verbose_name="Вопрос", default="Default question text"
+    )
+    var_A_text = models.TextField(
+        verbose_name="Вариант ответа 'А'", blank=True, null=True
+    )
     var_B_text = models.TextField(
         verbose_name="Вариант ответа 'Б'", blank=True, null=True
     )

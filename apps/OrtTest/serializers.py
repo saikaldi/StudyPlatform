@@ -12,7 +12,7 @@ from .models import (
     UserStatistic,
     UserAnswer,
     OkupTushunuu,
-    OkupTushunuuQuestion
+    OkupTushunuuQuestion,
 )
 
 
@@ -28,37 +28,8 @@ class SubjectCategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TestSerializer(serializers.ModelSerializer):
-    test_category = TestCategorySerializer(read_only=True)
-    test_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=TestCategory.objects.all(), source="test_category", write_only=True
-    )
-    subject_category = SubjectCategorySerializer(read_only=True)
-    subject_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubjectCategory.objects.all(),
-        source="subject_category",
-        write_only=True,
-    )
-
-    class Meta:
-        model = Test
-        fields = [
-            "id",
-            "test_category",
-            "test_category_id",
-            "subject_category",
-            "subject_category_id",
-            "title",
-            "first_test",
-            "description",
-            "background_image",
-            "last_update_date",
-            "created_date",
-        ]
-
-
 class TestContentSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
+    # test = TestSerializer(read_only=True)
     test_id = serializers.PrimaryKeyRelatedField(
         queryset=Test.objects.all(), source="test", write_only=True
     )
@@ -89,6 +60,42 @@ class TestContentSerializer(serializers.ModelSerializer):
         ]
 
 
+class TestSerializer(serializers.ModelSerializer):
+    test_category = TestCategorySerializer(read_only=True)
+    test_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=TestCategory.objects.all(), source="test_category", write_only=True
+    )
+    subject_category = SubjectCategorySerializer(read_only=True)
+    subject_category_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubjectCategory.objects.all(),
+        source="subject_category",
+        write_only=True,
+    )
+    test_questions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Test
+        fields = [
+            "id",
+            "test_category",
+            "test_category_id",
+            "subject_category",
+            "subject_category_id",
+            "title",
+            "first_test",
+            "description",
+            "background_image",
+            "last_update_date",
+            "created_date",
+            "test_questions",
+        ]
+
+    def get_test_questions(self, obj):
+        """Возвращает только вопросы, относящиеся к этому тесту."""
+        test_questions = TestContent.objects.filter(test=obj)  # Фильтрация по test
+        return TestContentSerializer(test_questions, many=True).data
+
+
 class TestFullDescriptionSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
     test_id = serializers.PrimaryKeyRelatedField(
@@ -110,15 +117,22 @@ class TestFullDescriptionSerializer(serializers.ModelSerializer):
 
 class TestInstructionSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source='test', write_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="test", write_only=True
+    )
 
     class Meta:
         model = TestInstruction
         fields = [
-            'id', 'test', 'test_id',
-            'instruction_title', 'instruction_image',
-            'last_update_date', 'created_date'
+            "id",
+            "test",
+            "test_id",
+            "instruction_title",
+            "instruction_image",
+            "last_update_date",
+            "created_date",
         ]
+
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     test_content = TestContentSerializer(read_only=True)
@@ -146,7 +160,9 @@ class UserAnswerSerializer(serializers.ModelSerializer):
 
 class UserStatisticSerializer(serializers.ModelSerializer):
     test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source="test", write_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="test", write_only=True
+    )
 
     class Meta:
         model = UserStatistic
@@ -167,14 +183,19 @@ class OkupTushunuuSerializer(serializers.ModelSerializer):
         model = OkupTushunuu
         fields = ["id", "name", "description", "created_at"]
 
+
 class OkupTushunuuTextSerializer(serializers.ModelSerializer):
     class Meta:
         model = OkupTushunuuText
-        fields = '__all__'
+        fields = "__all__"
+
 
 class OkupTushunuuQuestionSerializer(serializers.ModelSerializer):
     okup_tushunuu = OkupTushunuuSerializer(read_only=True)
-    okup_tushunuu_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuu.objects.all(), source="okup_tushunuu", write_only=True)
+    okup_tushunuu_id = serializers.PrimaryKeyRelatedField(
+        queryset=OkupTushunuu.objects.all(), source="okup_tushunuu", write_only=True
+    )
+
     # okup_tushunuu_text = OkupTushunuuTextSerializer(read_only=True)
     # okup_tushunuu_text_id = serializers.PrimaryKeyRelatedField(queryset=OkupTushunuuText.objects.all(), source="okup_tushunuu_text", write_only=True)
     class Meta:

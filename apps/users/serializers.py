@@ -81,12 +81,9 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 # Сериализатор профиля
 class ProfileSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(source='user.email', read_only=True)
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
-    user_status = serializers.CharField(source='user.user_status', read_only=True)
-    paid = serializers.CharField(source='user.paid', read_only=True)
-    
+
     # Добавляем информацию о пройденных тестах
     test_statistics = serializers.SerializerMethodField()
     video_statistics = serializers.SerializerMethodField()
@@ -94,11 +91,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'email', 'first_name', 'last_name', 'profile_picture', 'address', 
-            'date_of_birth', 'gender', 'user_status', 'paid', 
-            'test_statistics', 'video_statistics'
+            'first_name', 'last_name', 'profile_picture', 'test_statistics', 'video_statistics'
         ]
-        read_only_fields = ['email', 'first_name', 'last_name', 'user_status', 'paid']
 
     def get_test_statistics(self, obj):
         # Получаем статистику по тестам для текущего пользователя
@@ -111,6 +105,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         user = obj.user
         video_statistics = VUS.objects.filter(user=user, video__isnull=False)
         return VUSS(video_statistics, many=True).data
+
 # class ProfileSerializer(serializers.ModelSerializer):
 #     email = serializers.EmailField(source='user.email', read_only=True)
 #     first_name = serializers.CharField(source='user.first_name', read_only=True)

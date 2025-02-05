@@ -95,12 +95,9 @@ class ProfileAdmin(admin.ModelAdmin):
         "get_first_name",
         "get_last_name",
         "phone_number",
-        "address",
-        "date_of_birth",
-        "gender",
     )
     search_fields = ("user__email", "user__first_name", "user__last_name", "phone_number")
-    list_filter = ("gender", "date_of_birth")
+    list_filter = ("last_update_date", "created_date")
 
     def get_first_name(self, obj):
         return obj.user.first_name

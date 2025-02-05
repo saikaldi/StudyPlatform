@@ -5,6 +5,7 @@ from .models import TestCategory, Test, TestContent, TestFullDescription, UserAn
 from .serializers import TestCategorySerializer, TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, UserAnswerSerializer, UserStatisticSerializer, SubjectCategorySerializer, OkupTushunuuSerializer, OkupTushunuuQuestionSerializer, OkupTushunuuTextSerializer, TestInstructionSerializer
 from .filters import *
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiTypes
 
 
 @extend_schema(
@@ -123,7 +124,6 @@ class TestInstructionViewSet(viewsets.ModelViewSet):
 #     serializer_class = AdditionalInstructionSerializer
 #     permission_classes = [permissions.IsAuthenticated]
 
-
 @extend_schema(tags=["User Answer for Test"])
 class UserAnswerViewSet(viewsets.ModelViewSet):
     queryset = UserAnswer.objects.all()
@@ -134,12 +134,21 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Создание ответа пользователя на тест",
         description=(
-            "Этот эндпоинт позволяет пользователю отправить свой ответ на тест"
-            "Перед созданием ответа проверяется, был ли уже отправлен ответ на данный контент теста"
-            "Если ответ уже существует, будет возвращена ошибка"
-            "Если тест не является бесплатным, также будет возвращена ошибка"
+            "Этот эндпоинт позволяет пользователю отправить свой ответ на тест.\n"
+            "- Перед созданием ответа проверяется, был ли уже отправлен ответ на данный контент теста.\n"
+            "- Если ответ уже существует, будет возвращена ошибка.\n"
+            "- Если тест не является бесплатным, также будет возвращена ошибка."
         ),
-        request=UserAnswerSerializer,
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "test_content_id": {"type": "integer", "example": 1},
+                    "answer_vars": {"type": "string", "example": "Ответ пользователя"},
+                },
+                "required": ["test_content_id", "answer_vars"],
+            }
+        },
         responses={
             201: OpenApiResponse(description="Ответ пользователя успешно создан"),
             400: OpenApiResponse(description="Пользователь уже отвечал на этот тест"),
@@ -148,7 +157,7 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         user = request.user
-        test_content_id = request.data.get("test_content")
+        test_content_id = request.data.get("test_content_id")  # Обновленный ключ
         user_answer = request.data.get("answer_vars")
 
         if not Test.objects.filter(first_test=True).exists():
@@ -163,8 +172,9 @@ class UserAnswerViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        test_content = TestContent.objects.get(id=test_content_id)
-        if not test_content:
+        try:
+            test_content = TestContent.objects.get(id=test_content_id)
+        except TestContent.DoesNotExist:
             return Response(
                 {"detail": "Контент теста не найден"}, status=status.HTTP_404_NOT_FOUND
             )

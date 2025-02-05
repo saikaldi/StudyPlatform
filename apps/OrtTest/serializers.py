@@ -152,6 +152,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             "user",
             "okup_tushunuu_question",
             "test_content",
+            "test_content_id",  # Обязательно указываем
             "answer_vars",
             "last_update_date",
             "created_date",

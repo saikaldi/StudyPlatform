@@ -77,30 +77,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # Модель профиля
 class Profile(models.Model):
-    phone_regex = RegexValidator(
-        regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона"
-    )  # Валидатор номера телефона
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE
-    )  # К какому пользователю пренадлежит Профиль
-    profile_picture = models.ImageField(
-        upload_to="profile_pictures/", null=True, blank=True
-    )  # Фото профиля пользователя
-    address = models.CharField(
-        max_length=100, blank=True, null=True
-    )  # Адрес пользователя
-    phone_number = models.CharField(
-        validators=[phone_regex], max_length=13, unique=True, blank=True, null=True
-    )  # Номер телефона пользователя
-    date_of_birth = models.DateField(
-        null=True, blank=True
-    )  # Дата рождения пользователя
-    gender = models.CharField(
-        max_length=10,
-        choices=[("мужской", "Мужской"), ("женский", "Женский")],
-        null=True,
-        blank=True,
-    )  # Пол пользователя
+    phone_regex = RegexValidator(regex=r"^\+?1?\d{9,13}$", message="Введите корректный номер телефона")  # Валидатор номера телефона
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # К какому пользователю пренадлежит Профиль
+    profile_picture = models.ImageField(upload_to="profile_pictures/", null=True, blank=True)  # Фото профиля пользователя
+    phone_number = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True, null=True)  # Номер телефона пользователя
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+    created_date = models.DateTimeField(auto_now_add=True,  verbose_name="Дата создания")
 
     def __str__(self):
         return f"{self.user.email} профиль"

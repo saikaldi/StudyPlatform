@@ -11,6 +11,7 @@ from .views import (
     OkupTushunuuViewSet,
     OkupTushunuuQuestionViewSet,
     OkupTushunuuTextViewSet,
+    TestInstructionViewSet
 )
 
 
@@ -19,7 +20,7 @@ router.register(r"testcategories", TestCategoryViewSet, basename="testcategory")
 router.register(r"subjectcategories", SubjectCategoryViewSet, basename="subjectcategory")
 router.register(r"tests", TestViewSet, basename="test")
 router.register(r"TestContent", TestContentViewSet, basename="TestContent")
-router.register(r"test-instruction", TestFullDescriptionViewSet, basename="testinstruction")
+router.register(r"test-instruction", TestInstructionViewSet, basename="testinstruction")
 router.register(r"testfulldescriptions", TestFullDescriptionViewSet, basename="testfulldescription")
 router.register(r"useranswers", UserAnswerViewSet, basename="useranswer")
 router.register(r"userstatistics", UserStatisticViewSet, basename="userstatistics")

@@ -9,10 +9,10 @@ from django import forms
 
 
 class ProfileAdminForm(forms.ModelForm):
-    address = forms.CharField(
-        widget=CKEditorUploadingWidget(),
-        label="Адрес пользователя"
-    )
+    # address = forms.CharField(
+    #     widget=CKEditorUploadingWidget(),
+    #     label="Адрес пользователя"
+    # )
     class Meta:
         model = Profile
         fields = '__all__'
@@ -98,9 +98,12 @@ class ProfileAdmin(admin.ModelAdmin):
     )
     search_fields = ("user__email", "user__first_name", "user__last_name", "phone_number")
     list_filter = ("last_update_date", "created_date")
-
+# Инструкция разделить 
     def get_first_name(self, obj):
         return obj.user.first_name
+
+    def get_email(self, obj):
+        return obj.user.email
 
     get_first_name.short_description = _(f"Имя")
 

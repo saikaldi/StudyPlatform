@@ -252,9 +252,7 @@ class TestInstruction(models.Model):
 
 
 class OkupTushunuu(models.Model):
-    name = models.CharField(
-        max_length=255, verbose_name="Название теста", default="Default Title"
-    )
+    name = models.CharField(max_length=255, verbose_name="Название теста", default="Default Title")
     description = models.TextField(verbose_name="Описание теста")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 

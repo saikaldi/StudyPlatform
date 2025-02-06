@@ -62,17 +62,10 @@ class TestContentSerializer(serializers.ModelSerializer):
 
 class TestSerializer(serializers.ModelSerializer):
     test_category = TestCategorySerializer(read_only=True)
-    test_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=TestCategory.objects.all(), source="test_category", write_only=True
-    )
+    test_category_id = serializers.PrimaryKeyRelatedField(queryset=TestCategory.objects.all(), source="test_category", write_only=True)
     subject_category = SubjectCategorySerializer(read_only=True)
-    subject_category_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubjectCategory.objects.all(),
-        source="subject_category",
-        write_only=True,
-    )
+    subject_category_id = serializers.PrimaryKeyRelatedField(queryset=SubjectCategory.objects.all(), source="subject_category", write_only=True)
     test_questions = serializers.SerializerMethodField()
-    okup_tushunuu_questions = serializers.SerializerMethodField()
 
     class Meta:
         model = Test
@@ -87,7 +80,6 @@ class TestSerializer(serializers.ModelSerializer):
             "description",
             "background_image",
             "test_questions",
-            "okup_tushunuu_questions",
             "last_update_date",
             "created_date",
         ]
@@ -95,10 +87,6 @@ class TestSerializer(serializers.ModelSerializer):
     def get_test_questions(self, obj):
         test_questions = TestContent.objects.filter(test=obj)
         return TestContentSerializer(test_questions, many=True).data
-
-    def get_okup_tushunuu_questions(self, obj):
-        questions = OkupTushunuuQuestion.objects.all()
-        return OkupTushunuuQuestionSerializer(questions, many=True).data
 
 
 class TestFullDescriptionSerializer(serializers.ModelSerializer):
@@ -121,17 +109,10 @@ class TestFullDescriptionSerializer(serializers.ModelSerializer):
 
 
 class TestInstructionSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
-    )
-
     class Meta:
         model = TestInstruction
         fields = [
             "id",
-            "test",
-            "test_id",
             "instruction_title",
             "instruction_image",
             "last_update_date",

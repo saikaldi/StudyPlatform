@@ -83,6 +83,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
 
     # Добавляем информацию о пройденных тестах
     test_statistics = serializers.SerializerMethodField()
@@ -91,7 +92,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'first_name', 'last_name', 'profile_picture', 'test_statistics', 'video_statistics'
+            'email', 'first_name', 'last_name', 'phone_number', 'profile_picture', 'test_statistics', 'video_statistics'
         ]
 
     def get_test_statistics(self, obj):

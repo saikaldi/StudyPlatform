@@ -108,17 +108,24 @@ class TestFullDescriptionSerializer(serializers.ModelSerializer):
         ]
 
 
+
 class TestInstructionSerializer(serializers.ModelSerializer):
+    test = TestSerializer(read_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="test", write_only=True
+    )
+
     class Meta:
         model = TestInstruction
         fields = [
             "id",
+            "test",
+            "test_id",
             "instruction_title",
             "instruction_image",
             "last_update_date",
             "created_date",
         ]
-
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     test_content = TestContentSerializer(read_only=True)

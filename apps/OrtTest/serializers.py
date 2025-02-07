@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.conf import settings
 from .models import (
     TestCategory,
     Test,
@@ -33,6 +34,37 @@ class TestContentSerializer(serializers.ModelSerializer):
     test_id = serializers.PrimaryKeyRelatedField(
         queryset=Test.objects.all(), source="test", write_only=True
     )
+
+    question_image = serializers.SerializerMethodField()
+    var_A_image = serializers.SerializerMethodField()
+    var_B_image = serializers.SerializerMethodField()
+    var_C_image = serializers.SerializerMethodField()
+    var_D_image = serializers.SerializerMethodField()
+    var_E_image = serializers.SerializerMethodField()
+
+    def get_absolute_url(self, path):
+        if path:
+            request = self.context.get("request")
+            return request.build_absolute_uri(path) if request else f"{settings.BASE_URL}{path}"
+        return None
+
+    def get_question_image(self, obj):
+        return self.get_absolute_url(obj.question_image.url) if obj.question_image else None
+
+    def get_var_A_image(self, obj):
+        return self.get_absolute_url(obj.var_A_image.url) if obj.var_A_image else None
+
+    def get_var_B_image(self, obj):
+        return self.get_absolute_url(obj.var_B_image.url) if obj.var_B_image else None
+
+    def get_var_C_image(self, obj):
+        return self.get_absolute_url(obj.var_C_image.url) if obj.var_C_image else None
+
+    def get_var_D_image(self, obj):
+        return self.get_absolute_url(obj.var_D_image.url) if obj.var_D_image else None
+
+    def get_var_E_image(self, obj):
+        return self.get_absolute_url(obj.var_E_image.url) if obj.var_E_image else None
 
     class Meta:
         model = TestContent

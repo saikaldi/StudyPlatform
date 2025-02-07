@@ -143,7 +143,7 @@ class Video(models.Model):
 
 class TestContent(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, verbose_name="Тест")
-    question_text = models.TextField(verbose_name="Вопрос в текстовом формате")
+    question_text = models.TextField(verbose_name="Вопрос в текстовом формате", blank=True, null=True)
     question_image = models.ImageField(
         verbose_name="Вопрос в файловом формате", blank=True, null=True
     )

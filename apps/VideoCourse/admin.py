@@ -24,7 +24,8 @@ class VideoAdminForm(forms.ModelForm):
 class TestContentAdminForm(forms.ModelForm):
     question_text = forms.CharField(
         widget=CKEditorUploadingWidget(),
-        label="Текст вопроса"
+        label="Текст вопроса",
+        required=False
     )
     additional_questions = forms.CharField(
         widget=CKEditorUploadingWidget(),

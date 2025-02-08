@@ -177,6 +177,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             "last_update_date",
             "created_date",
         ]
+        read_only_fields = ['user']
 
     def create(self, validated_data):
         user = self.context["request"].user

@@ -1,22 +1,20 @@
 from rest_framework import serializers
-from .models import Test, TestContent, TestFullDescription, TestInstruction, MockAssessmentTest, MockAssessmentAnswer, UserStatistic
+from .models import MockAssessmentTest, MockAssessmentTestContent, MockAssessmentTestFullDescription, MockAssessmentTestInstruction, MockAssessmentTest, MockAssessmentAnswer, MockAssessmentUserStatistic, MockAssessmentUser
 from drf_spectacular.utils import extend_schema_serializer
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiExample, OpenApiParameter
 
 
-class TestSerializer(serializers.ModelSerializer):
+class MockAssessmentTestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Test
-        fields = ['id', 'test_name', 'last_update_date', 'created_date']
+        model = MockAssessmentTest
+        fields = '__all__'
 
-class TestContentSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
-    test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
-    )
+class MockAssessmentTestContentSerializer(serializers.ModelSerializer):
+    test = MockAssessmentTestSerializer(read_only=True)
+    test_id = serializers.PrimaryKeyRelatedField(queryset=MockAssessmentTest.objects.all(), source="test", write_only=True)
 
     class Meta:
-        model = TestContent
+        model = MockAssessmentTestContent
         fields = [
             'id', 'test', 'test_id', 'question_number', 'question_text', 'question_image',
             'additional_questions', 'var_A_image', 'var_B_image', 'var_C_image',
@@ -24,39 +22,39 @@ class TestContentSerializer(serializers.ModelSerializer):
             'var_D_text', 'var_E_text', 'true_answer', 'last_update_date', 'created_date'
         ]
 
-class TestFullDescriptionSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
+class MockAssessmentTestFullDescriptionSerializer(serializers.ModelSerializer):
+    test = MockAssessmentTestSerializer(read_only=True)
     test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
+        queryset=MockAssessmentTest.objects.all(), source="test", write_only=True
     )
 
     class Meta:
-        model = TestFullDescription
+        model = MockAssessmentTestFullDescription
         fields = ['id', 'test', 'test_id', 'description_title', 'description_image', 'last_update_date', 'created_date']
 
-class TestInstructionSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
+class MockAssessmentTestInstructionSerializer(serializers.ModelSerializer):
+    test = MockAssessmentTestSerializer(read_only=True)
     test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
+        queryset=MockAssessmentTest.objects.all(), source="test", write_only=True
     )
 
     class Meta:
-        model = TestInstruction
+        model = MockAssessmentTestInstruction
         fields = ['id', 'test', 'test_id', 'instruction_title', 'instruction_image', 'last_update_date', 'created_date']
 
-class MockAssessmentTestSerializer(serializers.ModelSerializer):
+class MockAssessmentUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MockAssessmentTest
-        fields = ['id', 'phone_number', 'first_name', 'last_name', 'last_update_date', 'created_date']
+        model = MockAssessmentUser
+        fields = '__all__'
 
 class MockAssessmentAnswerSerializer(serializers.ModelSerializer):
     mock_test = MockAssessmentTestSerializer(read_only=True)
     mock_test_id = serializers.PrimaryKeyRelatedField(
         queryset=MockAssessmentTest.objects.all(), source="mock_test", write_only=True
     )
-    test_content = TestContentSerializer(read_only=True)
+    test_content = MockAssessmentTestContentSerializer(read_only=True)
     test_content_id = serializers.PrimaryKeyRelatedField(
-        queryset=TestContent.objects.all(), source="test_content", write_only=True
+        queryset=MockAssessmentTestContent.objects.all(), source="test_content", write_only=True
     )
 
     class Meta:
@@ -67,17 +65,17 @@ class MockAssessmentAnswerSerializer(serializers.ModelSerializer):
         ]
 
 class UserStatisticSerializer(serializers.ModelSerializer):
-    test = TestSerializer(read_only=True)
+    test = MockAssessmentTestSerializer(read_only=True)
     test_id = serializers.PrimaryKeyRelatedField(
-        queryset=Test.objects.all(), source="test", write_only=True
+        queryset=MockAssessmentTest.objects.all(), source="test", write_only=True
     )
     user = MockAssessmentTestSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(
-        queryset=MockAssessmentTest.objects.all(), source="user", write_only=True
+        queryset=MockAssessmentUser.objects.all(), source="user", write_only=True
     )
 
     class Meta:
-        model = UserStatistic
+        model = MockAssessmentUserStatistic
         fields = [
             'id', 'test', 'test_id', 'user', 'user_id', 'true_answer_count',
             'false_answer_count', 'last_update_date', 'created_date'
@@ -105,7 +103,7 @@ class MockAssessmentAnswerCreateSerializer(serializers.ModelSerializer):
         write_only=True
     )
     content = serializers.PrimaryKeyRelatedField(
-        queryset=TestContent.objects.all(),
+        queryset=MockAssessmentTestContent.objects.all(),
         write_only=True,
         source='test_content',
         help_text="ID вопроса"

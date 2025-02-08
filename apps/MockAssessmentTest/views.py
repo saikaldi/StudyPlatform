@@ -1,24 +1,25 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from .models import Test, TestContent, TestFullDescription, TestInstruction, MockAssessmentTest, MockAssessmentAnswer, UserStatistic
-from .serializers import TestSerializer, TestContentSerializer, TestFullDescriptionSerializer, TestInstructionSerializer, MockAssessmentTestSerializer, MockAssessmentAnswerSerializer, UserStatisticSerializer, MockAssessmentAnswerCreateSerializer
+from .models import MockAssessmentTest, MockAssessmentTestContent, MockAssessmentTestFullDescription, MockAssessmentTestInstruction, MockAssessmentTest, MockAssessmentAnswer, MockAssessmentUserStatistic, MockAssessmentUser
+from .serializers import MockAssessmentTestSerializer, MockAssessmentTestContentSerializer, MockAssessmentTestFullDescriptionSerializer, MockAssessmentTestInstructionSerializer, MockAssessmentTestSerializer, MockAssessmentAnswerSerializer, UserStatisticSerializer, MockAssessmentAnswerCreateSerializer, MockAssessmentUserSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 # from .filters import *
+
 
 @extend_schema(
     tags=['MockAssessmentTests'],
     summary="Управление тестами",
     description="Эндпоинт для создания, чтения, обновления и удаления тестов",
-    request=TestSerializer,
+    request=MockAssessmentTestSerializer,
     responses={
-        200: TestSerializer,
+        200: MockAssessmentTestSerializer,
         201: OpenApiResponse(description="Тест успешно создан"),
     },
 )
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
+class MockAssessmentTestViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentTest.objects.all()
+    serializer_class = MockAssessmentTestSerializer
     permission_classes = [permissions.IsAuthenticated]
     # filter_backends = [DjangoFilterBackend]
     # filterset_class = TestFilter
@@ -27,15 +28,15 @@ class TestViewSet(viewsets.ModelViewSet):
     tags=['MockAssessmentTestContent'],
     summary="Управление содержанием тестов",
     description="Эндпоинт для работы с вопросами тестов",
-    request=TestContentSerializer,
+    request=MockAssessmentTestContentSerializer,
     responses={
-        200: TestContentSerializer,
+        200: MockAssessmentTestContentSerializer,
         201: OpenApiResponse(description="Вопрос теста успешно создан"),
     },
 )
-class TestContentViewSet(viewsets.ModelViewSet):
-    queryset = TestContent.objects.all()
-    serializer_class = TestContentSerializer
+class MockAssessmentTestContentViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentTestContent.objects.all()
+    serializer_class = MockAssessmentTestContentSerializer
     permission_classes = [permissions.IsAuthenticated]
     # filter_backends = [DjangoFilterBackend]
     # filterset_class = TestContentFilter
@@ -44,15 +45,15 @@ class TestContentViewSet(viewsets.ModelViewSet):
     tags=['MockAssessmentTestDescriptions'],
     summary="Управление описаниями тестов",
     description="Эндпоинт для создания, чтения, обновления и удаления полных описаний тестов",
-    request=TestFullDescriptionSerializer,
+    request=MockAssessmentTestFullDescriptionSerializer,
     responses={
-        200: TestFullDescriptionSerializer,
+        200: MockAssessmentTestFullDescriptionSerializer,
         201: OpenApiResponse(description="Описание теста успешно создано"),
     },
 )
-class TestFullDescriptionViewSet(viewsets.ModelViewSet):
-    queryset = TestFullDescription.objects.all()
-    serializer_class = TestFullDescriptionSerializer
+class MockAssessmentTestFullDescriptionViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentTestFullDescription.objects.all()
+    serializer_class = MockAssessmentTestFullDescriptionSerializer
     permission_classes = [permissions.IsAuthenticated]
     # filter_backends = [DjangoFilterBackend]
     # filterset_class = TestFullDescriptionFilter
@@ -61,30 +62,30 @@ class TestFullDescriptionViewSet(viewsets.ModelViewSet):
     tags=['TestInstructions'],
     summary="Управление инструкциями для тестов",
     description="Эндпоинт для работы с инструкциями тестов",
-    request=TestInstructionSerializer,
+    request=MockAssessmentTestInstructionSerializer,
     responses={
-        200: TestInstructionSerializer,
+        200: MockAssessmentTestInstructionSerializer,
         201: OpenApiResponse(description="Инструкция успешно создана"),
     },
 )
-class TestInstructionViewSet(viewsets.ModelViewSet):
-    queryset = TestInstruction.objects.all()
-    serializer_class = TestInstructionSerializer
+class MockAssessmentTestInstructionViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentTestInstruction.objects.all()
+    serializer_class = MockAssessmentTestInstructionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 @extend_schema(
     tags=['MockAssessment'],
     summary="Управление пользователями для пробных тестов",
     description="Эндпоинт для работы с пользователями, которые проходят тесты",
-    request=MockAssessmentTestSerializer,
+    request=MockAssessmentUserSerializer,
     responses={
-        200: MockAssessmentTestSerializer,
+        200: MockAssessmentUserSerializer,
         201: OpenApiResponse(description="Запись пользователя успешно создана"),
     },
 )
-class MockAssessmentTestViewSet(viewsets.ModelViewSet):
-    queryset = MockAssessmentTest.objects.all()
-    serializer_class = MockAssessmentTestSerializer
+class MockAssessmentUserViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentUser.objects.all()
+    serializer_class = MockAssessmentUserSerializer
     permission_classes = [permissions.AllowAny]  # Разрешение для всех, так как регистрация не требуется
     # filter_backends = [DjangoFilterBackend]
     # filterset_class = MockAssessmentTestFilter
@@ -157,8 +158,8 @@ class MockAssessmentAnswerViewSet(viewsets.ModelViewSet):
         201: OpenApiResponse(description="Статистика ответов успешно обновлена"),
     },
 )
-class UserStatisticViewSet(viewsets.ModelViewSet):
-    queryset = UserStatistic.objects.all()
+class MockAssessmentUserStatisticViewSet(viewsets.ModelViewSet):
+    queryset = MockAssessmentUserStatistic.objects.all()
     serializer_class = UserStatisticSerializer
     permission_classes = [permissions.IsAuthenticated]
     # filter_backends = [DjangoFilterBackend]
@@ -193,14 +194,14 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 @api_view(['POST'])
 def submit_answer(request, test_id):
     # Получаем тест и вопрос
-    test = get_object_or_404(Test, id=test_id)
+    test = get_object_or_404(MockAssessmentTest, id=test_id)
     question_id = request.data.get('question_id')
     user_answer = request.data.get('answer', '').lower()  # Приводим к нижнему регистру
     
     # Проверяем существование вопроса
     try:
-        question = TestContent.objects.get(id=question_id, test=test)
-    except TestContent.DoesNotExist:
+        question = MockAssessmentTestContent.objects.get(id=question_id, test=test)
+    except MockAssessmentTestContent.DoesNotExist:
         return Response(
             {"error": "Question not found in this test"},
             status=status.HTTP_404_NOT_FOUND

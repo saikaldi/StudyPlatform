@@ -92,20 +92,31 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'email', 'first_name', 'last_name', 'phone_number', 'profile_picture', 'test_statistics', 'video_statistics'
+            'id', 'email', 'first_name', 'last_name', 'phone_number', 'profile_picture', 'test_statistics', 'video_statistics'
         ]
 
     def get_test_statistics(self, obj):
         # Получаем статистику по тестам для текущего пользователя
         user = obj.user
         test_statistics = TUS.objects.filter(user=user)
-        return TUSS(test_statistics, many=True).data
+        return [
+        {
+            "title": test_stat.test.title,
+            "true_answer_count": test_stat.true_answer_count,
+            "false_answer_count": test_stat.false_answer_count,
+            "accuracy_percentage": test_stat.accuracy_percentage,
+        }
+        for test_stat in test_statistics]
 
     def get_video_statistics(self, obj):
-        # Получаем статистику по видео для текущего пользователя
         user = obj.user
         video_statistics = VUS.objects.filter(user=user, video__isnull=False)
-        return VUSS(video_statistics, many=True).data
+        return [{
+            "title": video_stat.video.subject_name,
+            "true_answer_count": video_stat.true_answer_count,
+            "false_answer_count": video_stat.false_answer_count,
+            }
+            for video_stat in video_statistics]
 
 # class ProfileSerializer(serializers.ModelSerializer):
 #     email = serializers.EmailField(source='user.email', read_only=True)

@@ -8,11 +8,9 @@ def upload_to_test(instance, filename):
         return f"{instance.test.test_name}/{filename}"
     return f"unknown/{filename}"
 
-class Test(models.Model):
+class MockAssessmentTest(models.Model):
     test_name = models.CharField(max_length=100, verbose_name='Название пробного теста')
-    last_update_date = models.DateTimeField(
-        auto_now=True, verbose_name="Последнее обновление"
-    )
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
@@ -22,20 +20,12 @@ class Test(models.Model):
         verbose_name = "Тест"
         verbose_name_plural = "Тесты"
 
-class TestContent(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
-    question_number = models.PositiveIntegerField(
-        verbose_name="Порядковый номер вопроса", blank=True, null=True
-    )
-    question_text = models.TextField(
-        verbose_name="Вопрос в текстовом формате", blank=True, null=True
-    )
-    question_image = models.ImageField(
-        verbose_name="Вопрос в файловом формате", blank=True, null=True
-    )
-    additional_questions = models.TextField(
-        verbose_name="Дополнительный текст к вопросу", blank=True, null=True
-    )
+class MockAssessmentTestContent(models.Model):
+    test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, verbose_name="Тест")
+    question_number = models.PositiveIntegerField(verbose_name="Порядковый номер вопроса", blank=True, null=True)
+    question_text = models.TextField(verbose_name="Вопрос в текстовом формате", blank=True, null=True)
+    question_image = models.ImageField(verbose_name="Вопрос в файловом формате", blank=True, null=True)
+    additional_questions = models.TextField(verbose_name="Дополнительный текст к вопросу", blank=True, null=True)
     var_A_image = models.ImageField(
         upload_to=upload_to_test,
         verbose_name="Вариант ответа 'A' (В файловом варианте)",
@@ -94,7 +84,7 @@ class TestContent(models.Model):
     def save(self, *args, **kwargs):
         if self.question_number is None:
             last_question = (
-                TestContent.objects.filter(test=self.test)
+                MockAssessmentTestContent.objects.filter(test=self.test)
                 .order_by("question_number")
                 .last()
             )
@@ -159,8 +149,8 @@ class TestContent(models.Model):
         verbose_name_plural = "Вопросы тестов"
 
 
-class TestFullDescription(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
+class MockAssessmentTestFullDescription(models.Model):
+    test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, verbose_name="Тест")
     description_title = models.CharField(
         max_length=60, verbose_name="Название описания"
     )
@@ -180,8 +170,8 @@ class TestFullDescription(models.Model):
         verbose_name_plural = "Подробные описания тестов"
 
 
-class TestInstruction(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
+class MockAssessmentTestInstruction(models.Model):
+    test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, verbose_name="Тест")
     instruction_title = models.CharField(
         max_length=60, verbose_name="Название инструкции"
     )
@@ -201,13 +191,12 @@ class TestInstruction(models.Model):
         verbose_name_plural = "Инструкции тестов"
 
 
-class MockAssessmentTest(models.Model):
-    phone_regex = RegexValidator(
-        regex=r"^\+?1?\d{9,13}$", 
-        message="Введите корректный номер телефона"
-    )
+class MockAssessmentUser(models.Model):
+    # phone_regex = RegexValidator(
+    #     regex=r"^\+?1?\d{9,13}$", 
+    #     message="Введите корректный номер телефона"
+    # )
     phone_number = models.CharField(
-        validators=[phone_regex], 
         max_length=13, 
         unique=True, 
         verbose_name="Номер телефона",
@@ -233,8 +222,7 @@ class MockAssessmentTest(models.Model):
 
 class MockAssessmentAnswer(models.Model):
     mock_test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, related_name='answers')
-    test_content = models.ForeignKey(TestContent, on_delete=models.CASCADE, verbose_name="Тест контент")
-
+    test_content = models.ForeignKey(MockAssessmentTestContent, on_delete=models.CASCADE, verbose_name="Тест контент")
     question_number = models.IntegerField()
     answer_vars = models.CharField(
         max_length=1,
@@ -259,10 +247,10 @@ class MockAssessmentAnswer(models.Model):
         verbose_name_plural = "Ответы на пробные тесты"
 
 
-class UserStatistic(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name="Тест")
+class MockAssessmentUserStatistic(models.Model):
+    test = models.ForeignKey(MockAssessmentTest, on_delete=models.CASCADE, verbose_name="Тест")
     user = models.ForeignKey(
-        MockAssessmentTest, on_delete=models.CASCADE, verbose_name="Пользователь"
+        MockAssessmentUser, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
     true_answer_count = models.PositiveIntegerField(
         default=0, verbose_name="Количество правильных ответов"

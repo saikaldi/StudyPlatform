@@ -358,10 +358,21 @@ class UserStatistic(models.Model):
     false_answer_count = models.PositiveIntegerField(
         default=0, verbose_name="Количество неправильных ответов"
     )
+    accuracy_percentage = models.FloatField(
+        default=0.0, verbose_name="Процент правильных ответов"
+    )
     last_update_date = models.DateTimeField(
         auto_now=True, verbose_name="Последнее обновление"
     )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def update_accuracy(self):
+        total_answers = self.true_answer_count + self.false_answer_count
+        if total_answers > 0:
+            self.accuracy_percentage = (self.true_answer_count / total_answers) * 100
+        else:
+            self.accuracy_percentage = 0.0
+        self.save()
 
     def __str__(self):
         if self.okup_tushunuu:

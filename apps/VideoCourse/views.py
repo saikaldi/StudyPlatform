@@ -54,6 +54,7 @@ class CategoryVideoViewSet(viewsets.ModelViewSet):
     queryset = CategoryVideo.objects.all()
     serializer_class = CategoryVideoSerializer
     filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_class = CategoryVideoFilter
 
 @extend_schema(
@@ -69,7 +70,7 @@ class CategoryVideoViewSet(viewsets.ModelViewSet):
 class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = SubjectCategoryFilter
 
@@ -78,6 +79,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_class = VideoFilter
 
     @extend_schema(

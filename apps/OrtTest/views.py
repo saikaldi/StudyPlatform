@@ -21,7 +21,7 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiTypes
 class TestCategoryViewSet(viewsets.ModelViewSet):
     queryset = TestCategory.objects.all()
     serializer_class = TestCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestCategoryFilter
 
@@ -38,7 +38,7 @@ class TestCategoryViewSet(viewsets.ModelViewSet):
 class SubjectCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubjectCategory.objects.all()
     serializer_class = SubjectCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = SubjectCategoryFilter
 
@@ -55,7 +55,7 @@ class SubjectCategoryViewSet(viewsets.ModelViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TestFilter
 

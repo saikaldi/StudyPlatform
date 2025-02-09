@@ -197,12 +197,14 @@ class UserStatisticSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "test",
+            "test_id",
             "okup_tushunuu",
             "true_answer_count",
             "false_answer_count",
             "last_update_date",
             "created_date",
         ]
+        read_only_fields = ["user"]
 
 
 class OkupTushunuuSerializer(serializers.ModelSerializer):

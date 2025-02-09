@@ -329,8 +329,8 @@ class UserAnswer(models.Model):
     )
     answer_vars = models.CharField(
         max_length=1,
-        choices=[("a", "A"), ("b", "B"), ("c", "C"), ("d", "D")],
-        verbose_name="Ответ",
+        choices=[("а", "А"), ("б", "Б"), ("в", "В"), ("г", "Г"), ("д", "Д")],
+        verbose_name="Ответ студента",
     )
     output_time = models.PositiveIntegerField(
         default=1, verbose_name="Время ответа (в секундах)"
